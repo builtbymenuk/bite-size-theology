@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_shared_tour_dates",
+  "info": {
+    "displayName": "tour-date"
+  },
+  "options": {},
+  "attributes": {
+    "city": {
+      "type": "string"
+    },
+    "venue": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string"
+    },
+    "soldOut": {
+      "type": "boolean",
+      "default": false
+    },
+    "url": {
+      "type": "string"
+    }
+  }
+}

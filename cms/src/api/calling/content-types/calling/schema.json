@@ -1,0 +1,40 @@
+{
+  "kind": "singleType",
+  "collectionName": "callings",
+  "info": {
+    "singularName": "calling",
+    "pluralName": "callings",
+    "displayName": "Homepage — 3. The Calling"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "headingScript": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "quote": {
+      "type": "text"
+    },
+    "introLabel": {
+      "type": "string"
+    },
+    "body": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "signature": {
+      "type": "string"
+    },
+    "rootedTitle": {
+      "type": "string"
+    },
+    "rootedBody": {
+      "type": "text"
+    }
+  }
+}

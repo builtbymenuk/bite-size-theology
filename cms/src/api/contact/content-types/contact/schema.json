@@ -1,0 +1,77 @@
+{
+  "kind": "singleType",
+  "collectionName": "contacts",
+  "info": {
+    "singularName": "contact",
+    "pluralName": "contacts",
+    "displayName": "Page — Contact"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "headingLead": {
+      "type": "string"
+    },
+    "headingScript": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "text"
+    },
+    "emailLabel": {
+      "type": "string"
+    },
+    "emailAddress": {
+      "type": "string"
+    },
+    "emailNote": {
+      "type": "string"
+    },
+    "mailingLabel": {
+      "type": "string"
+    },
+    "mailingLines": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "connectLabel": {
+      "type": "string"
+    },
+    "socials": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.social"
+    },
+    "formHeading": {
+      "type": "string"
+    },
+    "formSubheading": {
+      "type": "string"
+    },
+    "fieldName": {
+      "type": "string"
+    },
+    "fieldEmail": {
+      "type": "string"
+    },
+    "fieldSubject": {
+      "type": "string"
+    },
+    "fieldMessage": {
+      "type": "string"
+    },
+    "subjectOptions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "formSubmit": {
+      "type": "string"
+    },
+    "formSuccess": {
+      "type": "string"
+    }
+  }
+}

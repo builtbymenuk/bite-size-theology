@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_shared_products",
+  "info": {
+    "displayName": "product"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "price": {
+      "type": "string"
+    },
+    "tag": {
+      "type": "string"
+    },
+    "tone": {
+      "type": "enumeration",
+      "enum": [
+        "dark",
+        "warm",
+        "light",
+        "cool",
+        "gold",
+        "yellow"
+      ]
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

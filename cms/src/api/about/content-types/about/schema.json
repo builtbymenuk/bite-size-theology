@@ -1,0 +1,73 @@
+{
+  "kind": "singleType",
+  "collectionName": "abouts",
+  "info": {
+    "singularName": "about",
+    "pluralName": "abouts",
+    "displayName": "Page — About"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "headingLead": {
+      "type": "string"
+    },
+    "headingName": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "donateCta": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "text"
+    },
+    "turnLead": {
+      "type": "string"
+    },
+    "story": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "missionLabel": {
+      "type": "string"
+    },
+    "quoteText": {
+      "type": "text"
+    },
+    "quoteAttribution": {
+      "type": "string"
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "turnImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "missionImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

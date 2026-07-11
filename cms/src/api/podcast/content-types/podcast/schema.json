@@ -1,0 +1,34 @@
+{
+  "kind": "singleType",
+  "collectionName": "podcasts",
+  "info": {
+    "singularName": "podcast",
+    "pluralName": "podcasts",
+    "displayName": "Homepage — 6. Podcast Promo"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "quote": {
+      "type": "text"
+    },
+    "badgeRank": {
+      "type": "string"
+    },
+    "badgeCategory": {
+      "type": "string"
+    },
+    "actions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.podcast-action"
+    }
+  }
+}

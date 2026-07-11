@@ -1,0 +1,245 @@
+{
+  "nav": {
+    "logo": "Caleb",
+    "cta": "Donate Now",
+    "links": [
+      { "value": "Tour" },
+      { "value": "About" },
+      { "value": "Shop" },
+      { "value": "Book Caleb" },
+      { "value": "Contact" },
+      { "value": "Podcast" }
+    ]
+  },
+  "hero": {
+    "tagline": "Cultivating faith through truth.",
+    "subtext": "Honest, unfiltered conversations about faith, culture, and the Bible. Welcome to Bite Size Theology.",
+    "cta": "Discover the Message"
+  },
+  "eyebrow": {
+    "value": "Bite Size Theology / Explore the Word"
+  },
+  "calling": {
+    "headingScript": "The",
+    "heading": "CALLING",
+    "quote": "We are not called to be comfortable. We are called to be courageous.",
+    "introLabel": "Hi, I'm Caleb Griffith",
+    "signature": "Caleb Griffith",
+    "body": [
+      { "value": "I am a pastor, teacher, and author dedicated to breaking down complex theological concepts for the modern believer." },
+      { "value": "From my time ministering in New Zealand to returning to my roots in Statesville, I bring a global perspective and a local heart to teaching the Word as the Lead Pastor at Cornerstone Church in Statesville, NC." }
+    ],
+    "rootedTitle": "Rooted in NC",
+    "rootedBody": "Building spaces where every heart is seen, heard, and deeply valued."
+  },
+  "all-thing": {
+    "headingLead": "ALL THE",
+    "headingScript": "things",
+    "subtext": "Connect with us and stay updated on our journey! Find out about new events, interviews, merch drops, and more."
+  },
+  "collection": {
+    "eyebrow": "Curated Goods",
+    "heading": "THE COLLECTION",
+    "link": "Explore all resources",
+    "products": [
+      {
+        "name": "The Calling: Study Guide",
+        "price": "$34.00",
+        "tag": "New Arrival",
+        "tone": "light"
+      },
+      {
+        "name": "Bite Size Theology Vol. 1",
+        "price": "$16.00",
+        "tone": "cool"
+      },
+      {
+        "name": "Sermon Notes Journal",
+        "price": "$12.00",
+        "tone": "yellow"
+      }
+    ],
+    "quoteText": "We believe theology isn't just for the scholars—it's for the everyday believer.",
+    "quoteBody": "Every item in our collection is intentionally designed to spark conversations, deepen your faith, and remind you of the profound truths found in scripture throughout your daily life.",
+    "quoteCta": "Read the Story"
+  },
+  "podcast": {
+    "eyebrow": "The Bite Size Theology Podcast",
+    "note": "Hey you! Yes, you, beautiful you :)",
+    "quote": "Refresh your soul with Caleb Griffith's theology podcast, where he dives into Christ-centered discussions on faith, world events, and key issues impacting Christianity today.",
+    "badgeRank": "#1 Podcast",
+    "badgeCategory": "Religion",
+    "actions": [
+      { "label": "Listen", "platform": "spotify" },
+      { "label": "Watch", "platform": "youtube" }
+    ]
+  },
+  "podcast-page": {
+    "heroName": "Caleb Griffith",
+    "heroHeading": "Deep faith.",
+    "heroHeadingAccent": "Bite-sized.",
+    "heroSubtext": "Join Pastor Caleb Griffith as he unpacks profound theological truths into accessible, everyday wisdom. New episodes every Wednesday.",
+    "stats": [
+      { "value": "200+", "label": "Episodes Published", "icon": "mic" },
+      { "value": "500k", "label": "Monthly Listeners", "icon": "globe" },
+      { "value": "4.9/5", "label": "Average Rating", "icon": "award" }
+    ],
+    "ctaHeadingLead": "Ready to deepen your",
+    "ctaHeadingAccent": "understanding?",
+    "ctaBody": "Subscribe to our YouTube channel and never miss a new episode of Bite Size Theology.",
+    "ctaPills": [
+      { "value": "Deep Faith" },
+      { "value": "New Episodes" },
+      { "value": "Pastor Caleb" },
+      { "value": "Theological Truths" },
+      { "value": "Bite Size Theology" },
+      { "value": "Watch on YouTube" }
+    ]
+  },
+  "faq": {
+    "supportEyebrow": "Support",
+    "supportHeading": "Didn't find your answer?",
+    "supportBody": "No worries! If you have any other questions or need more information, feel free to reach out directly to contact@calebgriffith.com.",
+    "supportCta": "Ask me a question",
+    "headingLead": "FREQUENT",
+    "headingScript": "asks",
+    "items": [
+      {
+        "q": "I want Caleb to speak at my event. Who do I contact?",
+        "a": "Head to the Book Caleb page and send us the details of your event. Our team reviews every request and will get back to you within a few business days."
+      },
+      {
+        "q": "I ordered merch and have an inquiry. Who do I talk to?",
+        "a": "Email contact@calebgriffith.com with your order number and we'll sort it out right away."
+      },
+      {
+        "q": "How do I support what you guys are doing?",
+        "a": "Prayer, sharing our content, and giving all make a real difference. Every bit helps us reach more people with the message."
+      },
+      {
+        "q": "I don't have extra funds to donate. How else can I help?",
+        "a": "Share our videos, invite a friend to listen, and keep us in your prayers. Generosity isn't only financial."
+      },
+      {
+        "q": "Does Jesus love me?",
+        "a": "Yes. Unconditionally, completely, and right now — exactly as you are."
+      }
+    ]
+  },
+  "footer": {
+    "columns": [
+      {
+        "title": "Connect",
+        "links": [
+          { "value": "Church Online" },
+          { "value": "Find a Location" },
+          { "value": "Prayer Request" },
+          { "value": "Give" }
+        ]
+      },
+      {
+        "title": "Social",
+        "links": [
+          { "value": "Instagram" },
+          { "value": "YouTube" },
+          { "value": "Twitter" },
+          { "value": "Contact" }
+        ]
+      }
+    ],
+    "messageLead": "A message of",
+    "messageWord": "HOPE.",
+    "messageBody": "Available for speaking engagements, podcasts, and unfiltered conversations about faith.",
+    "wordmark": "BITE SIZE THEOLOGY",
+    "copyright": "© 2026 Bite Size Theology. All rights reserved.",
+    "legal": [
+      { "value": "Privacy" },
+      { "value": "Terms" }
+    ]
+  },
+  "about": {
+    "eyebrow": "Meet the Founder",
+    "headingLead": "Meet",
+    "headingName": "Caleb",
+    "name": "Caleb Griffith",
+    "role": "Social Media & Street Evangelist",
+    "donateCta": "Donate Now",
+    "intro": "Raised in church, Caleb carried a deep faith but wrestled with depression and anxiety for years.",
+    "turnLead": "But, God!",
+    "missionLabel": "The Mission",
+    "story": [
+      { "value": "One night, at his breaking point, Caleb made a plan to end his life. But in that moment, instead of darkness, he encountered Jesus in a life-altering way. Rather than giving up, he gave his life to the One who had been reaching out all along." },
+      { "value": "Since that night, Caleb has dedicated his life to sharing the gospel with millions—both online and in person. His mission is simple: to bring the hope he found to others, sharing the light and love of Jesus wherever he goes. Caleb's journey is a testament to the power of faith, the resilience of hope, and the boundless love of God." }
+    ],
+    "quoteText": "It wasn't until I reached the end of my own strength that I discovered grace had been holding me the entire time.",
+    "quoteAttribution": "The Turning Point"
+  },
+  "contact": {
+    "headingLead": "Let's get",
+    "headingScript": "acquainted.",
+    "intro": "Whether you have a question about the ministry, a speaking request, or simply want to share a prayer need—we would love to hear from you.",
+    "connectLabel": "Connect",
+    "emailLabel": "Direct Email",
+    "emailAddress": "hello@bitesizetheology.com",
+    "emailNote": "Typical response: 24-48 hours",
+    "mailingLabel": "Mailing Address",
+    "mailingLines": [
+      { "value": "Bite Size Theology" },
+      { "value": "PO Box 12345" },
+      { "value": "Nashville, TN 37203" }
+    ],
+    "socials": [
+      { "name": "Instagram", "handle": "@calebgriffith" },
+      { "name": "YouTube", "handle": "bitesizetheology" },
+      { "name": "Twitter", "handle": "@bitesizetheo" }
+    ],
+    "formHeading": "Send a Message",
+    "formSubheading": "We'll get back to you shortly",
+    "fieldName": "Full Name",
+    "fieldEmail": "Email Address",
+    "fieldSubject": "Subject",
+    "fieldMessage": "Message",
+    "subjectOptions": [
+      { "value": "General Inquiry" },
+      { "value": "Speaking Request" },
+      { "value": "Prayer Need" },
+      { "value": "Media / Podcast" },
+      { "value": "Other" }
+    ],
+    "formSubmit": "Submit Inquiry",
+    "formSuccess": "Thank you — your message is on its way. We'll be in touch soon."
+  },
+  "tour": {
+    "regions": [
+      {
+        "regionId": "us",
+        "eyebrow": "Tour Dates",
+        "dates": [
+          { "city": "Phoenix, AZ", "venue": "Footprint Center", "date": "Feb 22 2026", "soldOut": true, "url": "#" },
+          { "city": "Dallas, TX", "venue": "House of Blues", "date": "Feb 27 2026", "soldOut": true, "url": "#" },
+          { "city": "Houston, TX", "venue": "Bayou Music Center", "date": "Feb 28 2026", "soldOut": true, "url": "#" },
+          { "city": "Dallas, TX", "venue": "House of Blues", "date": "Mar 01 2026", "soldOut": true, "url": "#" },
+          { "city": "Oklahoma City, OK", "venue": "Civic Center", "date": "Mar 03 2026", "soldOut": true, "url": "#" },
+          { "city": "Huntsville, AL", "venue": "Von Braun Center", "date": "Mar 04 2026", "soldOut": true, "url": "#" },
+          { "city": "New York, NY", "venue": "The Town Hall", "date": "Mar 16 2026", "soldOut": false, "url": "#" },
+          { "city": "Munhall, PA", "venue": "Carnegie Music Hall", "date": "Mar 17 2026", "soldOut": true, "url": "#" },
+          { "city": "Salt Lake City, UT", "venue": "The Complex", "date": "Mar 25 2026", "soldOut": false, "url": "#" },
+          { "city": "Los Angeles, CA", "venue": "Shrine Auditorium", "date": "Mar 29 2026", "soldOut": true, "url": "#" }
+        ]
+      },
+      {
+        "regionId": "anz",
+        "eyebrow": "Tour Dates",
+        "heading": "AUSTRALIA & NEW ZEALAND",
+        "code": "ANZ",
+        "dates": [
+          { "city": "Melbourne", "venue": "Palais Theatre", "date": "07 FEB", "soldOut": false, "url": "#" },
+          { "city": "Brisbane", "venue": "Fortitude Music Hall", "date": "10 FEB", "soldOut": true, "url": "#" },
+          { "city": "Sydney", "venue": "Enmore Theatre", "date": "11 FEB", "soldOut": true, "url": "#" },
+          { "city": "Sydney", "venue": "Enmore Theatre", "date": "12 FEB", "soldOut": true, "url": "#" },
+          { "city": "Auckland", "venue": "Convention Centre", "date": "14 FEB", "soldOut": false, "url": "#" }
+        ]
+      }
+    ]
+  }
+}

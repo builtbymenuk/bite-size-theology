@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_shared_text_items",
+  "info": {
+    "displayName": "text-item"
+  },
+  "options": {},
+  "attributes": {
+    "value": {
+      "type": "string"
+    }
+  }
+}

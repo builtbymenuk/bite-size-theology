@@ -1,0 +1,39 @@
+{
+  "kind": "singleType",
+  "collectionName": "footers",
+  "info": {
+    "singularName": "footer",
+    "pluralName": "footers",
+    "displayName": "Shared — Footer"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "columns": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.footer-column"
+    },
+    "messageLead": {
+      "type": "string"
+    },
+    "messageWord": {
+      "type": "string"
+    },
+    "messageBody": {
+      "type": "text"
+    },
+    "wordmark": {
+      "type": "string"
+    },
+    "copyright": {
+      "type": "string"
+    },
+    "legal": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "kind": "singleType",
+  "collectionName": "collections",
+  "info": {
+    "singularName": "collection",
+    "pluralName": "collections",
+    "displayName": "Homepage — 5. The Collection"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    },
+    "products": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.product"
+    },
+    "quoteText": {
+      "type": "text"
+    },
+    "quoteBody": {
+      "type": "text"
+    },
+    "quoteCta": {
+      "type": "string"
+    }
+  }
+}

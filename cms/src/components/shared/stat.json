@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_stats",
+  "info": {
+    "displayName": "stat"
+  },
+  "options": {},
+  "attributes": {
+    "value": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "enumeration",
+      "enum": [
+        "mic",
+        "globe",
+        "award"
+      ]
+    }
+  }
+}

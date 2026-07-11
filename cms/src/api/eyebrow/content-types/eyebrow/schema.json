@@ -1,0 +1,17 @@
+{
+  "kind": "singleType",
+  "collectionName": "eyebrows",
+  "info": {
+    "singularName": "eyebrow",
+    "pluralName": "eyebrows",
+    "displayName": "Homepage — 2. Eyebrow Strip"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "value": {
+      "type": "string"
+    }
+  }
+}

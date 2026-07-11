@@ -1,0 +1,37 @@
+{
+  "kind": "singleType",
+  "collectionName": "faqs",
+  "info": {
+    "singularName": "faq",
+    "pluralName": "faqs",
+    "displayName": "Homepage — 7. FAQ"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "supportEyebrow": {
+      "type": "string"
+    },
+    "supportHeading": {
+      "type": "string"
+    },
+    "supportBody": {
+      "type": "text"
+    },
+    "supportCta": {
+      "type": "string"
+    },
+    "headingLead": {
+      "type": "string"
+    },
+    "headingScript": {
+      "type": "string"
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.faq-item"
+    }
+  }
+}

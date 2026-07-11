@@ -1,0 +1,30 @@
+{
+  "kind": "singleType",
+  "collectionName": "heros",
+  "info": {
+    "singularName": "hero",
+    "pluralName": "heros",
+    "displayName": "Homepage — 1. Hero"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "tagline": {
+      "type": "string"
+    },
+    "subtext": {
+      "type": "text"
+    },
+    "cta": {
+      "type": "string"
+    },
+    "bgImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

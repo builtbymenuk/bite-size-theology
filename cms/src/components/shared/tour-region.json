@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_shared_tour_regions",
+  "info": {
+    "displayName": "tour-region"
+  },
+  "options": {},
+  "attributes": {
+    "regionId": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string"
+    },
+    "dates": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.tour-date"
+    }
+  }
+}

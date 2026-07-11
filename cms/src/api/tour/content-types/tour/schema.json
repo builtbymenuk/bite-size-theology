@@ -1,0 +1,33 @@
+{
+  "kind": "singleType",
+  "collectionName": "tours",
+  "info": {
+    "singularName": "tour",
+    "pluralName": "tours",
+    "displayName": "Page — Tour"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "regions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.tour-region"
+    },
+    "heroPhoto": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "secondPhoto": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

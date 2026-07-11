@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "all_things",
+  "info": {
+    "singularName": "all-thing",
+    "pluralName": "all-things",
+    "displayName": "Homepage — 4. All the Things"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "headingLead": {
+      "type": "string"
+    },
+    "headingScript": {
+      "type": "string"
+    },
+    "subtext": {
+      "type": "text"
+    }
+  }
+}

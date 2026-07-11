@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "navs",
+  "info": {
+    "singularName": "nav",
+    "pluralName": "navs",
+    "displayName": "Shared — Navbar"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "logo": {
+      "type": "string"
+    },
+    "cta": {
+      "type": "string"
+    },
+    "links": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    }
+  }
+}

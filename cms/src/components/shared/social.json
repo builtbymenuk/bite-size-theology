@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_shared_socials",
+  "info": {
+    "displayName": "social"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    }
+  }
+}

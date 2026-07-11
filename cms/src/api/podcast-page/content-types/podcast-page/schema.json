@@ -1,0 +1,45 @@
+{
+  "kind": "singleType",
+  "collectionName": "podcast_pages",
+  "info": {
+    "singularName": "podcast-page",
+    "pluralName": "podcast-pages",
+    "displayName": "Page — Podcast"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "heroName": {
+      "type": "string"
+    },
+    "heroHeading": {
+      "type": "string"
+    },
+    "heroHeadingAccent": {
+      "type": "string"
+    },
+    "heroSubtext": {
+      "type": "text"
+    },
+    "stats": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.stat"
+    },
+    "ctaHeadingLead": {
+      "type": "string"
+    },
+    "ctaHeadingAccent": {
+      "type": "string"
+    },
+    "ctaBody": {
+      "type": "text"
+    },
+    "ctaPills": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    }
+  }
+}

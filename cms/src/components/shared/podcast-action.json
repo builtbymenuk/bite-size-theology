@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_podcast_actions",
+  "info": {
+    "displayName": "podcast-action"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "enumeration",
+      "enum": [
+        "spotify",
+        "youtube"
+      ]
+    }
+  }
+}
