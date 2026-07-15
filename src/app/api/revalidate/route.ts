@@ -7,7 +7,11 @@ import { NextResponse } from "next/server";
 const TAGS = [
   "nav", "hero", "eyebrow", "calling", "all-thing", "collection", "podcast",
   "podcast-page", "faq", "footer", "about", "contact", "tour",
+  "store", "products", "categories",
 ];
+
+// Strapi posts the singularName ("product"); cms.ts tags the list fetch by pluralName ("products").
+const ALIAS: Record<string, string> = { product: "products", category: "categories" };
 
 export async function POST(req: Request) {
   const secret = new URL(req.url).searchParams.get("secret");
@@ -23,7 +27,8 @@ export async function POST(req: Request) {
   } catch {
     // no/invalid body → fall through to revalidating everything
   }
-  const tags = model && TAGS.includes(model) ? [model] : TAGS;
+  const resolved = model ? (ALIAS[model] ?? model) : undefined;
+  const tags = resolved && TAGS.includes(resolved) ? [resolved] : TAGS;
   for (const tag of tags) revalidateTag(tag, "max"); // Next 16 requires the 2nd (cacheLife) arg
 
   return NextResponse.json({ ok: true, revalidated: tags });

@@ -19,7 +19,7 @@ export default async function Home() {
         <Hero hero={hero} />
       </div>
 
-      <div className="relative z-10 overflow-hidden rounded-t-[2rem] bg-cream shadow-[0_-24px_60px_-12px_rgba(0,0,0,0.35)]">
+      <div className="relative z-10 overflow-hidden bg-cream shadow-[0_-24px_60px_-12px_rgba(0,0,0,0.35)]">
         <main>
           <EyebrowStrip />
           <Calling />

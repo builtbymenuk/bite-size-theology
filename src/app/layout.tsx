@@ -4,6 +4,8 @@ import "./globals.css";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import Navbar from "@/components/layout/Navbar";
 import PageBackground from "@/components/layout/PageBackground";
+import { CartProvider } from "@/lib/cart";
+import CartDrawer from "@/components/store/CartDrawer";
 import { getNav } from "@/lib/cms";
 
 // ponytail: Fraunces roman+italic covers both display serif and the gold script accent — one family, not two.
@@ -36,9 +38,12 @@ export default async function RootLayout({
         <SmoothScroll>
           {/* Persistent, never transformed: background crossfades + nav stays fixed across route
               transitions. PageTransition owns the AnimatePresence enter/exit for the routed page. */}
-          <PageBackground />
-          <Navbar nav={nav} />
-          {children}
+          <CartProvider>
+            <PageBackground />
+            <Navbar nav={nav} />
+            {children}
+            <CartDrawer />
+          </CartProvider>
         </SmoothScroll>
       </body>
     </html>

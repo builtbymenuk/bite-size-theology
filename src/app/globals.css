@@ -66,3 +66,47 @@ details[open]::details-content {
     scroll-behavior: auto !important;
   }
 }
+
+/* Route transition (native View Transitions) — the new page slides up from the bottom and covers
+   the previous page, which is held perfectly static beneath. Wired via <ViewTransition
+   enter="page-up" exit="page-hold"> in template.tsx. Matches jesusinthestreet.org (0.6s, that ease). */
+@keyframes vt-slide-up {
+  from {
+    /* 100dvh (one viewport), not 100% — % is the new page's own height, so tall/short
+       pages slid different distances in the same 0.6s (whip vs. snap). Fixed = consistent. */
+    transform: translateY(100dvh);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+::view-transition-old(.page-hold) {
+  animation: none;
+} /* previous page: held static, gets covered */
+::view-transition-new(.page-up) {
+  animation: vt-slide-up 0.6s cubic-bezier(0.87, 0.07, 0.43, 0.84) both;
+} /* new page: rises over it */
+::view-transition-group(root) {
+  animation: none;
+} /* PageBackground + the rest of the viewport: held static */
+/* Navbar stays pinned above the sliding page (anchored via viewTransitionName in Navbar.tsx) */
+::view-transition-group(navbar) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(navbar) {
+  display: none;
+}
+::view-transition-new(navbar) {
+  animation: none;
+}
+
+/* Reduced motion: instant swap (regular * rules don't reach the ::view-transition pseudo-tree). */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+  }
+}

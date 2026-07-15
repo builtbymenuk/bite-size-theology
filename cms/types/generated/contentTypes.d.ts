@@ -545,6 +545,36 @@ export interface ApiCallingCalling extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
+  collectionName: 'categorys';
+  info: {
+    displayName: 'Store \u2014 Categories';
+    pluralName: 'categories';
+    singularName: 'category';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::category.category'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCollectionCollection extends Struct.SingleTypeSchema {
   collectionName: 'collections';
   info: {
@@ -773,6 +803,47 @@ export interface ApiNavNav extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
+  collectionName: 'orders';
+  info: {
+    displayName: 'Store \u2014 Orders';
+    pluralName: 'orders';
+    singularName: 'order';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currency: Schema.Attribute.String;
+    email: Schema.Attribute.String;
+    items: Schema.Attribute.JSON;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
+      Schema.Attribute.Private;
+    orderNumber: Schema.Attribute.String;
+    payerName: Schema.Attribute.String;
+    paypalCaptureId: Schema.Attribute.String;
+    paypalOrderId: Schema.Attribute.String & Schema.Attribute.Unique;
+    provider: Schema.Attribute.Enumeration<['paypal', 'stripe']>;
+    publishedAt: Schema.Attribute.DateTime;
+    shipping: Schema.Attribute.Decimal;
+    shippingAddress: Schema.Attribute.JSON;
+    status: Schema.Attribute.Enumeration<
+      ['paid', 'fulfilled', 'refunded', 'cancelled']
+    >;
+    stripePaymentIntentId: Schema.Attribute.String;
+    stripeSessionId: Schema.Attribute.String & Schema.Attribute.Unique;
+    subtotal: Schema.Attribute.Decimal;
+    total: Schema.Attribute.Decimal;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPodcastPagePodcastPage extends Struct.SingleTypeSchema {
   collectionName: 'podcast_pages';
   info: {
@@ -836,6 +907,83 @@ export interface ApiPodcastPodcast extends Struct.SingleTypeSchema {
     note: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     quote: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiProductProduct extends Struct.CollectionTypeSchema {
+  collectionName: 'products';
+  info: {
+    displayName: 'Store \u2014 Products';
+    pluralName: 'products';
+    singularName: 'product';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    badge: Schema.Attribute.String;
+    category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
+    compareAtPrice: Schema.Attribute.Decimal;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    images: Schema.Attribute.Media<'images', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product.product'
+    > &
+      Schema.Attribute.Private;
+    price: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    sizes: Schema.Attribute.Component<'shared.text-item', true>;
+    slug: Schema.Attribute.UID<'title'>;
+    soldOut: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiStoreStore extends Struct.SingleTypeSchema {
+  collectionName: 'stores';
+  info: {
+    displayName: 'Store \u2014 Page';
+    pluralName: 'stores';
+    singularName: 'store';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    bestSellersHeading: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currency: Schema.Attribute.String;
+    founderBody: Schema.Attribute.Text;
+    founderCta: Schema.Attribute.String;
+    founderEyebrow: Schema.Attribute.String;
+    founderHeading: Schema.Attribute.String;
+    founderImage: Schema.Attribute.Media<'images'>;
+    heroCta: Schema.Attribute.String;
+    heroEyebrow: Schema.Attribute.String;
+    heroHeading: Schema.Attribute.String;
+    heroImage: Schema.Attribute.Media<'images'>;
+    heroSubtext: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::store.store'> &
+      Schema.Attribute.Private;
+    newArrivalsHeading: Schema.Attribute.String;
+    proceedsBanner: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    shippingFee: Schema.Attribute.Decimal;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1383,6 +1531,7 @@ declare module '@strapi/strapi' {
       'api::about.about': ApiAboutAbout;
       'api::all-thing.all-thing': ApiAllThingAllThing;
       'api::calling.calling': ApiCallingCalling;
+      'api::category.category': ApiCategoryCategory;
       'api::collection.collection': ApiCollectionCollection;
       'api::contact.contact': ApiContactContact;
       'api::eyebrow.eyebrow': ApiEyebrowEyebrow;
@@ -1390,8 +1539,11 @@ declare module '@strapi/strapi' {
       'api::footer.footer': ApiFooterFooter;
       'api::hero.hero': ApiHeroHero;
       'api::nav.nav': ApiNavNav;
+      'api::order.order': ApiOrderOrder;
       'api::podcast-page.podcast-page': ApiPodcastPagePodcastPage;
       'api::podcast.podcast': ApiPodcastPodcast;
+      'api::product.product': ApiProductProduct;
+      'api::store.store': ApiStoreStore;
       'api::tour.tour': ApiTourTour;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

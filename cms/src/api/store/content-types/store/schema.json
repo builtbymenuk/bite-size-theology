@@ -1,0 +1,67 @@
+{
+  "kind": "singleType",
+  "collectionName": "stores",
+  "info": {
+    "singularName": "store",
+    "pluralName": "stores",
+    "displayName": "Store — Page"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "heroEyebrow": {
+      "type": "string"
+    },
+    "heroHeading": {
+      "type": "string"
+    },
+    "heroSubtext": {
+      "type": "text"
+    },
+    "heroCta": {
+      "type": "string"
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "proceedsBanner": {
+      "type": "string"
+    },
+    "bestSellersHeading": {
+      "type": "string"
+    },
+    "newArrivalsHeading": {
+      "type": "string"
+    },
+    "founderEyebrow": {
+      "type": "string"
+    },
+    "founderHeading": {
+      "type": "string"
+    },
+    "founderBody": {
+      "type": "text"
+    },
+    "founderCta": {
+      "type": "string"
+    },
+    "founderImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "shippingFee": {
+      "type": "decimal"
+    },
+    "currency": {
+      "type": "string"
+    }
+  }
+}

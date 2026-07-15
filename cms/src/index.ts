@@ -1,9 +1,21 @@
 import seedData from "./seed-data.json";
 
-// The 13 single types (singularName == the api uid segment == the path cms.ts fetches).
+// Single types (singularName == the api uid segment == the path cms.ts fetches).
+// `store` is the storefront's editorial single type; the rest are the marketing pages.
 const NAMES = [
   "nav", "hero", "eyebrow", "calling", "all-thing", "collection", "podcast",
   "podcast-page", "faq", "footer", "about", "contact", "tour",
+  "store",
+];
+
+// Publicly-readable collection types need BOTH find + findOne. Products + categories are public;
+// `order` is intentionally absent — orders are written only via a server API token.
+const PUBLIC_COLLECTIONS = ["product", "category"];
+
+// Every public-read action to grant on the public role.
+const GRANTS = [
+  ...NAMES.map((n) => `api::${n}.${n}.find`),
+  ...PUBLIC_COLLECTIONS.flatMap((n) => [`api::${n}.${n}.find`, `api::${n}.${n}.findOne`]),
 ];
 
 // Friendly edit-view labels/help-text for the cryptic fields. Keyed by singularName → field.
@@ -93,6 +105,44 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
   tour: {
     regions: { label: "Tour regions", description: "Each region has an optional heading + code, and a list of dates" },
   },
+  store: {
+    heroEyebrow: { label: "Hero — Eyebrow" },
+    heroHeading: { label: "Hero — Heading", description: 'e.g. "Christian Apparel With Purpose"' },
+    heroSubtext: { label: "Hero — Subtext" },
+    heroCta: { label: "Hero — Button" },
+    heroImage: { label: "Hero — Background image (optional)" },
+    proceedsBanner: { label: "Proceeds banner", description: "The scrolling strip, e.g. 10% of proceeds support mission work" },
+    bestSellersHeading: { label: "Best sellers — Heading" },
+    newArrivalsHeading: { label: "New arrivals — Heading" },
+    founderEyebrow: { label: "Founder — Eyebrow" },
+    founderHeading: { label: "Founder — Heading" },
+    founderBody: { label: "Founder — Body" },
+    founderCta: { label: "Founder — Button" },
+    founderImage: { label: "Founder — Image (optional)" },
+    shippingFee: { label: "Flat shipping fee (USD)", description: "Added to every order. Set 0 for free shipping." },
+    currency: { label: "Currency code", description: "e.g. USD" },
+  },
+  category: {
+    name: { label: "Category name" },
+    slug: { label: "URL slug", description: "Auto-fills from the name; used by the store filter" },
+    order: { label: "Sort order", description: "Lower numbers appear first in the filter tabs" },
+  },
+  order: {
+    provider: { label: "Payment provider", description: "paypal or stripe — set automatically" },
+    stripeSessionId: { label: "Stripe session id" },
+    stripePaymentIntentId: { label: "Stripe payment id" },
+  },
+  product: {
+    title: { label: "Product name" },
+    slug: { label: "URL slug", description: "Auto-fills from the name; used in the product page URL" },
+    price: { label: "Price (USD)" },
+    compareAtPrice: { label: "Compare-at price (optional)", description: "Original price, shown struck-through for sales" },
+    images: { label: "Images", description: "The first image is the main one" },
+    sizes: { label: "Sizes", description: "Leave empty for one-size items (no size picker)" },
+    badge: { label: "Card badge (optional)", description: 'e.g. "New Arrival" or "Sale"' },
+    featured: { label: "Featured", description: "Show in the Best Sellers row" },
+    soldOut: { label: "Sold out", description: "Hides the Add-to-cart button" },
+  },
 };
 
 export default {
@@ -108,8 +158,7 @@ export default {
         .query("plugin::users-permissions.role")
         .findOne({ where: { type: "public" } });
       if (publicRole) {
-        for (const name of NAMES) {
-          const action = `api::${name}.${name}.find`;
+        for (const action of GRANTS) {
           const existing = await strapi
             .query("plugin::users-permissions.permission")
             .findOne({ where: { action, role: publicRole.id } });
@@ -140,6 +189,54 @@ export default {
       }
     } catch (e) {
       strapi.log.error("seed: failed creating content");
+      strapi.log.error(e);
+    }
+
+    // 2b. Store categories + products. Categories are find-or-create by slug (idempotent). Products
+    //     are seeded once and linked to their category by slug; the link step also runs as a backfill
+    //     so already-seeded sample products pick up the relation after the enum→relation change.
+    try {
+      const cats = (seedData as Record<string, any>).categories ?? [];
+      const products = (seedData as Record<string, any>).products ?? [];
+      const catId: Record<string, string> = {};
+      for (const c of cats) {
+        let row = await strapi
+          .documents("api::category.category")
+          .findFirst({ filters: { slug: c.slug } });
+        if (!row) {
+          row = await strapi.documents("api::category.category").create({ data: c });
+          strapi.log.info(`seed: created category ${c.slug}`);
+        }
+        catId[c.slug] = row.documentId;
+      }
+
+      const first = await strapi.documents("api::product.product").findFirst();
+      if (!first && Array.isArray(products)) {
+        for (const p of products) {
+          const { category, ...rest } = p; // `category` is a slug string in seed-data → link below
+          await strapi.documents("api::product.product").create({
+            data: { ...rest, ...(catId[category] ? { category: catId[category] } : {}) },
+          });
+        }
+        strapi.log.info(`seed: created ${products.length} products`);
+      } else if (Array.isArray(products)) {
+        // Backfill: link the category relation on any existing seeded product still missing it.
+        for (const p of products) {
+          if (!catId[p.category]) continue;
+          const row = await strapi
+            .documents("api::product.product")
+            .findFirst({ filters: { slug: p.slug }, populate: ["category"] });
+          if (row && !row.category) {
+            await strapi.documents("api::product.product").update({
+              documentId: row.documentId,
+              data: { category: catId[p.category] },
+            });
+            strapi.log.info(`seed: linked category for ${p.slug}`);
+          }
+        }
+      }
+    } catch (e) {
+      strapi.log.error("seed: failed creating store categories/products");
       strapi.log.error(e);
     }
 

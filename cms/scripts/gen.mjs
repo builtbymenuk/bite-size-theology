@@ -20,6 +20,14 @@ const b = () => ({ type: "boolean", default: false });
 const media = () => ({ type: "media", multiple: false, allowedTypes: ["images"] });
 const enm = (...v) => ({ type: "enumeration", enum: v });
 const rep = (component) => ({ type: "component", repeatable: true, component });
+const dec = () => ({ type: "decimal" });
+const uidField = (target) => ({ type: "uid", targetField: target });
+const mediaMulti = () => ({ type: "media", multiple: true, allowedTypes: ["images"] });
+const json = () => ({ type: "json" });
+const req = (attr) => ({ ...attr, required: true });
+const uniq = (attr) => ({ ...attr, unique: true }); // DB unique — multiple NULLs allowed (SQLite)
+const int = () => ({ type: "integer", default: 0 });
+const rel = (relation, target, extra = {}) => ({ type: "relation", relation, target, ...extra });
 
 const TONE = ["dark", "warm", "light", "cool", "gold", "yellow"];
 
@@ -133,6 +141,16 @@ const singles = {
     display: "Page — Tour",
     attrs: { regions: rep("shared.tour-region"), heroPhoto: media(), secondPhoto: media() },
   },
+  store: {
+    display: "Store — Page",
+    attrs: {
+      heroEyebrow: s(), heroHeading: s(), heroSubtext: t(), heroCta: s(), heroImage: media(),
+      proceedsBanner: s(),
+      bestSellersHeading: s(), newArrivalsHeading: s(),
+      founderEyebrow: s(), founderHeading: s(), founderBody: t(), founderCta: s(), founderImage: media(),
+      shippingFee: dec(), currency: s(),
+    },
+  },
 };
 
 const factory = (kind, uid) =>
@@ -144,6 +162,60 @@ for (const [name, { display, attrs }] of Object.entries(singles)) {
     kind: "singleType",
     collectionName: snake(plural(name)),
     info: { singularName: name, pluralName: plural(name), displayName: display },
+    options: { draftAndPublish: false },
+    attributes: attrs,
+  });
+  write(`src/api/${name}/routes/${name}.ts`, factory("Router", uid));
+  write(`src/api/${name}/controllers/${name}.ts`, factory("Controller", uid));
+  write(`src/api/${name}/services/${name}.ts`, factory("Service", uid));
+}
+
+// --- collection types (uid api::<name>.<name>, REST /api/<pluralName>) ---
+// Store products + orders. Same three factory files as single types; only schema.json's
+// `kind` (collectionType) and info.pluralName differ. cms.ts reads these via list()/one().
+const collections = {
+  category: {
+    display: "Store — Categories",
+    plural: "categories", // naive plural would be "categorys"; the REST route needs "categories"
+    attrs: {
+      name: req(s()), slug: uidField("name"), order: int(),
+    },
+  },
+  product: {
+    display: "Store — Products",
+    attrs: {
+      title: req(s()), slug: uidField("title"), description: t(),
+      price: req(dec()), compareAtPrice: dec(),
+      images: mediaMulti(), sizes: rep("shared.text-item"),
+      // Editor-managed via the Category collection (was a fixed enum).
+      category: rel("manyToOne", "api::category.category"),
+      badge: s(), featured: b(), soldOut: b(),
+    },
+  },
+  order: {
+    display: "Store — Orders",
+    attrs: {
+      orderNumber: s(), email: s(), items: json(),
+      subtotal: dec(), shipping: dec(), total: dec(), currency: s(),
+      status: enm("paid", "fulfilled", "refunded", "cancelled"),
+      provider: enm("paypal", "stripe"),
+      // unique → the DB rejects a duplicate write, closing the check-then-write idempotency race
+      // (concurrent confirms / refresh in a 2nd tab). Unset ids are NULL, and SQLite allows many NULLs.
+      paypalOrderId: uniq(s()), paypalCaptureId: s(),
+      stripeSessionId: uniq(s()), stripePaymentIntentId: s(),
+      payerName: s(), shippingAddress: json(),
+    },
+  },
+};
+
+for (const [name, { display, attrs, plural: pluralOverride }] of Object.entries(collections)) {
+  const uid = `api::${name}.${name}`;
+  const pluralName = pluralOverride || plural(name);
+  write(`src/api/${name}/content-types/${name}/schema.json`, {
+    kind: "collectionType",
+    // Table name keeps the naive plural (stable across this rename); the REST route uses pluralName.
+    collectionName: snake(plural(name)),
+    info: { singularName: name, pluralName, displayName: display },
     options: { draftAndPublish: false },
     attributes: attrs,
   });

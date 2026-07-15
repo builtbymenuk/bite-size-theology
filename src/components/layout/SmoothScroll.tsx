@@ -6,8 +6,9 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 // Lenis root mode retains its scroll across route changes, so Next's scroll-to-top on
-// navigation doesn't stick. Jump to the top on every route change → new pages (e.g. logo → home)
-// land at the hero. Must live inside <ReactLenis> so useLenis() can reach the instance.
+// navigation doesn't stick. Jump to the top on every route change → new pages land at their top.
+// (The View Transition captures the OLD page's scroll into its snapshot before this runs, so the
+// previous page still animates out frozen at the position the user left it.)
 function ScrollReset() {
   const pathname = usePathname();
   const lenis = useLenis();

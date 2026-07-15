@@ -1,0 +1,71 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "Store — Orders"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "orderNumber": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "items": {
+      "type": "json"
+    },
+    "subtotal": {
+      "type": "decimal"
+    },
+    "shipping": {
+      "type": "decimal"
+    },
+    "total": {
+      "type": "decimal"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "paid",
+        "fulfilled",
+        "refunded",
+        "cancelled"
+      ]
+    },
+    "provider": {
+      "type": "enumeration",
+      "enum": [
+        "paypal",
+        "stripe"
+      ]
+    },
+    "paypalOrderId": {
+      "type": "string",
+      "unique": true
+    },
+    "paypalCaptureId": {
+      "type": "string"
+    },
+    "stripeSessionId": {
+      "type": "string",
+      "unique": true
+    },
+    "stripePaymentIntentId": {
+      "type": "string"
+    },
+    "payerName": {
+      "type": "string"
+    },
+    "shippingAddress": {
+      "type": "json"
+    }
+  }
+}

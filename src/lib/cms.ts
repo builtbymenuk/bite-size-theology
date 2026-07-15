@@ -10,7 +10,7 @@
 import * as fb from "./content";
 import type {
   Nav, Hero, Calling, AllThings, Collection, Podcast, PodcastPage,
-  Faq, Footer, About, Contact, Tour,
+  Faq, Footer, About, Contact, Tour, StoreProduct, Store, Category,
 } from "./content";
 
 const BASE = process.env.STRAPI_URL;
@@ -44,6 +44,26 @@ async function single(path: string, query = "populate=*"): Promise<any | null> {
   } catch {
     return null; // down / network / bad JSON → static fallback
   }
+}
+
+// Collection-type sibling of single(): returns the `.data` ARRAY (v5 flattened rows), [] on any
+// failure. `one()` filters that down to the first row (e.g. a product by slug).
+async function list(path: string, query = "populate=*"): Promise<any[]> {
+  if (!BASE) return [];
+  try {
+    const res = await fetch(`${BASE}/api/${path}?${query}`, {
+      headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {},
+      next: { tags: [path], revalidate: REVALIDATE },
+    });
+    if (!res.ok) return [];
+    return (await res.json())?.data ?? [];
+  } catch {
+    return [];
+  }
+}
+
+async function one(path: string, query: string): Promise<any | null> {
+  return (await list(path, query))[0] ?? null;
 }
 
 export async function getNav(): Promise<Nav> {
@@ -306,4 +326,74 @@ export async function getTour(): Promise<Tour> {
       fb.tour.regions,
     ),
   };
+}
+
+// --- Store ---------------------------------------------------------------
+
+function mapProduct(p: any): StoreProduct {
+  return {
+    slug: p.slug,
+    title: p.title,
+    description: p.description || "",
+    price: Number(p.price) || 0,
+    compareAtPrice: p.compareAtPrice != null ? Number(p.compareAtPrice) : undefined,
+    images: Array.isArray(p.images)
+      ? (p.images.map((m: any) => absolutize(m?.url)).filter(Boolean) as string[])
+      : [],
+    sizes: Array.isArray(p.sizes)
+      ? p.sizes.map((x: any) => x?.value).filter(Boolean)
+      : [],
+    category: p.category?.slug || undefined, // relation → its slug
+    badge: p.badge || undefined,
+    featured: !!p.featured,
+    soldOut: !!p.soldOut,
+  };
+}
+
+export async function getStore(): Promise<Store> {
+  const d = await single("store");
+  if (!d) return fb.store;
+  return {
+    heroEyebrow: d.heroEyebrow || fb.store.heroEyebrow,
+    heroHeading: d.heroHeading || fb.store.heroHeading,
+    heroSubtext: d.heroSubtext || fb.store.heroSubtext,
+    heroCta: d.heroCta || fb.store.heroCta,
+    heroImage: absolutize(d.heroImage?.url),
+    proceedsBanner: d.proceedsBanner || fb.store.proceedsBanner,
+    bestSellersHeading: d.bestSellersHeading || fb.store.bestSellersHeading,
+    newArrivalsHeading: d.newArrivalsHeading || fb.store.newArrivalsHeading,
+    founderEyebrow: d.founderEyebrow || fb.store.founderEyebrow,
+    founderHeading: d.founderHeading || fb.store.founderHeading,
+    founderBody: d.founderBody || fb.store.founderBody,
+    founderCta: d.founderCta || fb.store.founderCta,
+    founderImage: absolutize(d.founderImage?.url),
+    shippingFee: d.shippingFee != null ? Number(d.shippingFee) : fb.store.shippingFee,
+    currency: d.currency || fb.store.currency,
+  };
+}
+
+// Newest first (drives "New Arrivals"). Falls back to the static catalog when Strapi is empty/down.
+export async function getProducts(): Promise<StoreProduct[]> {
+  const rows = await list(
+    "products",
+    "populate=*&sort=createdAt:desc&pagination[pageSize]=100",
+  );
+  return rows.length ? rows.map(mapProduct) : fb.storeProducts;
+}
+
+export async function getProduct(slug: string): Promise<StoreProduct | null> {
+  const row = await one(
+    "products",
+    `filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*`,
+  );
+  if (row) return mapProduct(row);
+  return fb.storeProducts.find((p) => p.slug === slug) ?? null;
+}
+
+// Editor-managed store categories (drives the storefront filter tabs), ordered.
+export async function getCategories(): Promise<Category[]> {
+  const rows = await list("categories", "sort=order:asc&pagination[pageSize]=100");
+  return rows.length
+    ? rows.map((c: any) => ({ slug: c.slug, name: c.name }))
+    : fb.categories;
 }

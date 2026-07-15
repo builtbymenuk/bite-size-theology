@@ -241,5 +241,100 @@
         ]
       }
     ]
-  }
+  },
+  "store": {
+    "heroEyebrow": "Bite Size Theology / Apparel",
+    "heroHeading": "Christian Apparel With Purpose",
+    "heroSubtext": "Wearable conversation starters — every piece is a chance to share the hope of Jesus. 10% of proceeds support mission work.",
+    "heroCta": "Shop the Collection",
+    "proceedsBanner": "10% of proceeds support mission work",
+    "bestSellersHeading": "Best Sellers",
+    "newArrivalsHeading": "New Arrivals",
+    "founderEyebrow": "Meet the Founder of Bite Size Theology",
+    "founderHeading": "About Bite Size Theology",
+    "founderBody": "Bryce Crawford is a social media and street evangelist with a deep passion for helping people discover their identity in Jesus Christ. After being saved in a Waffle House, Bryce became filled with the love of Jesus and began sharing the Gospel everywhere he went. He created these shirts as walking conversation starters, hoping to bring Jesus to every corner of the earth and empower lives with compassion and faith.",
+    "founderCta": "Shop Bite Size Theology",
+    "shippingFee": 5.99,
+    "currency": "USD"
+  },
+  "categories": [
+    { "name": "Tees", "slug": "tees", "order": 1 },
+    { "name": "Hoodies", "slug": "hoodies", "order": 2 },
+    { "name": "Sweatshirts", "slug": "sweatshirts", "order": 3 },
+    { "name": "Stickers", "slug": "stickers", "order": 4 },
+    { "name": "Accessories", "slug": "accessories", "order": 5 }
+  ],
+  "products": [
+    {
+      "title": "\"Call on Jesus\" Vintage Faded Hooded Sweatshirt",
+      "slug": "call-on-jesus-vintage-faded-hoodie",
+      "description": "A soft, vintage-washed hoodie built for everyday wear and everyday witness. The faded \"Call on Jesus\" graphic invites the question before you say a word.",
+      "price": 45,
+      "compareAtPrice": 52,
+      "category": "hoodies",
+      "badge": "Best Seller",
+      "featured": true,
+      "soldOut": false,
+      "sizes": [{ "value": "S" }, { "value": "M" }, { "value": "L" }, { "value": "XL" }, { "value": "2XL" }]
+    },
+    {
+      "title": "\"Call on Jesus\" Vintage Faded T-Shirt",
+      "slug": "call-on-jesus-vintage-faded-tee",
+      "description": "The classic \"Call on Jesus\" tee in a lightweight, vintage-faded finish. A wearable reminder — and a conversation starter — for wherever the day takes you.",
+      "price": 30,
+      "compareAtPrice": 42,
+      "category": "tees",
+      "badge": "Best Seller",
+      "featured": true,
+      "soldOut": false,
+      "sizes": [{ "value": "S" }, { "value": "M" }, { "value": "L" }, { "value": "XL" }, { "value": "2XL" }]
+    },
+    {
+      "title": "\"Check the Back for Good News\" Shirt",
+      "slug": "check-the-back-for-good-news-shirt",
+      "description": "Front says check the back — the back carries the Gospel. A playful, curiosity-sparking tee that opens doors to the best news there is.",
+      "price": 30,
+      "compareAtPrice": 42,
+      "category": "tees",
+      "badge": "Best Seller",
+      "featured": true,
+      "soldOut": false,
+      "sizes": [{ "value": "S" }, { "value": "M" }, { "value": "L" }, { "value": "XL" }, { "value": "2XL" }]
+    },
+    {
+      "title": "\"Crack This! Not Drugs\" Bible Crewneck",
+      "slug": "crack-this-not-drugs-bible-crewneck",
+      "description": "A cozy fleece crewneck with a bold, redemptive message. Crack open the Word, not a bottle — hope over escape.",
+      "price": 38,
+      "compareAtPrice": 47,
+      "category": "sweatshirts",
+      "badge": "Best Seller",
+      "featured": true,
+      "soldOut": false,
+      "sizes": [{ "value": "S" }, { "value": "M" }, { "value": "L" }, { "value": "XL" }, { "value": "2XL" }]
+    },
+    {
+      "title": "\"Honk if You Love Jesus\" Bumper Sticker",
+      "slug": "honk-if-you-love-jesus-bumper-sticker",
+      "description": "Durable, weatherproof vinyl for the back of any ride. Spread a little joy at every stoplight.",
+      "price": 7,
+      "category": "stickers",
+      "badge": "New Arrival",
+      "featured": false,
+      "soldOut": false,
+      "sizes": []
+    },
+    {
+      "title": "\"I Love Jesus\" Cartoon Shirt",
+      "slug": "i-love-jesus-cartoon-shirt",
+      "description": "A bright, friendly cartoon design that wears your faith with a smile. Soft cotton, everyday fit.",
+      "price": 30,
+      "compareAtPrice": 42,
+      "category": "tees",
+      "badge": "New Arrival",
+      "featured": false,
+      "soldOut": false,
+      "sizes": [{ "value": "S" }, { "value": "M" }, { "value": "L" }, { "value": "XL" }, { "value": "2XL" }]
+    }
+  ]
 }

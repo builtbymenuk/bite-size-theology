@@ -1,5 +1,16 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Store
+
+The site includes an e-commerce **Store** (`/store`) backed by Strapi, with PayPal and Stripe
+checkout. If you're the store owner, start here — everything you need to provide, decide, or manage:
+
+📋 **[Store — Client Action Checklist](docs/STORE-CLIENT-CHECKLIST.md)** — accounts & credentials,
+business decisions, managing products/orders in the CMS, and going live.
+
+Runs as two processes locally: `cd cms && npm run develop` (Strapi CMS, port 1337) and
+`npm run dev` (site, port 3000). Environment variables are documented in [`.env.example`](.env.example).
+
 ## Getting Started
 
 First, run the development server:

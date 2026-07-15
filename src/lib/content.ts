@@ -70,6 +70,47 @@ export interface Collection {
   quote: { text: string; body: string; cta: string };
 }
 
+// --- Store (e-commerce) ---
+// Distinct from the homepage `Product` above: this one is a Strapi COLLECTION type with a
+// numeric price (money math), a slug (its own /store/[slug] page), and multiple images.
+// Managed in the Strapi Category collection (editors add/rename/reorder).
+export interface Category {
+  slug: string;
+  name: string;
+}
+
+export interface StoreProduct {
+  slug: string;
+  title: string;
+  description: string;
+  price: number; // USD; kept numeric so the server can compute totals in cents
+  compareAtPrice?: number; // original price, shown struck-through
+  images: string[]; // absolute URLs; empty → tone placeholder
+  sizes: string[]; // empty → no size picker (one-size item)
+  category?: string; // category slug (→ the Category collection)
+  badge?: string; // card pill, e.g. "New Arrival"
+  featured: boolean; // → Best Sellers row
+  soldOut: boolean; // hides Add-to-cart
+}
+
+export interface Store {
+  heroEyebrow: string;
+  heroHeading: string;
+  heroSubtext: string;
+  heroCta: string;
+  heroImage?: string;
+  proceedsBanner: string;
+  bestSellersHeading: string;
+  newArrivalsHeading: string;
+  founderEyebrow: string;
+  founderHeading: string;
+  founderBody: string;
+  founderCta: string;
+  founderImage?: string;
+  shippingFee: number; // flat rate added to every order; 0 = free
+  currency: string;
+}
+
 export interface PodcastAction {
   label: string;
   platform: Platform;
@@ -497,3 +538,116 @@ export const tour: Tour = {
     },
   ],
 };
+
+// Store fallback — mirrors cms/src/seed-data.json so /store renders even with Strapi down.
+export const store: Store = {
+  heroEyebrow: "Bite Size Theology / Apparel",
+  heroHeading: "Christian Apparel With Purpose",
+  heroSubtext:
+    "Wearable conversation starters — every piece is a chance to share the hope of Jesus. 10% of proceeds support mission work.",
+  heroCta: "Shop the Collection",
+  proceedsBanner: "10% of proceeds support mission work",
+  bestSellersHeading: "Best Sellers",
+  newArrivalsHeading: "New Arrivals",
+  founderEyebrow: "Meet the Founder of Bite Size Theology",
+  founderHeading: "About Bite Size Theology",
+  founderBody:
+    "Bryce Crawford is a social media and street evangelist with a deep passion for helping people discover their identity in Jesus Christ. After being saved in a Waffle House, Bryce became filled with the love of Jesus and began sharing the Gospel everywhere he went. He created these shirts as walking conversation starters, hoping to bring Jesus to every corner of the earth and empower lives with compassion and faith.",
+  founderCta: "Shop Bite Size Theology",
+  shippingFee: 5.99,
+  currency: "USD",
+};
+
+export const categories: Category[] = [
+  { slug: "tees", name: "Tees" },
+  { slug: "hoodies", name: "Hoodies" },
+  { slug: "sweatshirts", name: "Sweatshirts" },
+  { slug: "stickers", name: "Stickers" },
+  { slug: "accessories", name: "Accessories" },
+];
+
+export const storeProducts: StoreProduct[] = [
+  {
+    slug: "call-on-jesus-vintage-faded-hoodie",
+    title: '"Call on Jesus" Vintage Faded Hooded Sweatshirt',
+    description:
+      'A soft, vintage-washed hoodie built for everyday wear and everyday witness. The faded "Call on Jesus" graphic invites the question before you say a word.',
+    price: 45,
+    compareAtPrice: 52,
+    images: [],
+    sizes: ["S", "M", "L", "XL", "2XL"],
+    category: "hoodies",
+    badge: "Best Seller",
+    featured: true,
+    soldOut: false,
+  },
+  {
+    slug: "call-on-jesus-vintage-faded-tee",
+    title: '"Call on Jesus" Vintage Faded T-Shirt',
+    description:
+      "The classic \"Call on Jesus\" tee in a lightweight, vintage-faded finish. A wearable reminder — and a conversation starter — for wherever the day takes you.",
+    price: 30,
+    compareAtPrice: 42,
+    images: [],
+    sizes: ["S", "M", "L", "XL", "2XL"],
+    category: "tees",
+    badge: "Best Seller",
+    featured: true,
+    soldOut: false,
+  },
+  {
+    slug: "check-the-back-for-good-news-shirt",
+    title: '"Check the Back for Good News" Shirt',
+    description:
+      "Front says check the back — the back carries the Gospel. A playful, curiosity-sparking tee that opens doors to the best news there is.",
+    price: 30,
+    compareAtPrice: 42,
+    images: [],
+    sizes: ["S", "M", "L", "XL", "2XL"],
+    category: "tees",
+    badge: "Best Seller",
+    featured: true,
+    soldOut: false,
+  },
+  {
+    slug: "crack-this-not-drugs-bible-crewneck",
+    title: '"Crack This! Not Drugs" Bible Crewneck',
+    description:
+      "A cozy fleece crewneck with a bold, redemptive message. Crack open the Word, not a bottle — hope over escape.",
+    price: 38,
+    compareAtPrice: 47,
+    images: [],
+    sizes: ["S", "M", "L", "XL", "2XL"],
+    category: "sweatshirts",
+    badge: "Best Seller",
+    featured: true,
+    soldOut: false,
+  },
+  {
+    slug: "honk-if-you-love-jesus-bumper-sticker",
+    title: '"Honk if You Love Jesus" Bumper Sticker',
+    description:
+      "Durable, weatherproof vinyl for the back of any ride. Spread a little joy at every stoplight.",
+    price: 7,
+    images: [],
+    sizes: [],
+    category: "stickers",
+    badge: "New Arrival",
+    featured: false,
+    soldOut: false,
+  },
+  {
+    slug: "i-love-jesus-cartoon-shirt",
+    title: '"I Love Jesus" Cartoon Shirt',
+    description:
+      "A bright, friendly cartoon design that wears your faith with a smile. Soft cotton, everyday fit.",
+    price: 30,
+    compareAtPrice: 42,
+    images: [],
+    sizes: ["S", "M", "L", "XL", "2XL"],
+    category: "tees",
+    badge: "New Arrival",
+    featured: false,
+    soldOut: false,
+  },
+];

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useLenis } from "lenis/react";
 import type { Nav } from "@/lib/content";
+import CartButton from "@/components/store/CartButton";
 
 // Links to routes that actually exist; every other label stays a placeholder anchor for now.
 const HREFS: Record<string, string> = {
@@ -13,6 +14,7 @@ const HREFS: Record<string, string> = {
   Contact: "/contact",
   About: "/about",
   Podcast: "/podcast",
+  Shop: "/store",
 };
 
 export default function Navbar({ nav }: { nav: Nav }) {
@@ -25,7 +27,8 @@ export default function Navbar({ nav }: { nav: Nav }) {
     pathname?.startsWith("/tour") ||
     pathname?.startsWith("/contact") ||
     pathname?.startsWith("/about") ||
-    pathname?.startsWith("/podcast")
+    pathname?.startsWith("/podcast") ||
+    pathname?.startsWith("/store")
       ? "light"
       : undefined;
 
@@ -39,7 +42,10 @@ export default function Navbar({ nav }: { nav: Nav }) {
   const onDark = fixedTheme ? false : !scrolled;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4">
+    <header
+      className="fixed inset-x-0 top-0 z-50 px-4 pt-4"
+      style={{ viewTransitionName: "navbar" }}
+    >
       <nav
         className={`mx-auto flex max-w-5xl items-center justify-between gap-6 rounded-full border px-5 py-2.5 backdrop-blur-md transition-colors duration-300 ${
           onDark
@@ -81,7 +87,8 @@ export default function Navbar({ nav }: { nav: Nav }) {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <CartButton dark={onDark} />
           <a
             href="#"
             className={`hidden rounded-full px-5 py-2 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors md:inline-block ${
