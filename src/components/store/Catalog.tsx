@@ -5,6 +5,8 @@ import Reveal from "@/components/ui/Reveal";
 import ProductCard from "@/components/store/ProductCard";
 import type { StoreProduct, Category } from "@/lib/content";
 
+const PAGE = 8; // catalog page size; "Load more" reveals another PAGE
+
 export default function Catalog({
   products,
   heading,
@@ -24,8 +26,10 @@ export default function Catalog({
   }, [products, categories]);
 
   const [active, setActive] = useState("all");
+  const [visible, setVisible] = useState(PAGE);
   const shown =
     active === "all" ? products : products.filter((p) => p.category === active);
+  const paged = shown.slice(0, visible);
 
   return (
     <section id="catalog" className="mx-auto max-w-7xl scroll-mt-28 px-6 py-24">
@@ -44,7 +48,10 @@ export default function Catalog({
                 key={c.slug}
                 role="tab"
                 aria-selected={active === c.slug}
-                onClick={() => setActive(c.slug)}
+                onClick={() => {
+                  setActive(c.slug);
+                  setVisible(PAGE); // reset paging when switching category
+                }}
                 className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.18em] transition-colors ${
                   active === c.slug
                     ? "border-ink bg-ink text-cream"
@@ -59,11 +66,26 @@ export default function Catalog({
       </Reveal>
 
       {shown.length ? (
-        <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
-          {shown.map((p) => (
-            <ProductCard key={p.slug} product={p} />
-          ))}
-        </div>
+        <>
+          <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
+            {paged.map((p) => (
+              <ProductCard key={p.slug} product={p} />
+            ))}
+          </div>
+          {visible < shown.length && (
+            <div className="mt-14 flex flex-col items-center gap-3">
+              <button
+                onClick={() => setVisible((v) => v + PAGE)}
+                className="rounded-full border border-ink px-7 py-3.5 text-[11px] font-medium uppercase tracking-[0.22em] text-ink transition-colors hover:bg-ink hover:text-cream"
+              >
+                Load more
+              </button>
+              <p className="text-[11px] uppercase tracking-[0.2em] text-ink/40">
+                Showing {paged.length} of {shown.length}
+              </p>
+            </div>
+          )}
+        </>
       ) : (
         <p className="mt-12 text-sm text-ink/50">
           No products in this category yet.

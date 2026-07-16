@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Fraunces, Inter, Cinzel } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import Navbar from "@/components/layout/Navbar";
 import PageBackground from "@/components/layout/PageBackground";
 import { CartProvider } from "@/lib/cart";
 import CartDrawer from "@/components/store/CartDrawer";
+import CustomCursor from "@/components/layout/CustomCursor";
 import { getNav } from "@/lib/cms";
 
 // ponytail: Fraunces roman+italic covers both display serif and the gold script accent — one family, not two.
@@ -22,6 +23,14 @@ const body = Inter({
   display: "swap",
 });
 
+// ponytail: Cinzel just for the big "Bite Size Theology" wordmark (hero + footer) — a distinct
+// logotype. Roman inscriptional caps, no italic; the gold script accents stay on Fraunces.
+const wordmark = Cinzel({
+  subsets: ["latin"],
+  variable: "--font-cinzel",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Bite Size Theology",
   description:
@@ -33,7 +42,7 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const nav = await getNav();
   return (
-    <html lang="en" className={`${display.variable} ${body.variable}`}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${wordmark.variable}`}>
       <body className="bg-cream text-ink antialiased">
         <SmoothScroll>
           {/* Persistent, never transformed: background crossfades + nav stays fixed across route
@@ -43,6 +52,7 @@ export default async function RootLayout({
             <Navbar nav={nav} />
             {children}
             <CartDrawer />
+            <CustomCursor />
           </CartProvider>
         </SmoothScroll>
       </body>

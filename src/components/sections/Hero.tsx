@@ -28,7 +28,7 @@ export default function Hero({ hero }: { hero: Hero }) {
           {hero.tagline}
         </motion.p>
 
-        <h1 className="font-display text-[clamp(3rem,11vw,10rem)] font-light leading-[0.9] tracking-tight">
+        <h1 className="font-wordmark text-[clamp(3rem,11vw,10rem)] leading-[0.95] tracking-[0.04em]">
           {hero.titleLines.map((line, i) => (
             <span key={line} className="block overflow-hidden">
               <motion.span

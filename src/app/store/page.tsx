@@ -72,6 +72,7 @@ export default async function StorePage() {
       <div className="border-y border-ink/10 bg-gold/90 py-3 text-ink">
         <Marquee
           text={`${store.proceedsBanner} • `}
+          duration={30}
           className="w-full text-[11px] font-medium uppercase tracking-[0.25em]"
         />
       </div>

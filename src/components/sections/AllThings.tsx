@@ -40,11 +40,11 @@ export default async function AllThings() {
 
       <Reveal
         stagger
-        className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2 lg:auto-rows-[220px] lg:grid-cols-4"
+        className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 lg:auto-rows-[300px] lg:grid-cols-4"
       >
         {/* Testimony — 2 wide */}
         <RevealItem className="lg:col-span-2">
-          <BentoCard className="h-full min-h-[220px] bg-[#e9e3d7] p-6">
+          <BentoCard className="h-full min-h-[300px] bg-[#e9e3d7] p-6">
             <div className="flex h-full items-center justify-between gap-4">
               <div>
                 <h3 className="font-display text-2xl">{c.testimony.title}</h3>
@@ -66,7 +66,7 @@ export default async function AllThings() {
         {/* YouTube — 2 wide */}
         <RevealItem className="lg:col-span-2">
           <BentoCard
-            className="h-full min-h-[220px]"
+            className="h-full min-h-[300px]"
             image={{ tone: "dark", label: "YouTube — Camera Rig" }}
           >
             <div className="flex h-full items-end p-6">
@@ -78,7 +78,7 @@ export default async function AllThings() {
         {/* TikTok — tall */}
         <RevealItem className="lg:row-span-2">
           <BentoCard
-            className="h-full min-h-[220px]"
+            className="h-full min-h-[300px]"
             image={{ tone: "cool", label: "TikTok — Phone" }}
           >
             <div className="flex h-full flex-col justify-end p-5">
@@ -93,7 +93,7 @@ export default async function AllThings() {
         {/* Shop */}
         <RevealItem>
           <BentoCard
-            className="h-full min-h-[220px]"
+            className="h-full min-h-[300px]"
             image={{ tone: "warm", label: "Shop — Merch" }}
           >
             <div className="flex h-full items-end p-5">
@@ -104,7 +104,7 @@ export default async function AllThings() {
 
         {/* Give Now */}
         <RevealItem>
-          <BentoCard className="h-full min-h-[220px] bg-[#e9e3d7] p-5">
+          <BentoCard className="h-full min-h-[300px] bg-[#e9e3d7] p-5">
             <div className="flex h-full flex-col justify-between">
               <h3 className="font-display text-2xl">{c.give.title}</h3>
               <div>
@@ -119,7 +119,7 @@ export default async function AllThings() {
 
         {/* Chat — tall */}
         <RevealItem className="lg:row-span-2">
-          <BentoCard className="h-full min-h-[220px] bg-[#e9e3d7] p-4">
+          <BentoCard className="h-full min-h-[300px] bg-[#e9e3d7] p-4">
             <div className="flex h-full flex-col justify-end gap-2">
               <ChatBubble side="left">{c.chat.question}</ChatBubble>
               {c.chat.replies.map((r, i) => (
@@ -135,7 +135,7 @@ export default async function AllThings() {
         {/* Podcast */}
         <RevealItem>
           <BentoCard
-            className="h-full min-h-[220px]"
+            className="h-full min-h-[300px]"
             image={{ tone: "dark", label: "Podcast — Mic" }}
           >
             <div className="flex h-full flex-col justify-end p-5">
@@ -152,7 +152,7 @@ export default async function AllThings() {
         {/* Book Caleb */}
         <RevealItem>
           <BentoCard
-            className="h-full min-h-[220px]"
+            className="h-full min-h-[300px]"
             image={{ tone: "gold", label: "Book Caleb" }}
           >
             <div className="flex h-full flex-col justify-end p-5">

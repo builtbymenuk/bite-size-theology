@@ -40,7 +40,7 @@ export default async function Footer() {
         </div>
 
         <div className="mt-16 overflow-hidden">
-          <h2 className="font-display text-[clamp(2.5rem,13vw,11rem)] font-light leading-none tracking-tight text-cream">
+          <h2 className="font-wordmark text-[clamp(2.5rem,13vw,11rem)] leading-none tracking-[0.04em] text-cream">
             {footer.wordmark}
           </h2>
         </div>

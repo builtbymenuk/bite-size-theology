@@ -26,6 +26,11 @@ function strapiRemotePattern(): RemotePattern[] {
 }
 
 const nextConfig: NextConfig = {
+  // @paypal/react-paypal-js (v10) + React 19 StrictMode double-mount each other into an empty
+  // PayPalButtons container in dev (button never paints). StrictMode is a dev-only aid (stripped
+  // from prod builds), so disabling it here makes /store/checkout testable locally with no prod
+  // impact. Re-enable if react-paypal-js ships a React 19 StrictMode fix.
+  reactStrictMode: false,
   // Pin the workspace root — a stray lockfile in the home dir otherwise misleads file tracing.
   turbopack: { root: path.resolve(process.cwd()) },
   // Enables React's <ViewTransition> so route navigations play the slide-up cover (see template.tsx
