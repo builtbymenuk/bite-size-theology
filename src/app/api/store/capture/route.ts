@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { captureOrder, paypalConfigured } from "@/lib/paypal";
 import {
+  priceCart,
   snapshotItems,
   saveOrder,
   orderExists,
@@ -49,6 +50,14 @@ export async function POST(req: Request) {
   // Idempotency: a re-submitted capture returns the existing order instead of writing a duplicate.
   const existing = await orderExists("paypal", summary.paypalOrderId ?? "");
   if (!existing) {
+    // PayPal's capture response omits amount.breakdown, so summarize() leaves subtotal/shipping at 0.
+    // Reprice from Strapi (the same server-authoritative math the order was created with) to fill them
+    // in; the captured total stays authoritative. Best-effort — a paid order must still save if this misses.
+    const priced = await priceCart(cart);
+    if (priced.ok) {
+      summary.subtotal = priced.totals.subtotalCents / 100;
+      summary.shipping = priced.totals.shippingCents / 100;
+    }
     const items = await snapshotItems(cart);
     await saveOrder(summary, items).catch((e) =>
       console.error("capture: order save failed", e),
