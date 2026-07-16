@@ -40,6 +40,7 @@ const components = {
   "footer-column": { title: s(), links: rep("shared.text-item") },
   stat: { value: s(), label: s(), icon: enm("mic", "globe", "award") },
   "podcast-action": { label: s(), platform: enm("spotify", "youtube") },
+  episode: { image: media(), url: s(), title: s() },
   "tour-date": { city: s(), venue: s(), date: s(), soldOut: b(), url: s() },
   "tour-region": {
     regionId: s(),
@@ -91,6 +92,7 @@ const singles = {
     attrs: {
       eyebrow: s(), note: s(), quote: t(), badgeRank: s(), badgeCategory: s(),
       actions: rep("shared.podcast-action"),
+      episodes: rep("shared.episode"), // video wall: image + link + title per tile (up to 15 shown)
     },
   },
   "podcast-page": {

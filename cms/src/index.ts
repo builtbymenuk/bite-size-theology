@@ -240,6 +240,25 @@ export default {
       strapi.log.error(e);
     }
 
+    // 2c. Backfill the podcast episode wall with 15 editable slots (Ep 1..15) when none exist, so
+    //     editors UPDATE existing rows instead of creating them from scratch. Idempotent: skips once
+    //     any episode is present. Empty image/url → the frontend still shows the tone placeholder, so
+    //     the look is unchanged until a real thumbnail + link is added.
+    // ponytail: "seed if empty" — deleting ALL episodes and restarting re-adds the 15 placeholders,
+    //     same as the rest of the bootstrap. Editors edit rows; they don't clear the whole list.
+    try {
+      const uid = "api::podcast.podcast";
+      const doc = await strapi.documents(uid).findFirst({ populate: ["episodes"] });
+      if (doc && (!doc.episodes || doc.episodes.length === 0)) {
+        const episodes = Array.from({ length: 15 }, (_, i) => ({ title: `Ep ${i + 1}` }));
+        await strapi.documents(uid).update({ documentId: doc.documentId, data: { episodes } });
+        strapi.log.info("seed: backfilled 15 podcast episode slots");
+      }
+    } catch (e) {
+      strapi.log.error("seed: failed backfilling podcast episodes");
+      strapi.log.error(e);
+    }
+
     // 3. Friendly field labels for the admin edit view. These live in the DB (not schema.json):
     //    strapi_core_store_settings, one JSON config row per type. We only override a label that
     //    is still the default (== the field key) so any manual "Configure the view" tweak survives.

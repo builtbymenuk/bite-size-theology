@@ -116,6 +116,14 @@ export interface PodcastAction {
   platform: Platform;
 }
 
+// One episode tile in the podcast wall. All optional: an empty slot falls back to the `gallery`
+// tone placeholder. `title` is alt/aria text only (not shown); `url` makes the tile a link.
+export interface Episode {
+  image?: string; // absolute CMS media URL
+  url?: string; // video link — tile becomes clickable when set
+  title?: string;
+}
+
 export interface Podcast {
   eyebrow: string;
   note: string;
@@ -123,7 +131,8 @@ export interface Podcast {
   badge: { rank: string; category: string };
   titleLines: string[];
   actions: PodcastAction[];
-  gallery: Tone[];
+  gallery: Tone[]; // per-slot empty-state tone (design token)
+  episodes: Episode[]; // real thumbnails+links; index i overlays gallery slot i (up to 15)
 }
 
 export interface Stat {
@@ -352,6 +361,7 @@ export const podcast: Podcast = {
     "cool", "dark", "warm", "cool", "gold", "dark",
     "dark", "cool", "warm", "cool", "dark", "warm",
   ] as const,
+  episodes: [], // filled from Strapi; empty → every slot shows its gallery tone
 };
 
 // /podcast page. Hero buttons reuse podcast.actions (above) — not duplicated here.

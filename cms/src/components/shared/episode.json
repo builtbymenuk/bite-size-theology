@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_shared_episodes",
+  "info": {
+    "displayName": "episode"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "url": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}

@@ -29,6 +29,11 @@
       "type": "component",
       "repeatable": true,
       "component": "shared.podcast-action"
+    },
+    "episodes": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.episode"
     }
   }
 }

@@ -1,5 +1,17 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface SharedEpisode extends Struct.ComponentSchema {
+  collectionName: 'components_shared_episodes';
+  info: {
+    displayName: 'episode';
+  };
+  attributes: {
+    image: Schema.Attribute.Media<'images'>;
+    title: Schema.Attribute.String;
+    url: Schema.Attribute.String;
+  };
+}
+
 export interface SharedFaqItem extends Struct.ComponentSchema {
   collectionName: 'components_shared_faq_items';
   info: {
@@ -113,6 +125,7 @@ export interface SharedTourRegion extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export namespace Public {
     export interface ComponentSchemas {
+      'shared.episode': SharedEpisode;
       'shared.faq-item': SharedFaqItem;
       'shared.footer-column': SharedFooterColumn;
       'shared.podcast-action': SharedPodcastAction;

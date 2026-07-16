@@ -11,7 +11,11 @@ import {
 import Reveal, { RevealItem } from "@/components/ui/Reveal";
 import Placeholder from "@/components/ui/Placeholder";
 import ListenWatch from "@/components/ui/ListenWatch";
-import type { Podcast } from "@/lib/content";
+import type { Podcast, Episode, Tone } from "@/lib/content";
+
+// A slot in the episode wall: always a tone (empty-state color), optionally a real episode
+// (image + link + title) overlaid from Strapi.
+type WallTile = { tone: Tone } & Episode;
 
 // Carousel dissolves toward the bottom; the left cream scrim (below) handles left readability.
 const WALL_FADE = "linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%)";
@@ -23,36 +27,63 @@ const WALL_FADE_STYLE = {
 const TILE =
   "aspect-[16/10] w-[clamp(240px,19vw,340px)] shrink-0 overflow-hidden rounded-xl";
 
+// One wall tile. With an episode URL it's a link (opens the video in a new tab); otherwise a plain
+// block. `className` sizes it (carousel vs mobile grid). `decorative` hides duplicated carousel
+// copies from AT/keyboard so each episode is announced/tabbed once. Empty slots show the tone + "Ep N".
 function Tile({
-  tone,
+  tile,
   n,
+  className,
+  decorative,
 }: {
-  tone: React.ComponentProps<typeof Placeholder>["tone"];
+  tile: WallTile;
   n: number;
+  className: string;
+  decorative?: boolean;
 }) {
+  const label = tile.title ?? `Episode ${n}`;
+  const inner = (
+    <Placeholder
+      tone={tile.tone}
+      src={tile.image}
+      alt={decorative ? "" : label}
+      label={`Ep ${n}`}
+    />
+  );
+  if (!tile.url) return <div className={className}>{inner}</div>;
   return (
-    <div className={TILE}>
-      <Placeholder tone={tone} label={`Ep ${n}`} />
-    </div>
+    <a
+      href={tile.url}
+      target="_blank"
+      rel="noreferrer"
+      title={label}
+      aria-hidden={decorative || undefined}
+      tabIndex={decorative ? -1 : undefined}
+      className={`${className} block transition hover:opacity-90`}
+    >
+      {inner}
+    </a>
   );
 }
 
 // Scroll-driven row: drifts with page scroll via the `x` MotionValue (no auto-play). Tiles are
-// duplicated so the row is wide enough to stay filled across the drift range.
+// duplicated so the row stays filled across the drift range; the duplicate half is decorative.
 function ScrollRow({
-  tones,
+  tiles,
   base,
   x,
 }: {
-  tones: readonly React.ComponentProps<typeof Placeholder>["tone"][];
+  tiles: WallTile[];
   base: number;
   x: MotionValue<string>;
 }) {
-  const seq = [...tones, ...tones];
   return (
     <motion.div style={{ x }} className="flex w-max gap-3 pr-3">
-      {seq.map((tone, i) => (
-        <Tile key={i} tone={tone} n={base + (i % tones.length)} />
+      {tiles.map((tile, i) => (
+        <Tile key={`a${i}`} tile={tile} n={base + i} className={TILE} />
+      ))}
+      {tiles.map((tile, i) => (
+        <Tile key={`b${i}`} tile={tile} n={base + i} className={TILE} decorative />
       ))}
     </motion.div>
   );
@@ -87,7 +118,9 @@ function Laurel() {
 // Badge + title + platform buttons. Rendered over the carousel (lg) and in the mobile block.
 function Identity({ podcast }: { podcast: Podcast }) {
   return (
-    <div className="max-w-sm">
+    // pointer-events-auto: re-enable clicks for the title/buttons block (its overlay parent is
+    // pointer-events-none). The empty space beside it stays click-through so tiles there work.
+    <div className="pointer-events-auto max-w-sm">
       <div className="flex items-center gap-2.5">
         <Laurel />
         <div className="leading-tight">
@@ -115,10 +148,14 @@ function Identity({ podcast }: { podcast: Podcast }) {
 }
 
 export default function Podcast({ podcast }: { podcast: Podcast }) {
-  // 15 tiles → 3 rows of 5.
-  const row1 = podcast.gallery.slice(0, 5);
-  const row2 = podcast.gallery.slice(5, 10);
-  const row3 = podcast.gallery.slice(10, 15);
+  // 15 tiles → 3 rows of 5. Each gallery tone is a slot; episode[i] (image+link+title) overlays it.
+  const tiles: WallTile[] = podcast.gallery.map((tone, i) => ({
+    tone,
+    ...(podcast.episodes[i] ?? {}),
+  }));
+  const row1 = tiles.slice(0, 5);
+  const row2 = tiles.slice(5, 10);
+  const row3 = tiles.slice(10, 15);
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -155,11 +192,12 @@ export default function Podcast({ podcast }: { podcast: Podcast }) {
 
       {/* Carousel band (lg) — normal-flow block below the quote; identity overlaid top-left */}
       <div className="relative mt-20 hidden lg:block">
-        <div style={WALL_FADE_STYLE} className="pointer-events-none">
+        {/* No pointer-events-none here — tiles are links now and must be clickable. */}
+        <div style={WALL_FADE_STYLE}>
           <div className="flex flex-col gap-3">
-            <ScrollRow tones={row1} base={1} x={x1} />
-            <ScrollRow tones={row2} base={6} x={x2} />
-            <ScrollRow tones={row3} base={11} x={x3} />
+            <ScrollRow tiles={row1} base={1} x={x1} />
+            <ScrollRow tiles={row2} base={6} x={x2} />
+            <ScrollRow tiles={row3} base={11} x={x3} />
           </div>
         </div>
 
@@ -175,8 +213,10 @@ export default function Podcast({ podcast }: { podcast: Podcast }) {
         {/* Soft fade on the right edge */}
         <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[12%] bg-gradient-to-l from-cream to-transparent" />
 
-        {/* Identity overlay — top-left, over the carousel; nudged in from the left margin. */}
-        <div className="absolute inset-x-0 top-0 z-10">
+        {/* Identity overlay — top-left, over the carousel; nudged in from the left margin. The
+            container is click-through (pointer-events-none) so it doesn't block the tiles behind/beside
+            it; only the Identity block itself (title + buttons) re-enables pointer events. */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10">
           <Reveal className="pl-20 pr-8">
             <Identity podcast={podcast} />
           </Reveal>
@@ -189,10 +229,13 @@ export default function Podcast({ podcast }: { podcast: Podcast }) {
           <Identity podcast={podcast} />
         </Reveal>
         <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {podcast.gallery.map((tone, i) => (
-            <div key={i} className="aspect-[16/10] overflow-hidden rounded-lg">
-              <Placeholder tone={tone} label={`Ep ${i + 1}`} />
-            </div>
+          {tiles.map((tile, i) => (
+            <Tile
+              key={i}
+              tile={tile}
+              n={i + 1}
+              className="aspect-[16/10] overflow-hidden rounded-lg"
+            />
           ))}
         </div>
       </div>

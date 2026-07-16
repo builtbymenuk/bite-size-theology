@@ -148,7 +148,9 @@ export async function getCollection(): Promise<Collection> {
 }
 
 export async function getPodcast(): Promise<Podcast> {
-  const d = await single("podcast");
+  // Strapi v5 populate=* is one level deep — it misses media nested in a repeatable component, so the
+  // episode wall's images never populate. Deep-populate episodes (incl. their image) + actions explicitly.
+  const d = await single("podcast", "populate[episodes][populate]=*&populate[actions]=*");
   if (!d) return fb.podcast;
   return {
     ...fb.podcast, // keeps titleLines + gallery (design tokens)
@@ -163,6 +165,15 @@ export async function getPodcast(): Promise<Podcast> {
       d.actions,
       (a) => ({ label: a.label, platform: a.platform }),
       fb.podcast.actions,
+    ),
+    episodes: arr(
+      d.episodes,
+      (e) => ({
+        image: absolutize(e.image?.url),
+        url: e.url || undefined,
+        title: e.title || undefined,
+      }),
+      fb.podcast.episodes,
     ),
   };
 }
