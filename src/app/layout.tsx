@@ -9,7 +9,7 @@ import CartDrawer from "@/components/store/CartDrawer";
 import CustomCursor from "@/components/layout/CustomCursor";
 import { getNav } from "@/lib/cms";
 
-// ponytail: Fraunces roman+italic covers both display serif and the gold script accent — one family, not two.
+// Fraunces roman+italic covers both display serif and the gold script accent — one family, not two.
 const display = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
@@ -23,7 +23,7 @@ const body = Inter({
   display: "swap",
 });
 
-// ponytail: Cinzel just for the big "Bite Size Theology" wordmark (hero + footer) — a distinct
+// Cinzel just for the big "Bite Size Theology" wordmark (hero + footer) — a distinct
 // logotype. Roman inscriptional caps, no italic; the gold script accents stay on Fraunces.
 const wordmark = Cinzel({
   subsets: ["latin"],
@@ -43,7 +43,9 @@ export default async function RootLayout({
   const nav = await getNav();
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${wordmark.variable}`}>
-      <body className="bg-cream text-ink antialiased">
+      {/* suppressHydrationWarning: browser extensions (ColorZilla, Grammarly, etc.) inject
+          attributes on <body> before React hydrates, tripping a false dev hydration error. */}
+      <body className="bg-cream text-ink antialiased" suppressHydrationWarning>
         <SmoothScroll>
           {/* Persistent, never transformed: background crossfades + nav stays fixed across route
               transitions. PageTransition owns the AnimatePresence enter/exit for the routed page. */}

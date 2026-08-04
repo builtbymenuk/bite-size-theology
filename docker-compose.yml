@@ -1,0 +1,77 @@
+# Full stack: Postgres + Strapi CMS + Next.js website.
+#   cp .env.docker.example .env   # then fill it in
+#   docker compose up -d --build
+# Website -> :3000   Admin -> :1337/admin
+#
+# The web container fetches Strapi over the internal network (STRAPI_URL=http://cms:1337); the
+# browser loads CMS images from STRAPI_PUBLIC_URL (a host the client can actually reach). No hairpin.
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME} -d ${DATABASE_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  cms:
+    build: ./cms
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: 0.0.0.0
+      PORT: 1337
+      NODE_ENV: production
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_SSL: "false"
+      APP_KEYS: ${APP_KEYS}
+      API_TOKEN_SALT: ${API_TOKEN_SALT}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+    volumes:
+      - uploads:/app/public/uploads
+    ports:
+      - "1337:1337"          # admin panel + media, reachable by the browser
+
+  web:
+    build:
+      context: .
+      args:
+        STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL}
+        NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${NEXT_PUBLIC_PAYPAL_CLIENT_ID}
+    restart: unless-stopped
+    depends_on:
+      - cms
+    environment:
+      NODE_ENV: production
+      STRAPI_URL: http://cms:1337            # internal, server-side fetch
+      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL} # public, browser image URLs
+      STRAPI_API_TOKEN: ${STRAPI_API_TOKEN}
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+      NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${NEXT_PUBLIC_PAYPAL_CLIENT_ID}
+      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET}
+      PAYPAL_ENV: ${PAYPAL_ENV}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+    ports:
+      - "3000:3000"
+
+volumes:
+  db-data:
+  uploads:

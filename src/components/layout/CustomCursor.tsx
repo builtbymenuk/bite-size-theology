@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 // Negative cursor: a circle that replaces the native pointer on desktop and shows the
 // page beneath it as a photo negative (backdrop-filter: invert). Fine-pointer only.
-// ponytail: one fixed element, no hover detection, no new dependency. Tunables below.
+// one fixed element, no hover detection, no new dependency. Tunables below.
 const SIZE = 26; // px, circle diameter
 const SPRING = { stiffness: 500, damping: 40, mass: 0.4 }; // trailing-follow feel
 

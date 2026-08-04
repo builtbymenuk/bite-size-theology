@@ -33,6 +33,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+!.env.docker.example
 
 # strapi cms (separate app in /cms with its own deps + build output)
 /cms/node_modules
@@ -46,6 +47,7 @@ yarn-error.log*
 # ide / local tooling
 /.idea
 /.playwright-mcp
+/_dev-internal
 
 # vercel
 .vercel
@@ -53,3 +55,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
+
+# hosting credentials — never commit
+docs/HOSTINGER-ACCESS.pdf

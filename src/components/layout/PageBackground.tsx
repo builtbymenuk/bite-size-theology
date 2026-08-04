@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 const EASE = [0.76, 0, 0.24, 1] as const;
 
-// ponytail: placeholder "image" — a stage/bokeh texture from layered radial gradients, so the blur
+// placeholder "image" — a stage/bokeh texture from layered radial gradients, so the blur
 // on inner pages actually reads. Swap `TEXTURE` for a real photo (next/image) later; the layer and
 // the two treatments stay identical.
 const TEXTURE =

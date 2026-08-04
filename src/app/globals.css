@@ -46,7 +46,7 @@ details[open]::details-content {
 }
 
 /* Film-grain overlay — cinematic texture over image blocks. Parent must be `relative`.
-   ponytail: one inline SVG noise, no asset, no JS. */
+   one inline SVG noise, no asset, no JS. */
 .grain::after {
   content: "";
   position: absolute;
@@ -66,7 +66,7 @@ details[open]::details-content {
   }
 }
 
-/* ponytail: one global reduced-motion guard; components also branch on useReducedMotion() */
+/* one global reduced-motion guard; components also branch on useReducedMotion() */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

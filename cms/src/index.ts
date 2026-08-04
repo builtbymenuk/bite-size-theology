@@ -176,7 +176,7 @@ export default {
 
     // 2. Seed each single type from the current content.ts values, once. Skips any type that
     //    already has an entry, so editor changes are never overwritten on restart.
-    // ponytail: one-shot seed guarded by findFirst — leave it, it no-ops after the first run.
+    // one-shot seed guarded by findFirst — leave it, it no-ops after the first run.
     try {
       for (const name of NAMES) {
         const uid = `api::${name}.${name}`;
@@ -244,7 +244,7 @@ export default {
     //     editors UPDATE existing rows instead of creating them from scratch. Idempotent: skips once
     //     any episode is present. Empty image/url → the frontend still shows the tone placeholder, so
     //     the look is unchanged until a real thumbnail + link is added.
-    // ponytail: "seed if empty" — deleting ALL episodes and restarting re-adds the 15 placeholders,
+    // "seed if empty" — deleting ALL episodes and restarting re-adds the 15 placeholders,
     //     same as the rest of the bootstrap. Editors edit rows; they don't clear the whole list.
     try {
       const uid = "api::podcast.podcast";

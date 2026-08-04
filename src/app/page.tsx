@@ -14,7 +14,7 @@ export default async function Home() {
     <>
       {/* Stacking scroll: the hero pins (sticky) and everything below rises up and
           covers it — the rounded top + upward shadow sell the "slides over" seam.
-          ponytail: pure CSS position:sticky — no scroll library needed. */}
+          pure CSS position:sticky — no scroll library needed. */}
       <div className="sticky top-0 z-0 h-[100svh]">
         <Hero hero={hero} />
       </div>

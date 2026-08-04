@@ -10,7 +10,7 @@ const field =
 export default function ContactForm({ form }: { form: Contact["form"] }) {
   const [sent, setSent] = useState(false);
 
-  // ponytail: native `required` + type="email" do the validation, so submit just flips to the
+  // native `required` + type="email" do the validation, so submit just flips to the
   // thank-you state. Wire this to an API route / server action when real delivery is needed.
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

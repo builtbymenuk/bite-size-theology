@@ -8,7 +8,9 @@ import path from "node:path";
 // deployed host. NOTE: if Strapi serves media via an external provider (S3/Cloudinary), add
 // that host to remotePatterns too — its absolute URLs bypass STRAPI_URL.
 function strapiRemotePattern(): RemotePattern[] {
-  const url = process.env.STRAPI_URL;
+  // Allow the host the browser actually loads media from (STRAPI_PUBLIC_URL in split-host/Docker
+  // setups), falling back to STRAPI_URL for the single-host case.
+  const url = process.env.STRAPI_PUBLIC_URL || process.env.STRAPI_URL;
   if (!url) return [];
   try {
     const u = new URL(url);
@@ -26,11 +28,18 @@ function strapiRemotePattern(): RemotePattern[] {
 }
 
 const nextConfig: NextConfig = {
+  // Emit a self-contained server bundle (.next/standalone) so the Docker runtime image is small and
+  // needs no node_modules copy. See Dockerfile.
+  output: "standalone",
   // @paypal/react-paypal-js (v10) + React 19 StrictMode double-mount each other into an empty
   // PayPalButtons container in dev (button never paints). StrictMode is a dev-only aid (stripped
   // from prod builds), so disabling it here makes /store/checkout testable locally with no prod
   // impact. Re-enable if react-paypal-js ships a React 19 StrictMode fix.
   reactStrictMode: false,
+  // Trust Cloudflare quick-tunnel domains so `cloudflared tunnel --url` demos to clients work.
+  // Without this the dev server rejects cross-origin requests from the tunnel host ("Unauthorized").
+  // wildcard covers the random subdomain each run; drop this once on a real deployed host.
+  allowedDevOrigins: ["*.trycloudflare.com"],
   // Pin the workspace root — a stray lockfile in the home dir otherwise misleads file tracing.
   turbopack: { root: path.resolve(process.cwd()) },
   // Enables React's <ViewTransition> so route navigations play the slide-up cover (see template.tsx

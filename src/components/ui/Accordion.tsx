@@ -1,4 +1,4 @@
-// ponytail: native <details>/<summary> — free accessibility + state, no JS. CSS animates the open.
+// native <details>/<summary> — free accessibility + state, no JS. CSS animates the open.
 export default function Accordion({
   items,
 }: {

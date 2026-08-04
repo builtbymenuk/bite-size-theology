@@ -1,0 +1,424 @@
+<title>Deploy Runbook — Bite Size Theology on Lightsail</title>
+<style>
+  :root {
+    --paper:   #f5f4f0;
+    --surface: #fffffe;
+    --ink:     #1a2026;
+    --muted:   #59636d;
+    --faint:   #7c8792;
+    --line:    #e4e2db;
+    --line-2:  #d3d0c7;
+    --accent:  #0b6a62;
+    --accent-ink: #0b6a62;
+    --accent-soft: #dcebe8;
+    --amber:   #a8600c;
+    --amber-soft: #f3e6d2;
+    --term-bg: #12171d;
+    --term-fg: #dfe4e8;
+    --term-dim:#8b96a1;
+    --term-accent:#5fc7ba;
+    --term-amber:#e2a24a;
+    --shadow: 0 1px 2px rgba(20,28,36,.04), 0 8px 24px rgba(20,28,36,.06);
+
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+    --maxw: 50rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:   #0e1216;
+      --surface: #151b21;
+      --ink:     #e7ebee;
+      --muted:   #9aa5af;
+      --faint:   #6f7a84;
+      --line:    #232b32;
+      --line-2:  #2e373f;
+      --accent:  #45b3a6;
+      --accent-ink: #6fd0c4;
+      --accent-soft: #14211f;
+      --amber:   #e0a04a;
+      --amber-soft: #241a10;
+      --term-bg: #0a0e12;
+      --term-fg: #dfe4e8;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper:#f5f4f0; --surface:#fffffe; --ink:#1a2026; --muted:#59636d; --faint:#7c8792;
+    --line:#e4e2db; --line-2:#d3d0c7; --accent:#0b6a62; --accent-ink:#0b6a62; --accent-soft:#dcebe8;
+    --amber:#a8600c; --amber-soft:#f3e6d2; --term-bg:#12171d; --term-fg:#dfe4e8;
+    --shadow:0 1px 2px rgba(20,28,36,.04),0 8px 24px rgba(20,28,36,.06);
+  }
+  :root[data-theme="dark"] {
+    --paper:#0e1216; --surface:#151b21; --ink:#e7ebee; --muted:#9aa5af; --faint:#6f7a84;
+    --line:#232b32; --line-2:#2e373f; --accent:#45b3a6; --accent-ink:#6fd0c4; --accent-soft:#14211f;
+    --amber:#e0a04a; --amber-soft:#241a10; --term-bg:#0a0e12; --term-fg:#dfe4e8;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* ---- rhythm ---- */
+  section { padding: 40px 0; border-top: 1px solid var(--line); }
+  section:first-of-type { border-top: 0; }
+  h2 { font-size: 1.5rem; letter-spacing: -.02em; line-height: 1.2; margin: 0 0 6px; text-wrap: balance; }
+  h3 { font-size: 1.06rem; letter-spacing: -.01em; margin: 0; }
+  p  { margin: 0 0 14px; max-width: 65ch; }
+  a  { color: var(--accent-ink); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: .72rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before {
+    content: ""; width: 26px; height: 1px; background: var(--accent);
+  }
+  .lede { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+
+  /* ---- header ---- */
+  header.hero { padding: 56px 0 12px; border: 0; }
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 3.1rem);
+    line-height: 1.02;
+    letter-spacing: -.035em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  .hero h1 .thin { color: var(--muted); font-weight: 500; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px;
+    font-family: var(--font-mono); font-size: .78rem;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 11px; border: 1px solid var(--line-2); border-radius: 999px;
+    color: var(--muted); background: var(--surface);
+  }
+  .chip b { color: var(--ink); font-weight: 600; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
+  /* ---- topology figure ---- */
+  figure.topo {
+    margin: 26px 0 6px; padding: 22px; border: 1px solid var(--line);
+    border-radius: 14px; background: var(--surface); box-shadow: var(--shadow);
+  }
+  .flow {
+    display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: .82rem;
+  }
+  .node {
+    flex: 1 1 120px; min-width: 120px;
+    border: 1px solid var(--line-2); border-radius: 10px;
+    padding: 12px 13px; background: var(--paper);
+  }
+  .node .k { color: var(--faint); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
+  .node .v { color: var(--ink); font-weight: 600; margin-top: 3px; }
+  .node .port { color: var(--accent-ink); }
+  .arrow { align-self: center; color: var(--faint); font-size: 1.1rem; padding: 0 2px; }
+  figcaption { margin-top: 14px; font-size: .85rem; color: var(--muted); font-family: var(--font-mono); }
+  .fw {
+    margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line-2);
+    font-family: var(--font-mono); font-size: .78rem; color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .fw b { color: var(--amber); font-weight: 700; }
+
+  /* ---- pieces ---- */
+  .pieces { display: grid; gap: 12px; margin-top: 6px; }
+  .piece {
+    display: grid; grid-template-columns: auto 1fr; gap: 4px 16px;
+    padding: 14px 16px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface);
+  }
+  .piece .name { grid-column: 1; font-weight: 650; }
+  .piece .tag { grid-column: 1; font-family: var(--font-mono); font-size: .72rem; color: var(--accent-ink); }
+  .piece .desc { grid-column: 2; grid-row: 1 / span 2; color: var(--muted); align-self: center; }
+
+  /* ---- steps ---- */
+  .steps { counter-reset: step; margin-top: 8px; }
+  .step {
+    position: relative; padding: 22px 0 22px 66px; border-top: 1px solid var(--line);
+  }
+  .step:first-child { border-top: 0; }
+  .step::before {
+    counter-increment: step; content: counter(step, decimal-leading-zero);
+    position: absolute; left: 0; top: 22px;
+    font-family: var(--font-mono); font-size: 1.05rem; font-weight: 600;
+    color: var(--accent-ink);
+    width: 48px; text-align: right;
+  }
+  .step::after {
+    content: ""; position: absolute; left: 56px; top: 30px; bottom: 12px; width: 1px;
+    background: linear-gradient(var(--line-2), transparent);
+  }
+  .step:last-child::after { display: none; }
+  .step h3 { margin-bottom: 8px; }
+  .step p { color: var(--muted); }
+  .step p.why { color: var(--ink); }
+  .why b { color: var(--ink); }
+
+  /* ---- terminal blocks ---- */
+  .term {
+    margin: 14px 0 4px; border-radius: 11px; overflow: hidden;
+    border: 1px solid var(--line-2); background: var(--term-bg); box-shadow: var(--shadow);
+  }
+  .term .bar {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 13px; background: rgba(255,255,255,.03);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    font-family: var(--font-mono); font-size: .72rem; color: var(--term-dim);
+  }
+  .term .bar .tl { display: flex; gap: 6px; margin-right: 6px; }
+  .term .bar .tl i { width: 10px; height: 10px; border-radius: 50%; background: #3a444d; display: block; }
+  .term pre {
+    margin: 0; padding: 14px 16px; overflow-x: auto;
+    font-family: var(--font-mono); font-size: .82rem; line-height: 1.7; color: var(--term-fg);
+  }
+  .term pre .c { color: var(--term-dim); }           /* comment */
+  .term pre .p { color: var(--term-accent); }        /* prompt / command name */
+  .term pre .f { color: var(--term-amber); }         /* flag / emphasis */
+  .term pre b  { color: #fff; font-weight: 600; }
+
+  /* ---- gotchas ---- */
+  .gotchas { display: grid; gap: 14px; margin-top: 6px; }
+  .gotcha {
+    border: 1px solid var(--line); border-left: 3px solid var(--amber);
+    border-radius: 10px; background: var(--surface); padding: 16px 18px; box-shadow: var(--shadow);
+  }
+  .gotcha .sym {
+    font-family: var(--font-mono); font-size: .72rem; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--amber);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 7px;
+  }
+  .gotcha h3 { font-size: 1.02rem; margin-bottom: 6px; }
+  .gotcha p { color: var(--muted); margin-bottom: 0; }
+  .gotcha .fix { margin-top: 10px; font-size: .92rem; color: var(--ink); }
+  .gotcha .fix b { color: var(--accent-ink); font-family: var(--font-mono); font-size: .84em; }
+
+  /* ---- takeaway ---- */
+  .takeaway {
+    margin-top: 6px; padding: 22px 24px; border-radius: 14px;
+    background: var(--accent-soft); border: 1px solid var(--line);
+  }
+  .takeaway p:last-child { margin-bottom: 0; }
+  .kbd {
+    font-family: var(--font-mono); font-size: .82em; background: var(--paper);
+    border: 1px solid var(--line-2); border-radius: 5px; padding: 1px 6px;
+  }
+
+  footer { padding: 30px 0 60px; border-top: 1px solid var(--line); color: var(--faint); font-size: .82rem; font-family: var(--font-mono); }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .step, .gotcha, figure.topo, .piece { animation: rise .5s ease both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  }
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .step { padding-left: 48px; }
+    .step::before { width: 34px; }
+    .step::after { left: 40px; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Deployment Runbook</p>
+    <h1>Two apps, one server.<br><span class="thin">Everything else was detail.</span></h1>
+    <p class="lede">How the Bite Size Theology website and its CMS admin got onto a single AWS Lightsail box — the six real steps, and the five things that fought back.</p>
+    <div class="meta">
+      <span class="chip"><span class="dot"></span> <b>Lightsail</b> · 2 GB · Debian 12</span>
+      <span class="chip">Next.js <b>:3000</b></span>
+      <span class="chip">Strapi <b>:1337</b></span>
+      <span class="chip">SQLite <b>data.db</b></span>
+    </div>
+  </header>
+
+  <section>
+    <h2>The mental model</h2>
+    <p>A Lightsail instance is just a rented Linux computer. Deploying is four moves: <b>get the code on it</b>, <b>install &amp; build both apps</b>, <b>keep them running</b> with a process manager, and <b>open the firewall</b> so the world can reach them. Hold that shape in your head and the rest is filling in blanks.</p>
+
+    <figure class="topo">
+      <div class="flow">
+        <div class="node"><div class="k">Visitor</div><div class="v">Browser</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="k">Website</div><div class="v">Next.js <span class="port">:3000</span></div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="k">Content API</div><div class="v">Strapi <span class="port">:1337</span></div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="k">Database</div><div class="v">data.db</div></div>
+      </div>
+      <div class="fw"><b>one gate ▸</b> the Lightsail firewall must allow :3000 and :1337, or the apps run but no one outside can reach them.</div>
+      <figcaption>// both processes live on the same box; the website asks Strapi for content on each page.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>The pieces</h2>
+    <p>Three things, and what each one is for.</p>
+    <div class="pieces">
+      <div class="piece">
+        <div class="name">Strapi</div><div class="tag">port 1337</div>
+        <div class="desc">Your CMS. Serves the <code>/admin</code> panel you edit in, and an <code>/api</code> the website reads from.</div>
+      </div>
+      <div class="piece">
+        <div class="name">Next.js</div><div class="tag">port 3000</div>
+        <div class="desc">The public website. Fetches copy and images from Strapi and renders the pages.</div>
+      </div>
+      <div class="piece">
+        <div class="name">SQLite</div><div class="tag">data.db · a single file</div>
+        <div class="desc">Strapi's database. Your content and uploaded images live inside it — so copying that one file <em>is</em> copying your data.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The deploy, step by step</h2>
+    <p>Six steps, in order. This is the whole job when nothing goes wrong.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <h3>Log in over SSH</h3>
+        <p class="why">The key file you downloaded <b>is</b> your password. <code>chmod 600</code> because SSH refuses a key other users could read.</p>
+        <div class="term">
+          <div class="bar"><span class="tl"><i></i><i></i><i></i></span> local terminal</div>
+<pre><span class="c"># lock the key down, then connect</span>
+<span class="p">chmod</span> 600 sshbstt.pem
+<span class="p">ssh</span> <span class="f">-i</span> sshbstt.pem <b>admin</b>@65.0.204.220</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <h3>Ship the code</h3>
+        <p class="why">Rather than wrestle private-repo logins on the server, zip the folder — skipping the huge, rebuildable stuff — and copy it up. <b>Keep</b> <code>data.db</code> and <code>uploads/</code> so your content travels with it.</p>
+        <div class="term">
+          <div class="bar"><span class="tl"><i></i><i></i><i></i></span> local terminal</div>
+<pre><span class="p">tar</span> czf app.tgz <span class="f">--exclude</span>=node_modules <span class="f">--exclude</span>=.next <span class="f">--exclude</span>=.git .
+<span class="p">scp</span> <span class="f">-i</span> sshbstt.pem app.tgz admin@65.0.204.220:/home/admin/
+<span class="c"># on the box:</span> tar xzf app.tgz</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <h3>Point the site at the server</h3>
+        <p class="why">One environment variable tells the website where Strapi lives. It was <code>localhost</code> for your laptop — change it to the server's public address so image URLs work in a real visitor's browser.</p>
+        <div class="term">
+          <div class="bar"><span class="tl"><i></i><i></i><i></i></span> .env.local</div>
+<pre>STRAPI_URL=http://65.0.204.220:1337</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <h3>Install &amp; build both apps</h3>
+        <p class="why">Install dependencies, then compile each app for production. The admin panel and the website build separately.</p>
+        <div class="term">
+          <div class="bar"><span class="tl"><i></i><i></i><i></i></span> on the box</div>
+<pre><span class="c"># CMS</span>
+<span class="p">cd</span> cms &amp;&amp; npm ci &amp;&amp; npm run build
+<span class="c"># website — note the flag, see gotcha 2</span>
+<span class="p">cd</span> .. &amp;&amp; npm ci <span class="f">--include=dev</span> &amp;&amp; npm run build</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <h3>Keep them running with pm2</h3>
+        <p class="why">A page will close, a crash will happen, the box will reboot. <b>pm2</b> is a babysitter that restarts each app and brings them back after a reboot.</p>
+        <div class="term">
+          <div class="bar"><span class="tl"><i></i><i></i><i></i></span> on the box</div>
+<pre><span class="p">pm2</span> start npm <span class="f">--name</span> strapi <span class="f">--cwd</span> ./cms <span class="f">--</span> run start
+<span class="p">pm2</span> start npm <span class="f">--name</span> web <span class="f">--</span> run start
+<span class="p">pm2</span> save &amp;&amp; pm2 startup</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <h3>Open the firewall</h3>
+        <p class="why">The one step SSH <b>can't</b> do — it's an AWS-account setting. In the Lightsail console → <b>Networking</b>, add two rules. Until this, the apps are running but sealed off.</p>
+        <div class="term">
+          <div class="bar"><span class="tl"><i></i><i></i><i></i></span> Lightsail · Networking · IPv4 Firewall</div>
+<pre>Custom · TCP · <b>3000</b> · source <span class="f">Anywhere IPv4</span>
+Custom · TCP · <b>1337</b> · source <span class="f">Anywhere IPv4</span></pre>
+        </div>
+        <p style="margin-top:12px">And you're live:<br>
+          Website → <a href="http://65.0.204.220:3000">65.0.204.220:3000</a><br>
+          Admin → <a href="http://65.0.204.220:1337/admin">65.0.204.220:1337/admin</a></p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>The five things that fought back</h2>
+    <p>Every first deploy is slow for the same reason: the six steps are easy, the environment's quirks are not. Here's what cost the time — and the one-line lesson from each.</p>
+
+    <div class="gotchas">
+
+      <div class="gotcha">
+        <div class="sym">◆ symptom · the box froze while building</div>
+        <h3>The $5 server was too small</h3>
+        <p>512 MB of RAM can't even <em>build</em> these apps — it ran out of memory and locked up hard enough to need a reboot. Even just starting Strapi exhausted it.</p>
+        <p class="fix">Lesson → builds are memory-hungry; give it <b>2 GB</b>. Lightsail can't resize, so we rebuilt on a bigger box.</p>
+      </div>
+
+      <div class="gotcha">
+        <div class="sym">◆ symptom · Cannot find module '@tailwindcss/postcss'</div>
+        <h3>The install skipped the build tools</h3>
+        <p>Installing with production mode drops "dev" dependencies — but the website needs those very tools (Tailwind and friends) to build. So the build failed looking for something that was never installed.</p>
+        <p class="fix">Lesson → build with <b>npm ci --include=dev</b>, run in production.</p>
+      </div>
+
+      <div class="gotcha">
+        <div class="sym">◆ symptom · Strapi build crashed on a website config</div>
+        <h3>Strapi grabbed the wrong config file</h3>
+        <p>Building the admin panel, Strapi wandered up a folder and loaded the <em>website's</em> styling config by mistake.</p>
+        <p class="fix">Lesson → an empty <b>cms/postcss.config.cjs</b> tells it to stop searching upward. (Now committed to the repo.)</p>
+      </div>
+
+      <div class="gotcha">
+        <div class="sym">◆ symptom · the site quietly showed default content</div>
+        <h3>The server couldn't call its own address</h3>
+        <p>An AWS networking quirk ("hairpin") meant the box couldn't reach its <em>own</em> public IP — so the website's calls to Strapi failed silently and every page fell back to placeholder content.</p>
+        <p class="fix">Lesson → send the box's own traffic back to itself. A one-line network redirect (<b>iptables</b> → 127.0.0.1) fixed it.</p>
+      </div>
+
+      <div class="gotcha">
+        <div class="sym">◆ symptom · CMS edits didn't show up</div>
+        <h3>The site was caching pages for 5 minutes</h3>
+        <p>Next held each page for five minutes and served the stale one first — so an edit only appeared on the <em>second</em> reload, which reads as "nothing happened."</p>
+        <p class="fix">Lesson → for a live-editing demo, fetch fresh every load. Now an edit shows on a single refresh.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>The takeaway</h2>
+    <div class="takeaway">
+      <p>The deploy itself is genuinely six short steps. Nearly all the time went into environment-specific gotchas — which is normal, and exactly why the <em>first</em> deploy of anything is the slow one.</p>
+      <p>Do it once, write down what bit you, and the next deploy skips straight past all five. To edit content now: open the admin, hit <span class="kbd">Save</span>, reload the website tab — it's there.</p>
+    </div>
+  </section>
+
+  <footer>
+    // bite-size-theology · lightsail demo · admin: reset password anytime via strapi CLI
+  </footer>
+
+</div>

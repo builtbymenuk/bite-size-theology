@@ -14,6 +14,10 @@ import type {
 } from "./content";
 
 const BASE = process.env.STRAPI_URL;
+// Public origin the BROWSER uses for Strapi media. In split-host setups (Docker, a reverse proxy,
+// or a box that can't reach its own public IP) server-side fetch goes to BASE (e.g. http://cms:1337)
+// while <img> src must point at a browser-reachable host. Falls back to BASE when unset.
+const PUBLIC_BASE = process.env.STRAPI_PUBLIC_URL || BASE;
 const TOKEN = process.env.STRAPI_API_TOKEN;
 
 // Dev: fetch fresh every request so Strapi edits show on the next reload. Prod: 5-min ISR
@@ -23,7 +27,7 @@ const REVALIDATE = process.env.NODE_ENV === "development" ? 0 : 300;
 // Strapi media URLs are relative on local (/uploads/..); next/image needs absolute.
 // Provider URLs (S3/Cloudinary) already start with http and pass through.
 const absolutize = (u?: string): string | undefined =>
-  u ? (u.startsWith("http") ? u : `${BASE}${u}`) : undefined;
+  u ? (u.startsWith("http") ? u : `${PUBLIC_BASE}${u}`) : undefined;
 
 // Use a mapped CMS array only when it actually has rows, else keep the fallback.
 function arr<T>(x: unknown, map: (v: any) => T, fallback: T[]): T[] {

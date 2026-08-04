@@ -1,5 +1,5 @@
 // One-shot generator for the Strapi content-types + components.
-// ponytail: 13 single types × (schema + 3 identical factory files) + 9 components is ~60
+// 13 single types × (schema + 3 identical factory files) + 9 components is ~60
 // near-identical files — a compact spec + this generator beats hand-authoring each.
 // Field names MUST match the mappers in ../src/lib/cms.ts. Run once: `node scripts/gen.mjs`.
 import { mkdirSync, writeFileSync } from "node:fs";
