@@ -277,6 +277,7 @@ export const hero: Hero = {
   subtext:
     "Honest, unfiltered conversations about faith, culture, and the Bible. Welcome to Bite Size Theology.",
   cta: "Discover the Message",
+  bgImage: "/placeholders/hero-cathedral.jpg", // themed default; CMS bgImage overrides
 };
 
 export const eyebrow: string = "Bite Size Theology / Explore the Word";
@@ -295,6 +296,11 @@ export const calling: Calling = {
   rooted: {
     title: "Rooted in NC",
     body: "Building spaces where every heart is seen, heard, and deeply valued.",
+  },
+  // Themed default artwork; a CMS upload (imgBible/imgScripture) overrides each.
+  images: {
+    bible: "/placeholders/calling-bible.jpg",
+    scripture: "/placeholders/calling-scripture.jpg",
   },
 };
 
@@ -333,6 +339,16 @@ export const allThings: AllThings = {
       body: "Looking to have Caleb speak at your next event?",
     },
   },
+  // Themed default artwork; each CMS media field (imgTestimony, …) overrides its slot.
+  images: {
+    testimony: "/placeholders/at-testimony.jpg",
+    vlog: "/placeholders/at-vlog.jpg",
+    youtube: "/placeholders/at-youtube.jpg",
+    tiktok: "/placeholders/at-tiktok.jpg",
+    shop: "/placeholders/at-shop.jpg",
+    podcast: "/placeholders/at-podcast.jpg",
+    book: "/placeholders/at-book.jpg",
+  },
 };
 
 // visible:false → hidden until the pastor's book launches. Flip in Strapi (or here) to publish.
@@ -344,6 +360,7 @@ export const upcomingBook: UpcomingBook = {
   body: "Placeholder description — the pastor's upcoming book. This section stays hidden until launch; replace this copy and the cover, then flip “Show on homepage” to publish.",
   releaseLabel: "Coming Fall 2026",
   cta: "Notify Me",
+  image: "/placeholders/book-cover.jpg",
 };
 
 export const collection: Collection = {
@@ -356,16 +373,19 @@ export const collection: Collection = {
       price: "$34.00",
       tag: "New Arrival",
       tone: "light" as const,
+      image: "/placeholders/col-tote.jpg",
     },
     {
       name: "Bite Size Theology Vol. 1",
       price: "$16.00",
       tone: "cool" as const,
+      image: "/placeholders/col-book.jpg",
     },
     {
       name: "Sermon Notes Journal",
       price: "$12.00",
       tone: "yellow" as const,
+      image: "/placeholders/col-journal.jpg",
     },
   ],
   quote: {
@@ -499,9 +519,9 @@ export const about: About = {
     attribution: "The Turning Point",
   },
   images: {
-    hero: { tone: "warm" as const, label: "Caleb" },
-    turn: { tone: "gold" as const, label: "Sunrise — Arms Open" },
-    mission: { tone: "dark" as const, label: "On the Road" },
+    hero: { tone: "warm" as const, label: "Caleb", src: "/placeholders/about-hero.jpg" },
+    turn: { tone: "gold" as const, label: "Sunrise — Arms Open", src: "/placeholders/about-turn.jpg" },
+    mission: { tone: "dark" as const, label: "On the Road", src: "/placeholders/about-mission.jpg" },
   },
 };
 
@@ -549,6 +569,8 @@ export const contact: Contact = {
 export const tour: Tour = {
   heroImage: "Tour — Concert Crowd",
   secondImage: "The Podcast — Live",
+  heroImageSrc: "/placeholders/tour-crowd.jpg",
+  secondImageSrc: "/placeholders/tour-live.jpg",
   regions: [
     {
       id: "us",
@@ -589,6 +611,8 @@ export const store: Store = {
   heroSubtext:
     "Wearable conversation starters — every piece is a chance to share the hope of Jesus. 10% of proceeds support mission work.",
   heroCta: "Shop the Collection",
+  heroImage: "/placeholders/store-hero.jpg",
+  founderImage: "/placeholders/store-founder.jpg",
   proceedsBanner: "10% of proceeds support mission work",
   bestSellersHeading: "Best Sellers",
   newArrivalsHeading: "New Arrivals",

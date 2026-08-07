@@ -26,6 +26,18 @@ export default function Placeholder({
   className?: string;
 }) {
   if (src) {
+    // Local decorative SVG (our themed defaults) → background-image, dodging next/image's
+    // SVG restrictions (same trick as the photo.svg icon below). CMS/raster → next/image.
+    if (src.startsWith("/") && src.endsWith(".svg")) {
+      return (
+        <div
+          role="img"
+          aria-label={alt ?? label ?? ""}
+          className={`h-full w-full bg-cover bg-center ${className ?? ""}`}
+          style={{ backgroundImage: `url('${src}')` }}
+        />
+      );
+    }
     return (
       <div
         className={`relative h-full w-full overflow-hidden bg-gradient-to-br ${tones[tone]} ${className ?? ""}`}

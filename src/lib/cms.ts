@@ -38,7 +38,7 @@ const absolutize = (u?: string): string | undefined =>
   u ? (u.startsWith("http") ? u : `${PUBLIC_BASE}${u}`) : undefined;
 
 // Use a mapped CMS array only when it actually has rows, else keep the fallback.
-function arr<T>(x: unknown, map: (v: any) => T, fallback: T[]): T[] {
+function arr<T>(x: unknown, map: (v: any, i: number) => T, fallback: T[]): T[] {
   return Array.isArray(x) && x.length ? x.map(map) : fallback;
 }
 
@@ -96,7 +96,7 @@ export async function getHero(): Promise<Hero> {
     tagline: d.tagline || fb.hero.tagline,
     subtext: d.subtext || fb.hero.subtext,
     cta: d.cta || fb.hero.cta,
-    bgImage: absolutize(d.bgImage?.url),
+    bgImage: absolutize(d.bgImage?.url) || fb.hero.bgImage,
   };
 }
 
@@ -120,8 +120,8 @@ export async function getCalling(): Promise<Calling> {
       body: d.rootedBody || fb.calling.rooted.body,
     },
     images: {
-      bible: absolutize(d.imgBible?.url),
-      scripture: absolutize(d.imgScripture?.url),
+      bible: absolutize(d.imgBible?.url) || fb.calling.images?.bible,
+      scripture: absolutize(d.imgScripture?.url) || fb.calling.images?.scripture,
     },
   };
 }
@@ -135,13 +135,13 @@ export async function getAllThings(): Promise<AllThings> {
     headingScript: d.headingScript || fb.allThings.headingScript,
     subtext: d.subtext || fb.allThings.subtext,
     images: {
-      testimony: absolutize(d.imgTestimony?.url),
-      vlog: absolutize(d.imgVlog?.url),
-      youtube: absolutize(d.imgYoutube?.url),
-      tiktok: absolutize(d.imgTiktok?.url),
-      shop: absolutize(d.imgShop?.url),
-      podcast: absolutize(d.imgPodcast?.url),
-      book: absolutize(d.imgBook?.url),
+      testimony: absolutize(d.imgTestimony?.url) || fb.allThings.images?.testimony,
+      vlog: absolutize(d.imgVlog?.url) || fb.allThings.images?.vlog,
+      youtube: absolutize(d.imgYoutube?.url) || fb.allThings.images?.youtube,
+      tiktok: absolutize(d.imgTiktok?.url) || fb.allThings.images?.tiktok,
+      shop: absolutize(d.imgShop?.url) || fb.allThings.images?.shop,
+      podcast: absolutize(d.imgPodcast?.url) || fb.allThings.images?.podcast,
+      book: absolutize(d.imgBook?.url) || fb.allThings.images?.book,
     },
   };
 }
@@ -158,7 +158,7 @@ export async function getUpcomingBook(): Promise<UpcomingBook> {
     body: d.body || fb.upcomingBook.body,
     releaseLabel: d.releaseLabel || fb.upcomingBook.releaseLabel,
     cta: d.cta || fb.upcomingBook.cta,
-    image: absolutize(d.image?.url),
+    image: absolutize(d.image?.url) || fb.upcomingBook.image,
   };
 }
 
@@ -171,12 +171,12 @@ export async function getCollection(): Promise<Collection> {
     link: d.link || fb.collection.link,
     products: arr(
       d.products,
-      (p) => ({
+      (p, i) => ({
         name: p.name,
         price: p.price,
         tag: p.tag || undefined,
         tone: p.tone,
-        image: absolutize(p.image?.url),
+        image: absolutize(p.image?.url) || fb.collection.products[i]?.image,
       }),
       fb.collection.products,
     ),
@@ -313,9 +313,9 @@ export async function getAbout(): Promise<About> {
       attribution: d.quoteAttribution || fb.about.quote.attribution,
     },
     images: {
-      hero: { ...fb.about.images.hero, src: absolutize(d.heroImage?.url) },
-      turn: { ...fb.about.images.turn, src: absolutize(d.turnImage?.url) },
-      mission: { ...fb.about.images.mission, src: absolutize(d.missionImage?.url) },
+      hero: { ...fb.about.images.hero, src: absolutize(d.heroImage?.url) || fb.about.images.hero.src },
+      turn: { ...fb.about.images.turn, src: absolutize(d.turnImage?.url) || fb.about.images.turn.src },
+      mission: { ...fb.about.images.mission, src: absolutize(d.missionImage?.url) || fb.about.images.mission.src },
     },
   };
 }
@@ -370,8 +370,8 @@ export async function getTour(): Promise<Tour> {
   if (!d) return fb.tour;
   return {
     ...fb.tour, // keeps heroImage/secondImage placeholder labels
-    heroImageSrc: absolutize(d.heroPhoto?.url),
-    secondImageSrc: absolutize(d.secondPhoto?.url),
+    heroImageSrc: absolutize(d.heroPhoto?.url) || fb.tour.heroImageSrc,
+    secondImageSrc: absolutize(d.secondPhoto?.url) || fb.tour.secondImageSrc,
     regions: arr(
       d.regions,
       (r) => ({
@@ -426,7 +426,7 @@ export async function getStore(): Promise<Store> {
     heroHeading: d.heroHeading || fb.store.heroHeading,
     heroSubtext: d.heroSubtext || fb.store.heroSubtext,
     heroCta: d.heroCta || fb.store.heroCta,
-    heroImage: absolutize(d.heroImage?.url),
+    heroImage: absolutize(d.heroImage?.url) || fb.store.heroImage,
     proceedsBanner: d.proceedsBanner || fb.store.proceedsBanner,
     bestSellersHeading: d.bestSellersHeading || fb.store.bestSellersHeading,
     newArrivalsHeading: d.newArrivalsHeading || fb.store.newArrivalsHeading,
@@ -434,7 +434,7 @@ export async function getStore(): Promise<Store> {
     founderHeading: d.founderHeading || fb.store.founderHeading,
     founderBody: d.founderBody || fb.store.founderBody,
     founderCta: d.founderCta || fb.store.founderCta,
-    founderImage: absolutize(d.founderImage?.url),
+    founderImage: absolutize(d.founderImage?.url) || fb.store.founderImage,
     shippingFee: d.shippingFee != null ? Number(d.shippingFee) : fb.store.shippingFee,
     currency: d.currency || fb.store.currency,
   };

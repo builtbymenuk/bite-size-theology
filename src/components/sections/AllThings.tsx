@@ -46,18 +46,19 @@ export default async function AllThings() {
         {/* Testimony — 2 wide */}
         <RevealItem className="lg:col-span-2">
           <BentoCard className="h-full min-h-[300px] bg-[#e9e3d7] p-6">
-            <div className="flex h-full items-center justify-between gap-4">
+            <div className="relative flex h-full items-center">
               <div>
                 <h3 className="font-display text-2xl">{c.testimony.title}</h3>
                 <button className="mt-3 text-[11px] uppercase tracking-widest text-ink/60">
                   {c.testimony.cta} →
                 </button>
               </div>
+              {/* Oversized polaroids spilling past the card's top-right edge for a creative break-out. */}
               <PolaroidStack
-                className="relative h-40 w-40 shrink-0"
+                className="absolute -top-12 right-2 h-64 w-72 shrink-0 md:-right-10 md:-top-16 md:w-80"
                 photos={[
-                  { tone: "warm", label: "Testimony", src: img.testimony, rotate: 6, className: "absolute right-0 top-2 w-28" },
-                  { tone: "cool", label: "Vlog", src: img.vlog, rotate: -8, className: "absolute left-0 top-6 w-24" },
+                  { tone: "warm", label: "Testimony", src: img.testimony, rotate: 6, className: "absolute right-0 top-4 w-40 md:w-48" },
+                  { tone: "cool", label: "Vlog", src: img.vlog, rotate: -8, className: "absolute left-0 top-12 w-36 md:w-44" },
                 ]}
               />
             </div>
