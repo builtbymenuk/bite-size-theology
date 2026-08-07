@@ -3,6 +3,7 @@ import Placeholder from "./Placeholder";
 type Photo = {
   tone: React.ComponentProps<typeof Placeholder>["tone"];
   label?: string;
+  src?: string; // CMS photo; empty → placeholder
   rotate?: number;
   className?: string;
 };
@@ -24,7 +25,7 @@ export default function PolaroidStack({
           style={{ rotate: `${p.rotate ?? 0}deg` }}
         >
           <div className="aspect-[4/5] overflow-hidden">
-            <Placeholder tone={p.tone} label={p.label} />
+            <Placeholder tone={p.tone} label={p.label} src={p.src} />
           </div>
         </div>
       ))}

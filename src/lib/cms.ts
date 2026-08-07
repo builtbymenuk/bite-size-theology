@@ -8,6 +8,7 @@
 // prefixed scalars in Strapi and get reassembled below.
 
 import * as fb from "./content";
+import { getYouTubeVideos } from "./youtube";
 import type {
   Nav, Hero, Calling, AllThings, UpcomingBook, Collection, Podcast, PodcastPage,
   Faq, Footer, About, Contact, Tour, StoreProduct, Store, Category,
@@ -118,17 +119,30 @@ export async function getCalling(): Promise<Calling> {
       title: d.rootedTitle || fb.calling.rooted.title,
       body: d.rootedBody || fb.calling.rooted.body,
     },
+    images: {
+      bible: absolutize(d.imgBible?.url),
+      scripture: absolutize(d.imgScripture?.url),
+    },
   };
 }
 
 export async function getAllThings(): Promise<AllThings> {
-  const d = await single("all-thing", ""); // scalars only; cards stay in code
+  const d = await single("all-thing"); // populate=* to also pull the tile photos
   if (!d) return fb.allThings;
   return {
     ...fb.allThings, // keeps the 8 fixed `cards` layout slots
     headingLead: d.headingLead || fb.allThings.headingLead,
     headingScript: d.headingScript || fb.allThings.headingScript,
     subtext: d.subtext || fb.allThings.subtext,
+    images: {
+      testimony: absolutize(d.imgTestimony?.url),
+      vlog: absolutize(d.imgVlog?.url),
+      youtube: absolutize(d.imgYoutube?.url),
+      tiktok: absolutize(d.imgTiktok?.url),
+      shop: absolutize(d.imgShop?.url),
+      podcast: absolutize(d.imgPodcast?.url),
+      book: absolutize(d.imgBook?.url),
+    },
   };
 }
 
@@ -174,11 +188,34 @@ export async function getCollection(): Promise<Collection> {
   };
 }
 
+// Latest YouTube uploads → wall tiles (thumbnail + clickable watch link + title).
+const ytTiles = (vids: Awaited<ReturnType<typeof getYouTubeVideos>>) =>
+  vids.map((v) => ({ image: v.thumbnail, url: v.url, title: v.title }));
+
 export async function getPodcast(): Promise<Podcast> {
   // Strapi v5 populate=* is one level deep — it misses media nested in a repeatable component, so the
   // episode wall's images never populate. Deep-populate episodes (incl. their image) + actions explicitly.
   const d = await single("podcast", "populate[episodes][populate]=*&populate[actions]=*");
-  if (!d) return fb.podcast;
+  if (!d) {
+    // Strapi down → still auto-fill the wall from the fallback channel.
+    const vids = await getYouTubeVideos(fb.podcast.youtubeChannelId);
+    return vids.length ? { ...fb.podcast, episodes: ytTiles(vids) } : fb.podcast;
+  }
+  // "" = editor cleared it → off (use manual episodes); null/absent = never set → fall back to the
+  // known channel so the wall still auto-fills.
+  const channelId =
+    d.youtubeChannelId != null ? d.youtubeChannelId : fb.podcast.youtubeChannelId;
+  const cmsEpisodes = arr(
+    d.episodes,
+    (e) => ({
+      image: absolutize(e.image?.url),
+      url: e.url || undefined,
+      title: e.title || undefined,
+    }),
+    fb.podcast.episodes,
+  );
+  // Precedence: YouTube (channel set + fetch ok) → hand-edited CMS episodes → gallery tones.
+  const vids = channelId ? await getYouTubeVideos(channelId) : [];
   return {
     ...fb.podcast, // keeps titleLines + gallery (design tokens)
     eyebrow: d.eyebrow || fb.podcast.eyebrow,
@@ -193,15 +230,8 @@ export async function getPodcast(): Promise<Podcast> {
       (a) => ({ label: a.label, platform: a.platform }),
       fb.podcast.actions,
     ),
-    episodes: arr(
-      d.episodes,
-      (e) => ({
-        image: absolutize(e.image?.url),
-        url: e.url || undefined,
-        title: e.title || undefined,
-      }),
-      fb.podcast.episodes,
-    ),
+    episodes: vids.length ? ytTiles(vids) : cmsEpisodes,
+    youtubeChannelId: channelId || undefined,
   };
 }
 

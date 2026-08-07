@@ -35,10 +35,19 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     body: { label: "Body paragraphs" },
     rootedTitle: { label: "Rooted card — Title" },
     rootedBody: { label: "Rooted card — Body" },
+    imgBible: { label: "Photo — Open Bible", description: "Front polaroid; empty shows a placeholder" },
+    imgScripture: { label: "Photo — Scripture", description: "Back polaroid; empty shows a placeholder" },
   },
   "all-thing": {
     headingLead: { label: "Heading — lead" },
     headingScript: { label: "Heading — script word (italic)" },
+    imgTestimony: { label: "Photo — Testimony (polaroid)" },
+    imgVlog: { label: "Photo — Vlog (polaroid)" },
+    imgYoutube: { label: "Photo — YouTube card" },
+    imgTiktok: { label: "Photo — TikTok card" },
+    imgShop: { label: "Photo — Shop card" },
+    imgPodcast: { label: "Photo — Podcast card" },
+    imgBook: { label: "Photo — Book Caleb card" },
   },
   "upcoming-book": {
     visible: { label: "Show on homepage", description: "Off until the book is published — tick to make the section visible" },
@@ -60,6 +69,10 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     note: { label: "Small note (top-right)" },
     badgeRank: { label: "Badge — Rank", description: "e.g. #1 Podcast" },
     badgeCategory: { label: "Badge — Category", description: "e.g. Religion" },
+    youtubeChannelId: {
+      label: "YouTube channel ID (UC…)",
+      description: "Auto-fills the video wall with the channel's latest videos. Clear to use manual episodes instead.",
+    },
   },
   "podcast-page": {
     heroName: { label: "Hero — Name" },

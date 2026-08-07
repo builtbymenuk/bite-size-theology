@@ -34,6 +34,7 @@ export interface Calling {
   body: string[];
   signature: string;
   rooted: { title: string; body: string };
+  images?: { bible?: string; scripture?: string }; // CMS polaroid photos; empty → placeholder
 }
 
 export interface AllThingsCards {
@@ -52,6 +53,11 @@ export interface AllThings {
   headingScript: string;
   subtext: string;
   cards: AllThingsCards;
+  // CMS photos for the bento tiles; each empty → placeholder image.
+  images?: {
+    testimony?: string; vlog?: string; youtube?: string; tiktok?: string;
+    shop?: string; podcast?: string; book?: string;
+  };
 }
 
 // Homepage "Upcoming Book" promo. `visible` is the CMS on/off toggle — the section
@@ -146,6 +152,7 @@ export interface Podcast {
   actions: PodcastAction[];
   gallery: Tone[]; // per-slot empty-state tone (design token)
   episodes: Episode[]; // real thumbnails+links; index i overlays gallery slot i (up to 15)
+  youtubeChannelId?: string; // UC… — when set, the wall auto-fills from this channel's latest videos
 }
 
 export interface Stat {
@@ -386,6 +393,8 @@ export const podcast: Podcast = {
     "dark", "cool", "warm", "cool", "dark", "warm",
   ] as const,
   episodes: [], // filled from Strapi; empty → every slot shows its gallery tone
+  // The client's channel — the wall auto-fills from its latest videos even if Strapi is down.
+  youtubeChannelId: "UC7VL8Ljt2f0luWz4HMkUGuw",
 };
 
 // /podcast page. Hero buttons reuse podcast.actions (above) — not duplicated here.

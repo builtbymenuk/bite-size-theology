@@ -39,12 +39,14 @@ export default async function Calling() {
               {
                 tone: "warm",
                 label: "Open Bible",
+                src: calling.images?.bible,
                 rotate: 4,
                 className: "absolute right-2 top-0 w-56",
               },
               {
                 tone: "dark",
                 label: "Scripture",
+                src: calling.images?.scripture,
                 rotate: -6,
                 className: "absolute left-2 top-20 w-44",
               },

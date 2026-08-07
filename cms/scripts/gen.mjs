@@ -74,11 +74,17 @@ const singles = {
     attrs: {
       headingScript: s(), heading: s(), quote: t(), introLabel: s(),
       body: rep("shared.text-item"), signature: s(), rootedTitle: s(), rootedBody: t(),
+      imgBible: media(), imgScripture: media(), // the two polaroid photos
     },
   },
   "all-thing": {
     display: "Homepage — 4. All the Things",
-    attrs: { headingLead: s(), headingScript: s(), subtext: t() },
+    attrs: {
+      headingLead: s(), headingScript: s(), subtext: t(),
+      // Photos for the bento tiles (2 polaroids + 5 image cards). Empty → placeholder image.
+      imgTestimony: media(), imgVlog: media(), imgYoutube: media(), imgTiktok: media(),
+      imgShop: media(), imgPodcast: media(), imgBook: media(),
+    },
   },
   "upcoming-book": {
     display: "Homepage — Upcoming Book",
@@ -98,6 +104,7 @@ const singles = {
     display: "Homepage — 6. Podcast Promo",
     attrs: {
       eyebrow: s(), note: s(), quote: t(), badgeRank: s(), badgeCategory: s(),
+      youtubeChannelId: s(), // UC… → wall auto-fills from this channel's latest videos
       actions: rep("shared.podcast-action"),
       episodes: rep("shared.episode"), // video wall: image + link + title per tile (up to 15 shown)
     },

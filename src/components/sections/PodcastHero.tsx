@@ -21,7 +21,15 @@ export default async function PodcastHero() {
 
       <Reveal className="mt-8 max-w-md">
         <p className="text-sm leading-relaxed text-ink/60">{hero.subtext}</p>
-        <ListenWatch actions={podcast.actions} className="mt-8" />
+        <ListenWatch
+          actions={podcast.actions}
+          youtubeUrl={
+            podcast.youtubeChannelId
+              ? `https://www.youtube.com/channel/${podcast.youtubeChannelId}`
+              : undefined
+          }
+          className="mt-8"
+        />
       </Reveal>
     </section>
   );

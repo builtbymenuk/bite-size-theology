@@ -19,29 +19,42 @@ function PlatformIcon({ platform }: { platform: "spotify" | "youtube" }) {
 }
 
 // The Spotify/YouTube pill pair. Shared by the podcast hero and the Podcast section so they
-// can't drift apart. Reads podcast.actions (Listen → spotify, Watch → youtube).
+// can't drift apart. Reads podcast.actions (Listen → spotify, Watch → youtube). A youtube action
+// links to `youtubeUrl` (the channel) when provided; spotify stays an inert button until a URL exists.
 export default function ListenWatch({
   actions,
+  youtubeUrl,
   className,
 }: {
   actions: PodcastAction[];
+  youtubeUrl?: string;
   className?: string;
 }) {
   return (
     <div className={`flex flex-wrap gap-3 ${className ?? ""}`}>
-      {actions.map((a) => (
-        <button
-          key={a.label}
-          className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-transform hover:scale-[1.03] ${
-            a.platform === "spotify"
-              ? "border border-ink/10 bg-white text-ink shadow-sm"
-              : "bg-ink text-cream"
-          }`}
-        >
-          <PlatformIcon platform={a.platform} />
-          {a.label}
-        </button>
-      ))}
+      {actions.map((a) => {
+        const cls = `inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-transform hover:scale-[1.03] ${
+          a.platform === "spotify"
+            ? "border border-ink/10 bg-white text-ink shadow-sm"
+            : "bg-ink text-cream"
+        }`;
+        const inner = (
+          <>
+            <PlatformIcon platform={a.platform} />
+            {a.label}
+          </>
+        );
+        const href = a.platform === "youtube" ? youtubeUrl : undefined;
+        return href ? (
+          <a key={a.label} href={href} target="_blank" rel="noreferrer" className={cls}>
+            {inner}
+          </a>
+        ) : (
+          <button key={a.label} className={cls}>
+            {inner}
+          </button>
+        );
+      })}
     </div>
   );
 }

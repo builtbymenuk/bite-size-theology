@@ -25,6 +25,9 @@
     "badgeCategory": {
       "type": "string"
     },
+    "youtubeChannelId": {
+      "type": "string"
+    },
     "actions": {
       "type": "component",
       "repeatable": true,

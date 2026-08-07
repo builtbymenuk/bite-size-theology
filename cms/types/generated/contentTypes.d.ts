@@ -496,6 +496,13 @@ export interface ApiAllThingAllThing extends Struct.SingleTypeSchema {
       Schema.Attribute.Private;
     headingLead: Schema.Attribute.String;
     headingScript: Schema.Attribute.String;
+    imgBook: Schema.Attribute.Media<'images'>;
+    imgPodcast: Schema.Attribute.Media<'images'>;
+    imgShop: Schema.Attribute.Media<'images'>;
+    imgTestimony: Schema.Attribute.Media<'images'>;
+    imgTiktok: Schema.Attribute.Media<'images'>;
+    imgVlog: Schema.Attribute.Media<'images'>;
+    imgYoutube: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -527,6 +534,8 @@ export interface ApiCallingCalling extends Struct.SingleTypeSchema {
       Schema.Attribute.Private;
     heading: Schema.Attribute.String;
     headingScript: Schema.Attribute.String;
+    imgBible: Schema.Attribute.Media<'images'>;
+    imgScripture: Schema.Attribute.Media<'images'>;
     introLabel: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -911,6 +920,7 @@ export interface ApiPodcastPodcast extends Struct.SingleTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    youtubeChannelId: Schema.Attribute.String;
   };
 }
 
