@@ -3,7 +3,7 @@ import seedData from "./seed-data.json";
 // Single types (singularName == the api uid segment == the path cms.ts fetches).
 // `store` is the storefront's editorial single type; the rest are the marketing pages.
 const NAMES = [
-  "nav", "hero", "eyebrow", "calling", "all-thing", "collection", "podcast",
+  "nav", "hero", "eyebrow", "calling", "all-thing", "upcoming-book", "collection", "podcast",
   "podcast-page", "faq", "footer", "about", "contact", "tour",
   "store",
 ];
@@ -39,6 +39,16 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
   "all-thing": {
     headingLead: { label: "Heading — lead" },
     headingScript: { label: "Heading — script word (italic)" },
+  },
+  "upcoming-book": {
+    visible: { label: "Show on homepage", description: "Off until the book is published — tick to make the section visible" },
+    eyebrow: { label: "Eyebrow", description: 'Small label above the title, e.g. "Coming Soon"' },
+    title: { label: "Book title" },
+    subtitle: { label: "Subtitle / tagline" },
+    body: { label: "Description" },
+    releaseLabel: { label: "Release label", description: 'e.g. "Fall 2026"' },
+    cta: { label: "Button text" },
+    image: { label: "Cover image" },
   },
   collection: {
     link: { label: '"Explore all" link text' },

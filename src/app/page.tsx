@@ -1,9 +1,14 @@
+// Render per-request against live Strapi (CMS edits show on reload; also avoids baking
+// fallback content when Strapi is unreachable at build time).
+export const dynamic = "force-dynamic";
+
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/Hero";
 import EyebrowStrip from "@/components/sections/EyebrowStrip";
 import Calling from "@/components/sections/Calling";
 import AllThings from "@/components/sections/AllThings";
 import Collection from "@/components/sections/Collection";
+import UpcomingBook from "@/components/sections/UpcomingBook";
 import Podcast from "@/components/sections/Podcast";
 import Faq from "@/components/sections/Faq";
 import { getHero, getPodcast } from "@/lib/cms";
@@ -25,6 +30,7 @@ export default async function Home() {
           <Calling />
           <AllThings />
           <Collection />
+          <UpcomingBook />
           <Podcast podcast={podcast} />
           <Faq />
         </main>

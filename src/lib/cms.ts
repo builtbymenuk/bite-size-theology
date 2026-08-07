@@ -9,7 +9,7 @@
 
 import * as fb from "./content";
 import type {
-  Nav, Hero, Calling, AllThings, Collection, Podcast, PodcastPage,
+  Nav, Hero, Calling, AllThings, UpcomingBook, Collection, Podcast, PodcastPage,
   Faq, Footer, About, Contact, Tour, StoreProduct, Store, Category,
 } from "./content";
 
@@ -22,7 +22,14 @@ const TOKEN = process.env.STRAPI_API_TOKEN;
 
 // Dev: fetch fresh every request so Strapi edits show on the next reload. Prod: 5-min ISR
 // window (a Strapi webhook → /api/revalidate can invalidate sooner — see that route).
-const REVALIDATE = process.env.NODE_ENV === "development" ? 0 : 300;
+// Override with STRAPI_REVALIDATE (seconds); 0 = always fresh/dynamic (e.g. a live-edit demo).
+const rawRev = process.env.STRAPI_REVALIDATE;
+const REVALIDATE =
+  rawRev != null && rawRev !== "" && Number.isFinite(Number(rawRev))
+    ? Number(rawRev)
+    : process.env.NODE_ENV === "development"
+      ? 0
+      : 300;
 
 // Strapi media URLs are relative on local (/uploads/..); next/image needs absolute.
 // Provider URLs (S3/Cloudinary) already start with http and pass through.
@@ -122,6 +129,22 @@ export async function getAllThings(): Promise<AllThings> {
     headingLead: d.headingLead || fb.allThings.headingLead,
     headingScript: d.headingScript || fb.allThings.headingScript,
     subtext: d.subtext || fb.allThings.subtext,
+  };
+}
+
+export async function getUpcomingBook(): Promise<UpcomingBook> {
+  const d = await single("upcoming-book");
+  if (!d) return fb.upcomingBook;
+  return {
+    // Booleans: coerce, don't `||` — that would drop an editor's explicit `false` (toggle OFF).
+    visible: !!d.visible,
+    eyebrow: d.eyebrow || fb.upcomingBook.eyebrow,
+    title: d.title || fb.upcomingBook.title,
+    subtitle: d.subtitle || fb.upcomingBook.subtitle,
+    body: d.body || fb.upcomingBook.body,
+    releaseLabel: d.releaseLabel || fb.upcomingBook.releaseLabel,
+    cta: d.cta || fb.upcomingBook.cta,
+    image: absolutize(d.image?.url),
   };
 }
 

@@ -1,0 +1,43 @@
+{
+  "kind": "singleType",
+  "collectionName": "upcoming_books",
+  "info": {
+    "singularName": "upcoming-book",
+    "pluralName": "upcoming-books",
+    "displayName": "Homepage — Upcoming Book"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "visible": {
+      "type": "boolean",
+      "default": false
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "body": {
+      "type": "text"
+    },
+    "releaseLabel": {
+      "type": "string"
+    },
+    "cta": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}
