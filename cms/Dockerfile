@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 make g+
 COPY package.json package-lock.json ./
 RUN npm ci --include=dev --no-audit --no-fund
 COPY . .
+# Raise Node's heap cap so the admin (vite) build survives on small build hosts (2 GB).
+ENV NODE_OPTIONS=--max-old-space-size=2048
 RUN npm run build && npm prune --omit=dev
 
 FROM node:20-bookworm-slim AS runner

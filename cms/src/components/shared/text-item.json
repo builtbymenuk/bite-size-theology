@@ -6,7 +6,7 @@
   "options": {},
   "attributes": {
     "value": {
-      "type": "string"
+      "type": "text"
     }
   }
 }

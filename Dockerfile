@@ -12,10 +12,14 @@ COPY . .
 # Baked at build time: image-host allowlist (remotePatterns) + the public PayPal client id.
 ARG STRAPI_PUBLIC_URL
 ARG NEXT_PUBLIC_PAYPAL_CLIENT_ID
+# Static-vs-dynamic is decided at build time, so the cache window must be present during `next build`.
+ARG STRAPI_REVALIDATE
 ENV STRAPI_PUBLIC_URL=$STRAPI_PUBLIC_URL \
     NEXT_PUBLIC_PAYPAL_CLIENT_ID=$NEXT_PUBLIC_PAYPAL_CLIENT_ID \
+    STRAPI_REVALIDATE=$STRAPI_REVALIDATE \
     NODE_ENV=production \
-    NEXT_TELEMETRY_DISABLED=1
+    NEXT_TELEMETRY_DISABLED=1 \
+    NODE_OPTIONS=--max-old-space-size=2048
 RUN npm run build
 
 FROM node:20-bookworm-slim AS runner

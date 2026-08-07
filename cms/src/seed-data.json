@@ -37,6 +37,15 @@
     "headingScript": "things",
     "subtext": "Connect with us and stay updated on our journey! Find out about new events, interviews, merch drops, and more."
   },
+  "upcoming-book": {
+    "visible": false,
+    "eyebrow": "Coming Soon",
+    "title": "The Untitled Book",
+    "subtitle": "A new work from Pastor Caleb Griffith",
+    "body": "Placeholder description — the pastor's upcoming book. This section stays hidden until launch; replace this copy and the cover, then flip \"Show on homepage\" to publish.",
+    "releaseLabel": "Coming Fall 2026",
+    "cta": "Notify Me"
+  },
   "collection": {
     "eyebrow": "Curated Goods",
     "heading": "THE COLLECTION",

@@ -1018,6 +1018,41 @@ export interface ApiTourTour extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiUpcomingBookUpcomingBook extends Struct.SingleTypeSchema {
+  collectionName: 'upcoming_books';
+  info: {
+    displayName: 'Homepage \u2014 Upcoming Book';
+    pluralName: 'upcoming-books';
+    singularName: 'upcoming-book';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    body: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    cta: Schema.Attribute.String;
+    eyebrow: Schema.Attribute.String;
+    image: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::upcoming-book.upcoming-book'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    releaseLabel: Schema.Attribute.String;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -1546,6 +1581,7 @@ declare module '@strapi/strapi' {
       'api::product.product': ApiProductProduct;
       'api::store.store': ApiStoreStore;
       'api::tour.tour': ApiTourTour;
+      'api::upcoming-book.upcoming-book': ApiUpcomingBookUpcomingBook;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

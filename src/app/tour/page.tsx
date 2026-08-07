@@ -1,3 +1,7 @@
+// Render per-request against live Strapi (CMS edits show on reload; also avoids baking
+// fallback content when Strapi is unreachable at build time).
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
 import Footer from "@/components/layout/Footer";
 import Parallax from "@/components/ui/Parallax";

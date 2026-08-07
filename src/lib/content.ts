@@ -54,6 +54,19 @@ export interface AllThings {
   cards: AllThingsCards;
 }
 
+// Homepage "Upcoming Book" promo. `visible` is the CMS on/off toggle — the section
+// is rendered only when true (kept false until the book is published).
+export interface UpcomingBook {
+  visible: boolean;
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  body: string;
+  releaseLabel: string;
+  cta: string;
+  image?: string; // optional CMS media; falls back to the tone Placeholder
+}
+
 export interface Product {
   name: string;
   price: string;
@@ -313,6 +326,17 @@ export const allThings: AllThings = {
       body: "Looking to have Caleb speak at your next event?",
     },
   },
+};
+
+// visible:false → hidden until the pastor's book launches. Flip in Strapi (or here) to publish.
+export const upcomingBook: UpcomingBook = {
+  visible: false,
+  eyebrow: "Coming Soon",
+  title: "The Untitled Book",
+  subtitle: "A new work from Pastor Caleb Griffith",
+  body: "Placeholder description — the pastor's upcoming book. This section stays hidden until launch; replace this copy and the cover, then flip “Show on homepage” to publish.",
+  releaseLabel: "Coming Fall 2026",
+  cta: "Notify Me",
 };
 
 export const collection: Collection = {

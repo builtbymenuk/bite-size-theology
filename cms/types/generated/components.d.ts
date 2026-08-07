@@ -90,7 +90,7 @@ export interface SharedTextItem extends Struct.ComponentSchema {
     displayName: 'text-item';
   };
   attributes: {
-    value: Schema.Attribute.String;
+    value: Schema.Attribute.Text;
   };
 }
 

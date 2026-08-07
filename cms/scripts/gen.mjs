@@ -33,7 +33,7 @@ const TONE = ["dark", "warm", "light", "cool", "gold", "yellow"];
 
 // --- components (uid shared.<name>) ---
 const components = {
-  "text-item": { value: s() },
+  "text-item": { value: t() }, // text (not string): also holds long body paragraphs — varchar(255) overflows on Postgres/MySQL
   product: { name: s(), price: s(), tag: s(), tone: enm(...TONE), image: media() },
   "faq-item": { q: t(), a: t() },
   social: { name: s(), handle: s() },
@@ -79,6 +79,13 @@ const singles = {
   "all-thing": {
     display: "Homepage — 4. All the Things",
     attrs: { headingLead: s(), headingScript: s(), subtext: t() },
+  },
+  "upcoming-book": {
+    display: "Homepage — Upcoming Book",
+    attrs: {
+      visible: b(), eyebrow: s(), title: s(), subtitle: s(),
+      body: t(), releaseLabel: s(), cta: s(), image: media(),
+    },
   },
   collection: {
     display: "Homepage — 5. The Collection",
