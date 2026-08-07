@@ -8,13 +8,13 @@ import { useLenis } from "lenis/react";
 import type { Nav } from "@/lib/content";
 import CartButton from "@/components/store/CartButton";
 
-// Links to routes that actually exist; every other label stays a placeholder anchor for now.
+// Links to routes that actually exist; every other label (e.g. "Book Caleb") stays a placeholder
+// anchor for now. "Sermons/Videos" is the podcast page.
 const HREFS: Record<string, string> = {
-  Tour: "/tour",
-  Contact: "/contact",
   About: "/about",
-  Podcast: "/podcast",
+  "Sermons/Videos": "/podcast",
   Shop: "/store",
+  Contact: "/contact",
 };
 
 export default function Navbar({ nav }: { nav: Nav }) {

@@ -260,7 +260,7 @@ export interface Tour {
 
 export const nav: Nav = {
   logo: "Caleb",
-  links: ["Tour", "About", "Shop", "Book Caleb", "Contact", "Podcast"],
+  links: ["About", "Sermons/Videos", "Shop", "Book Caleb", "Contact"],
   cta: "Donate Now",
 };
 
