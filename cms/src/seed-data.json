@@ -3,12 +3,11 @@
     "logo": "Caleb",
     "cta": "Donate Now",
     "links": [
-      { "value": "Tour" },
       { "value": "About" },
+      { "value": "Sermons/Videos" },
       { "value": "Shop" },
       { "value": "Book Caleb" },
-      { "value": "Contact" },
-      { "value": "Podcast" }
+      { "value": "Contact" }
     ]
   },
   "hero": {
