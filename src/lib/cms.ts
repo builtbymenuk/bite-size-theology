@@ -8,6 +8,7 @@
 // prefixed scalars in Strapi and get reassembled below.
 
 import * as fb from "./content";
+import { getYouTubeVideos } from "./youtube";
 import type {
   Nav, Hero, Calling, AllThings, UpcomingBook, Collection, Podcast, PodcastPage,
   Faq, Footer, About, Contact, Tour, StoreProduct, Store, Category,
@@ -37,7 +38,7 @@ const absolutize = (u?: string): string | undefined =>
   u ? (u.startsWith("http") ? u : `${PUBLIC_BASE}${u}`) : undefined;
 
 // Use a mapped CMS array only when it actually has rows, else keep the fallback.
-function arr<T>(x: unknown, map: (v: any) => T, fallback: T[]): T[] {
+function arr<T>(x: unknown, map: (v: any, i: number) => T, fallback: T[]): T[] {
   return Array.isArray(x) && x.length ? x.map(map) : fallback;
 }
 
@@ -95,7 +96,7 @@ export async function getHero(): Promise<Hero> {
     tagline: d.tagline || fb.hero.tagline,
     subtext: d.subtext || fb.hero.subtext,
     cta: d.cta || fb.hero.cta,
-    bgImage: absolutize(d.bgImage?.url),
+    bgImage: absolutize(d.bgImage?.url) || fb.hero.bgImage,
   };
 }
 
@@ -118,17 +119,30 @@ export async function getCalling(): Promise<Calling> {
       title: d.rootedTitle || fb.calling.rooted.title,
       body: d.rootedBody || fb.calling.rooted.body,
     },
+    images: {
+      bible: absolutize(d.imgBible?.url) || fb.calling.images?.bible,
+      scripture: absolutize(d.imgScripture?.url) || fb.calling.images?.scripture,
+    },
   };
 }
 
 export async function getAllThings(): Promise<AllThings> {
-  const d = await single("all-thing", ""); // scalars only; cards stay in code
+  const d = await single("all-thing"); // populate=* to also pull the tile photos
   if (!d) return fb.allThings;
   return {
     ...fb.allThings, // keeps the 8 fixed `cards` layout slots
     headingLead: d.headingLead || fb.allThings.headingLead,
     headingScript: d.headingScript || fb.allThings.headingScript,
     subtext: d.subtext || fb.allThings.subtext,
+    images: {
+      testimony: absolutize(d.imgTestimony?.url) || fb.allThings.images?.testimony,
+      vlog: absolutize(d.imgVlog?.url) || fb.allThings.images?.vlog,
+      youtube: absolutize(d.imgYoutube?.url) || fb.allThings.images?.youtube,
+      tiktok: absolutize(d.imgTiktok?.url) || fb.allThings.images?.tiktok,
+      shop: absolutize(d.imgShop?.url) || fb.allThings.images?.shop,
+      podcast: absolutize(d.imgPodcast?.url) || fb.allThings.images?.podcast,
+      book: absolutize(d.imgBook?.url) || fb.allThings.images?.book,
+    },
   };
 }
 
@@ -144,7 +158,7 @@ export async function getUpcomingBook(): Promise<UpcomingBook> {
     body: d.body || fb.upcomingBook.body,
     releaseLabel: d.releaseLabel || fb.upcomingBook.releaseLabel,
     cta: d.cta || fb.upcomingBook.cta,
-    image: absolutize(d.image?.url),
+    image: absolutize(d.image?.url) || fb.upcomingBook.image,
   };
 }
 
@@ -157,12 +171,12 @@ export async function getCollection(): Promise<Collection> {
     link: d.link || fb.collection.link,
     products: arr(
       d.products,
-      (p) => ({
+      (p, i) => ({
         name: p.name,
         price: p.price,
         tag: p.tag || undefined,
         tone: p.tone,
-        image: absolutize(p.image?.url),
+        image: absolutize(p.image?.url) || fb.collection.products[i]?.image,
       }),
       fb.collection.products,
     ),
@@ -174,11 +188,34 @@ export async function getCollection(): Promise<Collection> {
   };
 }
 
+// Latest YouTube uploads → wall tiles (thumbnail + clickable watch link + title).
+const ytTiles = (vids: Awaited<ReturnType<typeof getYouTubeVideos>>) =>
+  vids.map((v) => ({ image: v.thumbnail, url: v.url, title: v.title }));
+
 export async function getPodcast(): Promise<Podcast> {
   // Strapi v5 populate=* is one level deep — it misses media nested in a repeatable component, so the
   // episode wall's images never populate. Deep-populate episodes (incl. their image) + actions explicitly.
   const d = await single("podcast", "populate[episodes][populate]=*&populate[actions]=*");
-  if (!d) return fb.podcast;
+  if (!d) {
+    // Strapi down → still auto-fill the wall from the fallback channel.
+    const vids = await getYouTubeVideos(fb.podcast.youtubeChannelId);
+    return vids.length ? { ...fb.podcast, episodes: ytTiles(vids) } : fb.podcast;
+  }
+  // "" = editor cleared it → off (use manual episodes); null/absent = never set → fall back to the
+  // known channel so the wall still auto-fills.
+  const channelId =
+    d.youtubeChannelId != null ? d.youtubeChannelId : fb.podcast.youtubeChannelId;
+  const cmsEpisodes = arr(
+    d.episodes,
+    (e) => ({
+      image: absolutize(e.image?.url),
+      url: e.url || undefined,
+      title: e.title || undefined,
+    }),
+    fb.podcast.episodes,
+  );
+  // Precedence: YouTube (channel set + fetch ok) → hand-edited CMS episodes → gallery tones.
+  const vids = channelId ? await getYouTubeVideos(channelId) : [];
   return {
     ...fb.podcast, // keeps titleLines + gallery (design tokens)
     eyebrow: d.eyebrow || fb.podcast.eyebrow,
@@ -193,15 +230,8 @@ export async function getPodcast(): Promise<Podcast> {
       (a) => ({ label: a.label, platform: a.platform }),
       fb.podcast.actions,
     ),
-    episodes: arr(
-      d.episodes,
-      (e) => ({
-        image: absolutize(e.image?.url),
-        url: e.url || undefined,
-        title: e.title || undefined,
-      }),
-      fb.podcast.episodes,
-    ),
+    episodes: vids.length ? ytTiles(vids) : cmsEpisodes,
+    youtubeChannelId: channelId || undefined,
   };
 }
 
@@ -283,9 +313,9 @@ export async function getAbout(): Promise<About> {
       attribution: d.quoteAttribution || fb.about.quote.attribution,
     },
     images: {
-      hero: { ...fb.about.images.hero, src: absolutize(d.heroImage?.url) },
-      turn: { ...fb.about.images.turn, src: absolutize(d.turnImage?.url) },
-      mission: { ...fb.about.images.mission, src: absolutize(d.missionImage?.url) },
+      hero: { ...fb.about.images.hero, src: absolutize(d.heroImage?.url) || fb.about.images.hero.src },
+      turn: { ...fb.about.images.turn, src: absolutize(d.turnImage?.url) || fb.about.images.turn.src },
+      mission: { ...fb.about.images.mission, src: absolutize(d.missionImage?.url) || fb.about.images.mission.src },
     },
   };
 }
@@ -340,8 +370,8 @@ export async function getTour(): Promise<Tour> {
   if (!d) return fb.tour;
   return {
     ...fb.tour, // keeps heroImage/secondImage placeholder labels
-    heroImageSrc: absolutize(d.heroPhoto?.url),
-    secondImageSrc: absolutize(d.secondPhoto?.url),
+    heroImageSrc: absolutize(d.heroPhoto?.url) || fb.tour.heroImageSrc,
+    secondImageSrc: absolutize(d.secondPhoto?.url) || fb.tour.secondImageSrc,
     regions: arr(
       d.regions,
       (r) => ({
@@ -396,7 +426,7 @@ export async function getStore(): Promise<Store> {
     heroHeading: d.heroHeading || fb.store.heroHeading,
     heroSubtext: d.heroSubtext || fb.store.heroSubtext,
     heroCta: d.heroCta || fb.store.heroCta,
-    heroImage: absolutize(d.heroImage?.url),
+    heroImage: absolutize(d.heroImage?.url) || fb.store.heroImage,
     proceedsBanner: d.proceedsBanner || fb.store.proceedsBanner,
     bestSellersHeading: d.bestSellersHeading || fb.store.bestSellersHeading,
     newArrivalsHeading: d.newArrivalsHeading || fb.store.newArrivalsHeading,
@@ -404,7 +434,7 @@ export async function getStore(): Promise<Store> {
     founderHeading: d.founderHeading || fb.store.founderHeading,
     founderBody: d.founderBody || fb.store.founderBody,
     founderCta: d.founderCta || fb.store.founderCta,
-    founderImage: absolutize(d.founderImage?.url),
+    founderImage: absolutize(d.founderImage?.url) || fb.store.founderImage,
     shippingFee: d.shippingFee != null ? Number(d.shippingFee) : fb.store.shippingFee,
     currency: d.currency || fb.store.currency,
   };

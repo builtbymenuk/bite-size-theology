@@ -142,7 +142,15 @@ function Identity({ podcast }: { podcast: Podcast }) {
         ))}
       </h2>
 
-      <ListenWatch actions={podcast.actions} className="mt-6" />
+      <ListenWatch
+        actions={podcast.actions}
+        youtubeUrl={
+          podcast.youtubeChannelId
+            ? `https://www.youtube.com/channel/${podcast.youtubeChannelId}`
+            : undefined
+        }
+        className="mt-6"
+      />
     </div>
   );
 }

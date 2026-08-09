@@ -51,6 +51,8 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "localhost", port: "1337", pathname: "/uploads/**" },
       // Deployed Strapi host, derived from STRAPI_URL at build time.
       ...strapiRemotePattern(),
+      // YouTube video thumbnails for the podcast wall (youtube.ts normalizes all thumbs to this host).
+      { protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" },
     ],
     // Next 16 blocks optimizing images from local IPs by default (localhost → 127.0.0.1),
     // which rejects our local Strapi uploads with `"url" parameter is not allowed`. Safe to

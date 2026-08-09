@@ -35,6 +35,20 @@
     },
     "rootedBody": {
       "type": "text"
+    },
+    "imgBible": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "imgScripture": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

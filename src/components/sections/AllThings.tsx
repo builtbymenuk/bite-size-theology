@@ -26,6 +26,7 @@ function ChatBubble({
 export default async function AllThings() {
   const allThings = await getAllThings();
   const c = allThings.cards;
+  const img = allThings.images ?? {};
   return (
     <section className="mx-auto max-w-7xl px-6 py-24">
       <Reveal className="mx-auto max-w-2xl text-center">
@@ -45,18 +46,19 @@ export default async function AllThings() {
         {/* Testimony — 2 wide */}
         <RevealItem className="lg:col-span-2">
           <BentoCard className="h-full min-h-[300px] bg-[#e9e3d7] p-6">
-            <div className="flex h-full items-center justify-between gap-4">
+            <div className="relative flex h-full items-center">
               <div>
                 <h3 className="font-display text-2xl">{c.testimony.title}</h3>
                 <button className="mt-3 text-[11px] uppercase tracking-widest text-ink/60">
                   {c.testimony.cta} →
                 </button>
               </div>
+              {/* Oversized polaroids spilling past the card's top-right edge for a creative break-out. */}
               <PolaroidStack
-                className="relative h-40 w-40 shrink-0"
+                className="absolute -top-12 right-2 h-64 w-72 shrink-0 md:-right-10 md:-top-16 md:w-80"
                 photos={[
-                  { tone: "warm", label: "Testimony", rotate: 6, className: "absolute right-0 top-2 w-28" },
-                  { tone: "cool", label: "Vlog", rotate: -8, className: "absolute left-0 top-6 w-24" },
+                  { tone: "warm", label: "Testimony", src: img.testimony, rotate: 6, className: "absolute right-0 top-4 w-40 md:w-48" },
+                  { tone: "cool", label: "Vlog", src: img.vlog, rotate: -8, className: "absolute left-0 top-12 w-36 md:w-44" },
                 ]}
               />
             </div>
@@ -67,7 +69,7 @@ export default async function AllThings() {
         <RevealItem className="lg:col-span-2">
           <BentoCard
             className="h-full min-h-[300px]"
-            image={{ tone: "dark", label: "YouTube — Camera Rig" }}
+            image={{ tone: "dark", label: "YouTube — Camera Rig", src: img.youtube }}
           >
             <div className="flex h-full items-end p-6">
               <p className="max-w-xs text-sm text-cream/90">{c.youtube.body}</p>
@@ -79,7 +81,7 @@ export default async function AllThings() {
         <RevealItem className="lg:row-span-2">
           <BentoCard
             className="h-full min-h-[300px]"
-            image={{ tone: "cool", label: "TikTok — Phone" }}
+            image={{ tone: "cool", label: "TikTok — Phone", src: img.tiktok }}
           >
             <div className="flex h-full flex-col justify-end p-5">
               <p className="text-sm text-cream/90">{c.tiktok.body}</p>
@@ -94,7 +96,7 @@ export default async function AllThings() {
         <RevealItem>
           <BentoCard
             className="h-full min-h-[300px]"
-            image={{ tone: "warm", label: "Shop — Merch" }}
+            image={{ tone: "warm", label: "Shop — Merch", src: img.shop }}
           >
             <div className="flex h-full items-end p-5">
               <h3 className="font-display text-3xl text-cream">{c.shop.title}</h3>
@@ -136,7 +138,7 @@ export default async function AllThings() {
         <RevealItem>
           <BentoCard
             className="h-full min-h-[300px]"
-            image={{ tone: "dark", label: "Podcast — Mic" }}
+            image={{ tone: "dark", label: "Podcast — Mic", src: img.podcast }}
           >
             <div className="flex h-full flex-col justify-end p-5">
               <p className="text-[10px] uppercase tracking-widest text-gold">
@@ -153,7 +155,7 @@ export default async function AllThings() {
         <RevealItem>
           <BentoCard
             className="h-full min-h-[300px]"
-            image={{ tone: "gold", label: "Book Caleb" }}
+            image={{ tone: "gold", label: "Book Caleb", src: img.book }}
           >
             <div className="flex h-full flex-col justify-end p-5">
               <h3 className="font-display text-2xl text-white">{c.book.title}</h3>

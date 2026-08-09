@@ -26,6 +26,18 @@ export default function Placeholder({
   className?: string;
 }) {
   if (src) {
+    // Local decorative SVG (our themed defaults) → background-image, dodging next/image's
+    // SVG restrictions (same trick as the photo.svg icon below). CMS/raster → next/image.
+    if (src.startsWith("/") && src.endsWith(".svg")) {
+      return (
+        <div
+          role="img"
+          aria-label={alt ?? label ?? ""}
+          className={`h-full w-full bg-cover bg-center ${className ?? ""}`}
+          style={{ backgroundImage: `url('${src}')` }}
+        />
+      );
+    }
     return (
       <div
         className={`relative h-full w-full overflow-hidden bg-gradient-to-br ${tones[tone]} ${className ?? ""}`}
@@ -42,8 +54,15 @@ export default function Placeholder({
   }
   return (
     <div
-      className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${tones[tone]} ${className ?? ""}`}
+      className={`flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br ${tones[tone]} ${className ?? ""}`}
     >
+      {/* Real placeholder-image file (bg-image avoids next/image's remote/SVG rules for a local
+          decorative asset). Replaced by an uploaded CMS image via the `src` branch above. */}
+      <span
+        aria-hidden
+        className="h-9 w-9 shrink-0 bg-contain bg-center bg-no-repeat opacity-40"
+        style={{ backgroundImage: "url('/placeholders/photo.svg')" }}
+      />
       {label ? (
         <span className="px-4 text-center text-[10px] font-medium uppercase tracking-[0.25em]">
           {label}

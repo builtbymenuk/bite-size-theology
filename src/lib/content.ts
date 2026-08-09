@@ -34,6 +34,7 @@ export interface Calling {
   body: string[];
   signature: string;
   rooted: { title: string; body: string };
+  images?: { bible?: string; scripture?: string }; // CMS polaroid photos; empty → placeholder
 }
 
 export interface AllThingsCards {
@@ -52,6 +53,11 @@ export interface AllThings {
   headingScript: string;
   subtext: string;
   cards: AllThingsCards;
+  // CMS photos for the bento tiles; each empty → placeholder image.
+  images?: {
+    testimony?: string; vlog?: string; youtube?: string; tiktok?: string;
+    shop?: string; podcast?: string; book?: string;
+  };
 }
 
 // Homepage "Upcoming Book" promo. `visible` is the CMS on/off toggle — the section
@@ -146,6 +152,7 @@ export interface Podcast {
   actions: PodcastAction[];
   gallery: Tone[]; // per-slot empty-state tone (design token)
   episodes: Episode[]; // real thumbnails+links; index i overlays gallery slot i (up to 15)
+  youtubeChannelId?: string; // UC… — when set, the wall auto-fills from this channel's latest videos
 }
 
 export interface Stat {
@@ -270,6 +277,7 @@ export const hero: Hero = {
   subtext:
     "Honest, unfiltered conversations about faith, culture, and the Bible. Welcome to Bite Size Theology.",
   cta: "Discover the Message",
+  bgImage: "/placeholders/hero-cathedral.jpg", // themed default; CMS bgImage overrides
 };
 
 export const eyebrow: string = "Bite Size Theology / Explore the Word";
@@ -288,6 +296,11 @@ export const calling: Calling = {
   rooted: {
     title: "Rooted in NC",
     body: "Building spaces where every heart is seen, heard, and deeply valued.",
+  },
+  // Themed default artwork; a CMS upload (imgBible/imgScripture) overrides each.
+  images: {
+    bible: "/placeholders/calling-bible.jpg",
+    scripture: "/placeholders/calling-scripture.jpg",
   },
 };
 
@@ -326,6 +339,16 @@ export const allThings: AllThings = {
       body: "Looking to have Caleb speak at your next event?",
     },
   },
+  // Themed default artwork; each CMS media field (imgTestimony, …) overrides its slot.
+  images: {
+    testimony: "/placeholders/at-testimony.jpg",
+    vlog: "/placeholders/at-vlog.jpg",
+    youtube: "/placeholders/at-youtube.jpg",
+    tiktok: "/placeholders/at-tiktok.jpg",
+    shop: "/placeholders/at-shop.jpg",
+    podcast: "/placeholders/at-podcast.jpg",
+    book: "/placeholders/at-book.jpg",
+  },
 };
 
 // visible:false → hidden until the pastor's book launches. Flip in Strapi (or here) to publish.
@@ -337,6 +360,7 @@ export const upcomingBook: UpcomingBook = {
   body: "Placeholder description — the pastor's upcoming book. This section stays hidden until launch; replace this copy and the cover, then flip “Show on homepage” to publish.",
   releaseLabel: "Coming Fall 2026",
   cta: "Notify Me",
+  image: "/placeholders/book-cover.jpg",
 };
 
 export const collection: Collection = {
@@ -349,16 +373,19 @@ export const collection: Collection = {
       price: "$34.00",
       tag: "New Arrival",
       tone: "light" as const,
+      image: "/placeholders/col-tote.jpg",
     },
     {
       name: "Bite Size Theology Vol. 1",
       price: "$16.00",
       tone: "cool" as const,
+      image: "/placeholders/col-book.jpg",
     },
     {
       name: "Sermon Notes Journal",
       price: "$12.00",
       tone: "yellow" as const,
+      image: "/placeholders/col-journal.jpg",
     },
   ],
   quote: {
@@ -386,6 +413,8 @@ export const podcast: Podcast = {
     "dark", "cool", "warm", "cool", "dark", "warm",
   ] as const,
   episodes: [], // filled from Strapi; empty → every slot shows its gallery tone
+  // The client's channel — the wall auto-fills from its latest videos even if Strapi is down.
+  youtubeChannelId: "UC7VL8Ljt2f0luWz4HMkUGuw",
 };
 
 // /podcast page. Hero buttons reuse podcast.actions (above) — not duplicated here.
@@ -490,9 +519,9 @@ export const about: About = {
     attribution: "The Turning Point",
   },
   images: {
-    hero: { tone: "warm" as const, label: "Caleb" },
-    turn: { tone: "gold" as const, label: "Sunrise — Arms Open" },
-    mission: { tone: "dark" as const, label: "On the Road" },
+    hero: { tone: "warm" as const, label: "Caleb", src: "/placeholders/about-hero.jpg" },
+    turn: { tone: "gold" as const, label: "Sunrise — Arms Open", src: "/placeholders/about-turn.jpg" },
+    mission: { tone: "dark" as const, label: "On the Road", src: "/placeholders/about-mission.jpg" },
   },
 };
 
@@ -540,6 +569,8 @@ export const contact: Contact = {
 export const tour: Tour = {
   heroImage: "Tour — Concert Crowd",
   secondImage: "The Podcast — Live",
+  heroImageSrc: "/placeholders/tour-crowd.jpg",
+  secondImageSrc: "/placeholders/tour-live.jpg",
   regions: [
     {
       id: "us",
@@ -580,6 +611,8 @@ export const store: Store = {
   heroSubtext:
     "Wearable conversation starters — every piece is a chance to share the hope of Jesus. 10% of proceeds support mission work.",
   heroCta: "Shop the Collection",
+  heroImage: "/placeholders/store-hero.jpg",
+  founderImage: "/placeholders/store-founder.jpg",
   proceedsBanner: "10% of proceeds support mission work",
   bestSellersHeading: "Best Sellers",
   newArrivalsHeading: "New Arrivals",
