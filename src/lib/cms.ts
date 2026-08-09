@@ -399,15 +399,20 @@ export async function getTour(): Promise<Tour> {
 // --- Store ---------------------------------------------------------------
 
 function mapProduct(p: any): StoreProduct {
+  const images = Array.isArray(p.images)
+    ? (p.images.map((m: any) => absolutize(m?.url)).filter(Boolean) as string[])
+    : [];
   return {
     slug: p.slug,
     title: p.title,
     description: p.description || "",
     price: Number(p.price) || 0,
     compareAtPrice: p.compareAtPrice != null ? Number(p.compareAtPrice) : undefined,
-    images: Array.isArray(p.images)
-      ? (p.images.map((m: any) => absolutize(m?.url)).filter(Boolean) as string[])
-      : [],
+    // No Strapi media uploaded → fall back to the matching static mockup (same || fb.x seam
+    // as the rest of cms.ts). Real uploads override; unknown slugs just stay empty.
+    images: images.length
+      ? images
+      : fb.storeProducts.find((s) => s.slug === p.slug)?.images ?? [],
     sizes: Array.isArray(p.sizes)
       ? p.sizes.map((x: any) => x?.value).filter(Boolean)
       : [],
