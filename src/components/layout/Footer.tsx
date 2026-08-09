@@ -1,5 +1,11 @@
 import { getFooter } from "@/lib/cms";
 
+// Footer link labels → routes that actually exist; every other label stays a placeholder anchor.
+const FOOTER_HREFS: Record<string, string> = {
+  "Prayer Request": "/prayer",
+  "Book Caleb": "/book-caleb",
+};
+
 export default async function Footer() {
   const footer = await getFooter();
   return (
@@ -16,7 +22,7 @@ export default async function Footer() {
                   {col.links.map((l) => (
                     <li key={l}>
                       <a
-                        href="#"
+                        href={FOOTER_HREFS[l] ?? "#"}
                         className="text-sm text-cream/70 transition-colors hover:text-cream"
                       >
                         {l}

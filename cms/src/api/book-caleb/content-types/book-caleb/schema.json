@@ -1,0 +1,76 @@
+{
+  "kind": "singleType",
+  "collectionName": "book_calebs",
+  "info": {
+    "singularName": "book-caleb",
+    "pluralName": "book-calebs",
+    "displayName": "Page — Book Caleb"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "headingLead": {
+      "type": "string"
+    },
+    "headingScript": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "text"
+    },
+    "responseNote": {
+      "type": "string"
+    },
+    "directEmailLabel": {
+      "type": "string"
+    },
+    "directEmailAddress": {
+      "type": "string"
+    },
+    "formHeading": {
+      "type": "string"
+    },
+    "formSubheading": {
+      "type": "string"
+    },
+    "fieldName": {
+      "type": "string"
+    },
+    "fieldEmail": {
+      "type": "string"
+    },
+    "fieldPhone": {
+      "type": "string"
+    },
+    "fieldOrganization": {
+      "type": "string"
+    },
+    "fieldEventType": {
+      "type": "string"
+    },
+    "fieldEventDate": {
+      "type": "string"
+    },
+    "fieldLocation": {
+      "type": "string"
+    },
+    "fieldAudience": {
+      "type": "string"
+    },
+    "fieldMessage": {
+      "type": "string"
+    },
+    "eventTypeOptions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "formSubmit": {
+      "type": "string"
+    },
+    "formSuccess": {
+      "type": "string"
+    }
+  }
+}

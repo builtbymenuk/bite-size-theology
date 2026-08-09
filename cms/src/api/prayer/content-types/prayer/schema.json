@@ -1,0 +1,53 @@
+{
+  "kind": "singleType",
+  "collectionName": "prayers",
+  "info": {
+    "singularName": "prayer",
+    "pluralName": "prayers",
+    "displayName": "Page — Prayer"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "headingLead": {
+      "type": "string"
+    },
+    "headingScript": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "text"
+    },
+    "privacyNote": {
+      "type": "string"
+    },
+    "assuranceHeading": {
+      "type": "string"
+    },
+    "assuranceBody": {
+      "type": "text"
+    },
+    "formHeading": {
+      "type": "string"
+    },
+    "formSubheading": {
+      "type": "string"
+    },
+    "fieldName": {
+      "type": "string"
+    },
+    "fieldEmail": {
+      "type": "string"
+    },
+    "fieldRequest": {
+      "type": "string"
+    },
+    "urgentLabel": {
+      "type": "string"
+    },
+    "formSubmit": {
+      "type": "string"
+    }
+  }
+}

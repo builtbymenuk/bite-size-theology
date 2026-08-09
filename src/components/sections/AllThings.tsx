@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Reveal, { RevealItem } from "@/components/ui/Reveal";
 import BentoCard from "@/components/ui/BentoCard";
 import PolaroidStack from "@/components/ui/PolaroidStack";
@@ -153,17 +154,19 @@ export default async function AllThings() {
 
         {/* Book Caleb */}
         <RevealItem>
-          <BentoCard
-            className="h-full min-h-[300px]"
-            image={{ tone: "gold", label: "Book Caleb", src: img.book }}
-          >
-            <div className="flex h-full flex-col justify-end p-5">
-              <h3 className="font-display text-2xl text-white">{c.book.title}</h3>
-              <p className="mt-1 max-w-[12rem] text-xs text-white/80">
-                {c.book.body}
-              </p>
-            </div>
-          </BentoCard>
+          <Link href="/book-caleb" className="block h-full">
+            <BentoCard
+              className="h-full min-h-[300px]"
+              image={{ tone: "gold", label: "Book Caleb", src: img.book }}
+            >
+              <div className="flex h-full flex-col justify-end p-5">
+                <h3 className="font-display text-2xl text-white">{c.book.title}</h3>
+                <p className="mt-1 max-w-[12rem] text-xs text-white/80">
+                  {c.book.body}
+                </p>
+              </div>
+            </BentoCard>
+          </Link>
         </RevealItem>
       </Reveal>
     </section>

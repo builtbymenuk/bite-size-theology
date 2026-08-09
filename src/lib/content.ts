@@ -241,6 +241,47 @@ export interface Contact {
   };
 }
 
+export interface BookCaleb {
+  headingLead: string;
+  headingScript: string;
+  intro: string;
+  responseNote: string;
+  directEmail: { label: string; address: string };
+  form: {
+    heading: string;
+    subheading: string;
+    fields: {
+      name: string;
+      email: string;
+      phone: string;
+      organization: string;
+      eventType: string;
+      eventDate: string;
+      location: string;
+      audience: string;
+      message: string;
+    };
+    eventTypeOptions: string[];
+    submit: string;
+    success: string;
+  };
+}
+
+export interface Prayer {
+  headingLead: string;
+  headingScript: string;
+  intro: string;
+  privacyNote: string;
+  assurance: { heading: string; body: string };
+  form: {
+    heading: string;
+    subheading: string;
+    fields: { name: string; email: string; request: string };
+    urgentLabel: string;
+    submit: string;
+  };
+}
+
 export interface TourDate {
   city: string;
   venue: string;
@@ -563,6 +604,67 @@ export const contact: Contact = {
     ],
     submit: "Submit Inquiry",
     success: "Thank you — your message is on its way. We'll be in touch soon.",
+  },
+};
+
+export const bookCaleb: BookCaleb = {
+  headingLead: "Have Caleb",
+  headingScript: "speak.",
+  intro:
+    "Conferences, Sunday services, retreats, youth events—wherever people are hungry for the Word, Caleb would be honored to come. Send us the details of your event and our team will follow up.",
+  responseNote: "We review every request and respond within a few business days.",
+  directEmail: {
+    label: "Prefer email?",
+    address: "hello@bitesizetheology.com",
+  },
+  form: {
+    heading: "Request a Booking",
+    subheading: "Tell us about your event",
+    fields: {
+      name: "Full Name",
+      email: "Email Address",
+      phone: "Phone (optional)",
+      organization: "Church / Organization",
+      eventType: "Event Type",
+      eventDate: "Preferred Date(s)",
+      location: "Location (city / venue)",
+      audience: "Estimated Audience Size (optional)",
+      message: "Tell us about your event",
+    },
+    eventTypeOptions: [
+      "Conference",
+      "Sunday Service",
+      "Retreat",
+      "Youth Event",
+      "Podcast / Media",
+      "Other",
+    ],
+    submit: "Send Request",
+    success:
+      "Thank you — your booking request is on its way. Our team will be in touch soon.",
+  },
+};
+
+export const prayer: Prayer = {
+  headingLead: "How can we",
+  headingScript: "pray?",
+  intro:
+    "Whatever you're carrying—a burden, a hope, a hurt—you don't have to carry it alone. Share it below and our prayer team will lift it up.",
+  privacyNote: "This stays between you and our prayer team. Share only what you're comfortable with.",
+  assurance: {
+    heading: "We're praying with you.",
+    body: "“Cast all your anxiety on him because he cares for you.” — 1 Peter 5:7\n\nYour request has reached our prayer team. May you know His peace today.",
+  },
+  form: {
+    heading: "Share a Prayer Request",
+    subheading: "We'll be praying",
+    fields: {
+      name: "Your Name (optional)",
+      email: "Email (optional)",
+      request: "What can we pray for?",
+    },
+    urgentLabel: "This is urgent",
+    submit: "Send Prayer Request",
   },
 };
 

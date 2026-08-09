@@ -14,6 +14,7 @@ const HREFS: Record<string, string> = {
   About: "/about",
   "Sermons/Videos": "/podcast",
   Shop: "/store",
+  "Book Caleb": "/book-caleb",
   Contact: "/contact",
 };
 
@@ -26,6 +27,8 @@ export default function Navbar({ nav }: { nav: Nav }) {
   const fixedTheme: "light" | undefined =
     pathname?.startsWith("/tour") ||
     pathname?.startsWith("/contact") ||
+    pathname?.startsWith("/book-caleb") ||
+    pathname?.startsWith("/prayer") ||
     pathname?.startsWith("/about") ||
     pathname?.startsWith("/podcast") ||
     pathname?.startsWith("/store")

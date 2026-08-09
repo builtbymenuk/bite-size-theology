@@ -517,6 +517,91 @@ export interface ApiAllThingAllThing extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiBookCalebBookCaleb extends Struct.SingleTypeSchema {
+  collectionName: 'book_calebs';
+  info: {
+    displayName: 'Page \u2014 Book Caleb';
+    pluralName: 'book-calebs';
+    singularName: 'book-caleb';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    directEmailAddress: Schema.Attribute.String;
+    directEmailLabel: Schema.Attribute.String;
+    eventTypeOptions: Schema.Attribute.Component<'shared.text-item', true>;
+    fieldAudience: Schema.Attribute.String;
+    fieldEmail: Schema.Attribute.String;
+    fieldEventDate: Schema.Attribute.String;
+    fieldEventType: Schema.Attribute.String;
+    fieldLocation: Schema.Attribute.String;
+    fieldMessage: Schema.Attribute.String;
+    fieldName: Schema.Attribute.String;
+    fieldOrganization: Schema.Attribute.String;
+    fieldPhone: Schema.Attribute.String;
+    formHeading: Schema.Attribute.String;
+    formSubheading: Schema.Attribute.String;
+    formSubmit: Schema.Attribute.String;
+    formSuccess: Schema.Attribute.String;
+    headingLead: Schema.Attribute.String;
+    headingScript: Schema.Attribute.String;
+    intro: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::book-caleb.book-caleb'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    responseNote: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiBookingRequestBookingRequest
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'booking_requests';
+  info: {
+    displayName: 'Booking Request';
+    pluralName: 'booking-requests';
+    singularName: 'booking-request';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    audienceSize: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    eventDate: Schema.Attribute.String;
+    eventType: Schema.Attribute.String;
+    handled: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::booking-request.booking-request'
+    > &
+      Schema.Attribute.Private;
+    location: Schema.Attribute.String;
+    message: Schema.Attribute.Text & Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    organization: Schema.Attribute.String & Schema.Attribute.Required;
+    phone: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCallingCalling extends Struct.SingleTypeSchema {
   collectionName: 'callings';
   info: {
@@ -612,6 +697,39 @@ export interface ApiCollectionCollection extends Struct.SingleTypeSchema {
     quoteBody: Schema.Attribute.Text;
     quoteCta: Schema.Attribute.String;
     quoteText: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiContactMessageContactMessage
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'contact_messages';
+  info: {
+    displayName: 'Contact Message';
+    pluralName: 'contact-messages';
+    singularName: 'contact-message';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    handled: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contact-message.contact-message'
+    > &
+      Schema.Attribute.Private;
+    message: Schema.Attribute.Text & Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    subject: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -921,6 +1039,79 @@ export interface ApiPodcastPodcast extends Struct.SingleTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     youtubeChannelId: Schema.Attribute.String;
+  };
+}
+
+export interface ApiPrayerRequestPrayerRequest
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'prayer_requests';
+  info: {
+    displayName: 'Prayer Request';
+    pluralName: 'prayer-requests';
+    singularName: 'prayer-request';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email;
+    handled: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::prayer-request.prayer-request'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    request: Schema.Attribute.Text & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    urgent: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+  };
+}
+
+export interface ApiPrayerPrayer extends Struct.SingleTypeSchema {
+  collectionName: 'prayers';
+  info: {
+    displayName: 'Page \u2014 Prayer';
+    pluralName: 'prayers';
+    singularName: 'prayer';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    assuranceBody: Schema.Attribute.Text;
+    assuranceHeading: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    fieldEmail: Schema.Attribute.String;
+    fieldName: Schema.Attribute.String;
+    fieldRequest: Schema.Attribute.String;
+    formHeading: Schema.Attribute.String;
+    formSubheading: Schema.Attribute.String;
+    formSubmit: Schema.Attribute.String;
+    headingLead: Schema.Attribute.String;
+    headingScript: Schema.Attribute.String;
+    intro: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::prayer.prayer'
+    > &
+      Schema.Attribute.Private;
+    privacyNote: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    urgentLabel: Schema.Attribute.String;
   };
 }
 
@@ -1576,9 +1767,12 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::about.about': ApiAboutAbout;
       'api::all-thing.all-thing': ApiAllThingAllThing;
+      'api::book-caleb.book-caleb': ApiBookCalebBookCaleb;
+      'api::booking-request.booking-request': ApiBookingRequestBookingRequest;
       'api::calling.calling': ApiCallingCalling;
       'api::category.category': ApiCategoryCategory;
       'api::collection.collection': ApiCollectionCollection;
+      'api::contact-message.contact-message': ApiContactMessageContactMessage;
       'api::contact.contact': ApiContactContact;
       'api::eyebrow.eyebrow': ApiEyebrowEyebrow;
       'api::faq.faq': ApiFaqFaq;
@@ -1588,6 +1782,8 @@ declare module '@strapi/strapi' {
       'api::order.order': ApiOrderOrder;
       'api::podcast-page.podcast-page': ApiPodcastPagePodcastPage;
       'api::podcast.podcast': ApiPodcastPodcast;
+      'api::prayer-request.prayer-request': ApiPrayerRequestPrayerRequest;
+      'api::prayer.prayer': ApiPrayerPrayer;
       'api::product.product': ApiProductProduct;
       'api::store.store': ApiStoreStore;
       'api::tour.tour': ApiTourTour;

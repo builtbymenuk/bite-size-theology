@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "prayer_requests",
+  "info": {
+    "singularName": "prayer-request",
+    "pluralName": "prayer-requests",
+    "displayName": "Prayer Request"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "request": {
+      "type": "text",
+      "required": true
+    },
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "urgent": {
+      "type": "boolean",
+      "default": false
+    },
+    "handled": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

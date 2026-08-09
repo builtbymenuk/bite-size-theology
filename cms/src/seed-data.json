@@ -218,6 +218,50 @@
     "formSubmit": "Submit Inquiry",
     "formSuccess": "Thank you — your message is on its way. We'll be in touch soon."
   },
+  "book-caleb": {
+    "headingLead": "Have Caleb",
+    "headingScript": "speak.",
+    "intro": "Conferences, Sunday services, retreats, youth events—wherever people are hungry for the Word, Caleb would be honored to come. Send us the details of your event and our team will follow up.",
+    "responseNote": "We review every request and respond within a few business days.",
+    "directEmailLabel": "Prefer email?",
+    "directEmailAddress": "hello@bitesizetheology.com",
+    "formHeading": "Request a Booking",
+    "formSubheading": "Tell us about your event",
+    "fieldName": "Full Name",
+    "fieldEmail": "Email Address",
+    "fieldPhone": "Phone (optional)",
+    "fieldOrganization": "Church / Organization",
+    "fieldEventType": "Event Type",
+    "fieldEventDate": "Preferred Date(s)",
+    "fieldLocation": "Location (city / venue)",
+    "fieldAudience": "Estimated Audience Size (optional)",
+    "fieldMessage": "Tell us about your event",
+    "eventTypeOptions": [
+      { "value": "Conference" },
+      { "value": "Sunday Service" },
+      { "value": "Retreat" },
+      { "value": "Youth Event" },
+      { "value": "Podcast / Media" },
+      { "value": "Other" }
+    ],
+    "formSubmit": "Send Request",
+    "formSuccess": "Thank you — your booking request is on its way. Our team will be in touch soon."
+  },
+  "prayer": {
+    "headingLead": "How can we",
+    "headingScript": "pray?",
+    "intro": "Whatever you're carrying—a burden, a hope, a hurt—you don't have to carry it alone. Share it below and our prayer team will lift it up.",
+    "privacyNote": "This stays between you and our prayer team. Share only what you're comfortable with.",
+    "assuranceHeading": "We're praying with you.",
+    "assuranceBody": "“Cast all your anxiety on him because he cares for you.” — 1 Peter 5:7\n\nYour request has reached our prayer team. May you know His peace today.",
+    "formHeading": "Share a Prayer Request",
+    "formSubheading": "We'll be praying",
+    "fieldName": "Your Name (optional)",
+    "fieldEmail": "Email (optional)",
+    "fieldRequest": "What can we pray for?",
+    "urgentLabel": "This is urgent",
+    "formSubmit": "Send Prayer Request"
+  },
   "tour": {
     "regions": [
       {

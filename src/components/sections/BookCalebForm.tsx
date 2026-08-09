@@ -1,26 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import type { Contact } from "@/lib/content";
+import type { BookCaleb } from "@/lib/content";
 
 // Shared underline field style (design shows borderless inputs with a single bottom rule).
 const field =
   "w-full border-b border-ink/15 bg-transparent py-3 text-sm text-ink placeholder:text-ink/40 focus:border-ink outline-none transition-colors";
 
-export default function ContactForm({ form }: { form: Contact["form"] }) {
+export default function BookCalebForm({ form }: { form: BookCaleb["form"] }) {
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
 
-  // native `required` + type="email" gate the fields; on submit we POST to /api/contact,
-  // which stores the message in Strapi and emails a notification (see that route).
+  // native `required` + type="email" gate the fields; on submit we POST to /api/book,
+  // which stores the request in Strapi and emails the pastor (see that route).
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSending(true);
     setError("");
     const payload = Object.fromEntries(new FormData(e.currentTarget).entries());
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch("/api/book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -51,40 +51,39 @@ export default function ContactForm({ form }: { form: Contact["form"] }) {
           {/* honeypot — real users never see or fill this; bots do. ponytail: no captcha yet */}
           <input
             type="text"
-            name="company"
+            name="website"
             tabIndex={-1}
             autoComplete="off"
             aria-hidden
             className="absolute left-[-9999px] h-0 w-0 opacity-0"
           />
           <div className="grid gap-8 md:grid-cols-2">
+            <input type="text" name="name" required placeholder={form.fields.name} className={field} />
+            <input type="email" name="email" required placeholder={form.fields.email} className={field} />
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-2">
+            <input type="tel" name="phone" placeholder={form.fields.phone} className={field} />
             <input
               type="text"
-              name="name"
+              name="organization"
               required
-              placeholder={form.fields.name}
-              className={field}
-            />
-            <input
-              type="email"
-              name="email"
-              required
-              placeholder={form.fields.email}
+              placeholder={form.fields.organization}
               className={field}
             />
           </div>
 
           <div className="relative">
             <select
-              name="subject"
+              name="eventType"
               defaultValue=""
               required
               className={`${field} appearance-none pr-8`}
             >
               <option value="" disabled hidden>
-                {form.fields.subject}
+                {form.fields.eventType}
               </option>
-              {form.subjectOptions.map((o) => (
+              {form.eventTypeOptions.map((o) => (
                 <option key={o} value={o}>
                   {o}
                 </option>
@@ -96,14 +95,33 @@ export default function ContactForm({ form }: { form: Contact["form"] }) {
               viewBox="0 0 12 12"
               className="pointer-events-none absolute right-1 top-4 h-3 w-3 text-ink/50"
             >
-              <path
-                d="M2 4l4 4 4-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.2"
-              />
+              <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.2" />
             </svg>
           </div>
+
+          <div className="grid gap-8 md:grid-cols-2">
+            <input
+              type="text"
+              name="eventDate"
+              required
+              placeholder={form.fields.eventDate}
+              className={field}
+            />
+            <input
+              type="text"
+              name="location"
+              required
+              placeholder={form.fields.location}
+              className={field}
+            />
+          </div>
+
+          <input
+            type="text"
+            name="audienceSize"
+            placeholder={form.fields.audience}
+            className={field}
+          />
 
           <textarea
             name="message"

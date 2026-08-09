@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "booking_requests",
+  "info": {
+    "singularName": "booking-request",
+    "pluralName": "booking-requests",
+    "displayName": "Booking Request"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "phone": {
+      "type": "string"
+    },
+    "organization": {
+      "type": "string",
+      "required": true
+    },
+    "eventType": {
+      "type": "string"
+    },
+    "eventDate": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "audienceSize": {
+      "type": "string"
+    },
+    "message": {
+      "type": "text",
+      "required": true
+    },
+    "handled": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

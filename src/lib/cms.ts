@@ -11,7 +11,7 @@ import * as fb from "./content";
 import { getYouTubeVideos } from "./youtube";
 import type {
   Nav, Hero, Calling, AllThings, UpcomingBook, Collection, Podcast, PodcastPage,
-  Faq, Footer, About, Contact, Tour, StoreProduct, Store, Category,
+  Faq, Footer, About, Contact, BookCaleb, Prayer, Tour, StoreProduct, Store, Category,
 } from "./content";
 
 const BASE = process.env.STRAPI_URL;
@@ -358,6 +358,69 @@ export async function getContact(): Promise<Contact> {
       ),
       submit: d.formSubmit || fb.contact.form.submit,
       success: d.formSuccess || fb.contact.form.success,
+    },
+  };
+}
+
+export async function getBookCaleb(): Promise<BookCaleb> {
+  const d = await single("book-caleb");
+  if (!d) return fb.bookCaleb;
+  return {
+    headingLead: d.headingLead || fb.bookCaleb.headingLead,
+    headingScript: d.headingScript || fb.bookCaleb.headingScript,
+    intro: d.intro || fb.bookCaleb.intro,
+    responseNote: d.responseNote || fb.bookCaleb.responseNote,
+    directEmail: {
+      label: d.directEmailLabel || fb.bookCaleb.directEmail.label,
+      address: d.directEmailAddress || fb.bookCaleb.directEmail.address,
+    },
+    form: {
+      heading: d.formHeading || fb.bookCaleb.form.heading,
+      subheading: d.formSubheading || fb.bookCaleb.form.subheading,
+      fields: {
+        name: d.fieldName || fb.bookCaleb.form.fields.name,
+        email: d.fieldEmail || fb.bookCaleb.form.fields.email,
+        phone: d.fieldPhone || fb.bookCaleb.form.fields.phone,
+        organization: d.fieldOrganization || fb.bookCaleb.form.fields.organization,
+        eventType: d.fieldEventType || fb.bookCaleb.form.fields.eventType,
+        eventDate: d.fieldEventDate || fb.bookCaleb.form.fields.eventDate,
+        location: d.fieldLocation || fb.bookCaleb.form.fields.location,
+        audience: d.fieldAudience || fb.bookCaleb.form.fields.audience,
+        message: d.fieldMessage || fb.bookCaleb.form.fields.message,
+      },
+      eventTypeOptions: arr(
+        d.eventTypeOptions,
+        (o) => o.value,
+        fb.bookCaleb.form.eventTypeOptions,
+      ),
+      submit: d.formSubmit || fb.bookCaleb.form.submit,
+      success: d.formSuccess || fb.bookCaleb.form.success,
+    },
+  };
+}
+
+export async function getPrayer(): Promise<Prayer> {
+  const d = await single("prayer");
+  if (!d) return fb.prayer;
+  return {
+    headingLead: d.headingLead || fb.prayer.headingLead,
+    headingScript: d.headingScript || fb.prayer.headingScript,
+    intro: d.intro || fb.prayer.intro,
+    privacyNote: d.privacyNote || fb.prayer.privacyNote,
+    assurance: {
+      heading: d.assuranceHeading || fb.prayer.assurance.heading,
+      body: d.assuranceBody || fb.prayer.assurance.body,
+    },
+    form: {
+      heading: d.formHeading || fb.prayer.form.heading,
+      subheading: d.formSubheading || fb.prayer.form.subheading,
+      fields: {
+        name: d.fieldName || fb.prayer.form.fields.name,
+        email: d.fieldEmail || fb.prayer.form.fields.email,
+        request: d.fieldRequest || fb.prayer.form.fields.request,
+      },
+      urgentLabel: d.urgentLabel || fb.prayer.form.urgentLabel,
+      submit: d.formSubmit || fb.prayer.form.submit,
     },
   };
 }
