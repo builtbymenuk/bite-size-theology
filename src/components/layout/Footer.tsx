@@ -1,10 +1,5 @@
 import { getFooter } from "@/lib/cms";
-
-// Footer link labels → routes that actually exist; every other label stays a placeholder anchor.
-const FOOTER_HREFS: Record<string, string> = {
-  "Prayer Request": "/prayer",
-  "Book Caleb": "/book-caleb",
-};
+import { linkProps } from "@/lib/links";
 
 export default async function Footer() {
   const footer = await getFooter();
@@ -20,12 +15,12 @@ export default async function Footer() {
                 </p>
                 <ul className="mt-4 space-y-2">
                   {col.links.map((l) => (
-                    <li key={l}>
+                    <li key={l.label}>
                       <a
-                        href={FOOTER_HREFS[l] ?? "#"}
+                        {...(linkProps(l.url).href ? linkProps(l.url) : { href: "#" })}
                         className="text-sm text-cream/70 transition-colors hover:text-cream"
                       >
-                        {l}
+                        {l.label}
                       </a>
                     </li>
                   ))}
@@ -55,8 +50,12 @@ export default async function Footer() {
           <span>{footer.copyright}</span>
           <div className="flex gap-6">
             {footer.legal.map((l) => (
-              <a key={l} href="#" className="hover:text-cream">
-                {l}
+              <a
+                key={l.label}
+                {...(linkProps(l.url).href ? linkProps(l.url) : { href: "#" })}
+                className="hover:text-cream"
+              >
+                {l.label}
               </a>
             ))}
           </div>

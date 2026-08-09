@@ -10,6 +10,9 @@
     },
     "handle": {
       "type": "string"
+    },
+    "url": {
+      "type": "string"
     }
   }
 }

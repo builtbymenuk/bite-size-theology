@@ -29,8 +29,19 @@ export interface SharedFooterColumn extends Struct.ComponentSchema {
     displayName: 'footer-column';
   };
   attributes: {
-    links: Schema.Attribute.Component<'shared.text-item', true>;
+    links: Schema.Attribute.Component<'shared.link', true>;
     title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedLink extends Struct.ComponentSchema {
+  collectionName: 'components_shared_links';
+  info: {
+    displayName: 'link';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    url: Schema.Attribute.String;
   };
 }
 
@@ -42,6 +53,7 @@ export interface SharedPodcastAction extends Struct.ComponentSchema {
   attributes: {
     label: Schema.Attribute.String;
     platform: Schema.Attribute.Enumeration<['spotify', 'youtube']>;
+    url: Schema.Attribute.String;
   };
 }
 
@@ -58,6 +70,7 @@ export interface SharedProduct extends Struct.ComponentSchema {
     tone: Schema.Attribute.Enumeration<
       ['dark', 'warm', 'light', 'cool', 'gold', 'yellow']
     >;
+    url: Schema.Attribute.String;
   };
 }
 
@@ -69,6 +82,7 @@ export interface SharedSocial extends Struct.ComponentSchema {
   attributes: {
     handle: Schema.Attribute.String;
     name: Schema.Attribute.String;
+    url: Schema.Attribute.String;
   };
 }
 
@@ -128,6 +142,7 @@ declare module '@strapi/strapi' {
       'shared.episode': SharedEpisode;
       'shared.faq-item': SharedFaqItem;
       'shared.footer-column': SharedFooterColumn;
+      'shared.link': SharedLink;
       'shared.podcast-action': SharedPodcastAction;
       'shared.product': SharedProduct;
       'shared.social': SharedSocial;

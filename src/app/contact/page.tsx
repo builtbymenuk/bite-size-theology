@@ -105,15 +105,32 @@ export default async function ContactPage() {
             <RevealItem className="border-t border-ink/10 pt-6">
               <p className={label}>{contact.connectLabel}</p>
               <ul className="mt-4 space-y-3">
-                {contact.socials.map((s) => (
-                  <li
-                    key={s.name}
-                    className="flex items-baseline justify-between gap-4"
-                  >
-                    <span className="text-sm text-ink">{s.name}</span>
-                    <span className="text-xs text-ink/40">{s.handle}</span>
-                  </li>
-                ))}
+                {contact.socials.map((s) => {
+                  const row = (
+                    <>
+                      <span className="text-sm text-ink transition-colors group-hover:text-gold">
+                        {s.name}
+                      </span>
+                      <span className="text-xs text-ink/40">{s.handle}</span>
+                    </>
+                  );
+                  return (
+                    <li key={s.name} className="flex items-baseline justify-between gap-4">
+                      {s.url ? (
+                        <a
+                          href={s.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex flex-1 items-baseline justify-between gap-4"
+                        >
+                          {row}
+                        </a>
+                      ) : (
+                        row
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </RevealItem>
           </Reveal>

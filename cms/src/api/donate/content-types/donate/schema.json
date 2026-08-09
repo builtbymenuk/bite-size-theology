@@ -1,0 +1,66 @@
+{
+  "kind": "singleType",
+  "collectionName": "donates",
+  "info": {
+    "singularName": "donate",
+    "pluralName": "donates",
+    "displayName": "Page — Donate"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "heroEyebrow": {
+      "type": "string"
+    },
+    "heroHeading": {
+      "type": "string"
+    },
+    "heroAccent": {
+      "type": "string"
+    },
+    "heroSubtext": {
+      "type": "text"
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "presets": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "fundOptions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "impactHeading": {
+      "type": "string"
+    },
+    "impactStats": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.stat"
+    },
+    "proceedsNote": {
+      "type": "string"
+    },
+    "assuranceTitle": {
+      "type": "string"
+    },
+    "assuranceBody": {
+      "type": "text"
+    },
+    "thankYouHeading": {
+      "type": "string"
+    },
+    "thankYouBody": {
+      "type": "text"
+    }
+  }
+}

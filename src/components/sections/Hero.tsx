@@ -59,7 +59,7 @@ export default function Hero({ hero }: { hero: Hero }) {
           <p className="max-w-md text-sm leading-relaxed text-cream/70">
             {hero.subtext}
           </p>
-          <ArrowButton dark label={hero.cta} className="self-start text-cream md:self-auto" />
+          <ArrowButton dark label={hero.cta} href={hero.ctaUrl} className="self-start text-cream md:self-auto" />
         </motion.div>
       </div>
     </section>

@@ -43,7 +43,7 @@ export default async function AboutPage() {
               <p className="text-sm font-medium text-ink">{about.name}</p>
               <p className="text-[11px] text-ink/50">{about.role}</p>
             </div>
-            <ArrowButton label={about.donateCta} />
+            <ArrowButton label={about.donateCta} href={about.donateCtaUrl} />
           </Reveal>
         </div>
 

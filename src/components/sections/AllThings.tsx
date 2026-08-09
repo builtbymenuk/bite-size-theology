@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { linkProps } from "@/lib/links";
 import Reveal, { RevealItem } from "@/components/ui/Reveal";
 import BentoCard from "@/components/ui/BentoCard";
 import PolaroidStack from "@/components/ui/PolaroidStack";
@@ -28,6 +28,18 @@ export default async function AllThings() {
   const allThings = await getAllThings();
   const c = allThings.cards;
   const img = allThings.images ?? {};
+  const l = allThings.links;
+  // Wrap a whole tile in a link when its CMS url is set (external → new tab); else render inert.
+  const wrap = (url: string, node: React.ReactNode) => {
+    const p = linkProps(url);
+    return p.href ? (
+      <a {...p} className="block h-full">
+        {node}
+      </a>
+    ) : (
+      node
+    );
+  };
   return (
     <section className="mx-auto max-w-7xl px-6 py-24">
       <Reveal className="mx-auto max-w-2xl text-center">
@@ -50,9 +62,18 @@ export default async function AllThings() {
             <div className="relative flex h-full items-center">
               <div>
                 <h3 className="font-display text-2xl">{c.testimony.title}</h3>
-                <button className="mt-3 text-[11px] uppercase tracking-widest text-ink/60">
-                  {c.testimony.cta} →
-                </button>
+                {linkProps(l.testimony).href ? (
+                  <a
+                    {...linkProps(l.testimony)}
+                    className="mt-3 inline-block text-[11px] uppercase tracking-widest text-ink/60 transition-colors hover:text-ink"
+                  >
+                    {c.testimony.cta} →
+                  </a>
+                ) : (
+                  <button className="mt-3 text-[11px] uppercase tracking-widest text-ink/60">
+                    {c.testimony.cta} →
+                  </button>
+                )}
               </div>
               {/* Oversized polaroids spilling past the card's top-right edge for a creative break-out. */}
               <PolaroidStack
@@ -68,41 +89,50 @@ export default async function AllThings() {
 
         {/* YouTube — 2 wide */}
         <RevealItem className="lg:col-span-2">
-          <BentoCard
-            className="h-full min-h-[300px]"
-            image={{ tone: "dark", label: "YouTube — Camera Rig", src: img.youtube }}
-          >
-            <div className="flex h-full items-end p-6">
-              <p className="max-w-xs text-sm text-cream/90">{c.youtube.body}</p>
-            </div>
-          </BentoCard>
+          {wrap(
+            l.youtube,
+            <BentoCard
+              className="h-full min-h-[300px]"
+              image={{ tone: "dark", label: "YouTube — Camera Rig", src: img.youtube }}
+            >
+              <div className="flex h-full items-end p-6">
+                <p className="max-w-xs text-sm text-cream/90">{c.youtube.body}</p>
+              </div>
+            </BentoCard>,
+          )}
         </RevealItem>
 
         {/* TikTok — tall */}
         <RevealItem className="lg:row-span-2">
-          <BentoCard
-            className="h-full min-h-[300px]"
-            image={{ tone: "cool", label: "TikTok — Phone", src: img.tiktok }}
-          >
-            <div className="flex h-full flex-col justify-end p-5">
-              <p className="text-sm text-cream/90">{c.tiktok.body}</p>
-              <button className="mt-3 self-start rounded-full bg-cream/90 px-4 py-2 text-[11px] uppercase tracking-widest text-ink">
-                {c.tiktok.cta}
-              </button>
-            </div>
-          </BentoCard>
+          {wrap(
+            l.tiktok,
+            <BentoCard
+              className="h-full min-h-[300px]"
+              image={{ tone: "cool", label: "TikTok — Phone", src: img.tiktok }}
+            >
+              <div className="flex h-full flex-col justify-end p-5">
+                <p className="text-sm text-cream/90">{c.tiktok.body}</p>
+                <span className="mt-3 self-start rounded-full bg-cream/90 px-4 py-2 text-[11px] uppercase tracking-widest text-ink">
+                  {c.tiktok.cta}
+                </span>
+              </div>
+            </BentoCard>,
+          )}
         </RevealItem>
 
         {/* Shop */}
         <RevealItem>
-          <BentoCard
-            className="h-full min-h-[300px]"
-            image={{ tone: "warm", label: "Shop — Merch", src: img.shop }}
-          >
-            <div className="flex h-full items-end p-5">
-              <h3 className="font-display text-3xl text-cream">{c.shop.title}</h3>
-            </div>
-          </BentoCard>
+          {wrap(
+            l.shop,
+            <BentoCard
+              className="h-full min-h-[300px]"
+              image={{ tone: "warm", label: "Shop — Merch", src: img.shop }}
+            >
+              <div className="flex h-full items-end p-5">
+                <h3 className="font-display text-3xl text-cream">{c.shop.title}</h3>
+              </div>
+            </BentoCard>,
+          )}
         </RevealItem>
 
         {/* Give Now */}
@@ -112,9 +142,12 @@ export default async function AllThings() {
               <h3 className="font-display text-2xl">{c.give.title}</h3>
               <div>
                 <p className="text-xs text-ink/60">{c.give.body}</p>
-                <button className="mt-1 text-xs font-medium underline">
+                <a
+                  {...(linkProps(l.give).href ? linkProps(l.give) : { href: "#" })}
+                  className="mt-1 inline-block text-xs font-medium underline"
+                >
                   {c.give.cta}
-                </button>
+                </a>
               </div>
             </div>
           </BentoCard>
@@ -137,24 +170,28 @@ export default async function AllThings() {
 
         {/* Podcast */}
         <RevealItem>
-          <BentoCard
-            className="h-full min-h-[300px]"
-            image={{ tone: "dark", label: "Podcast — Mic", src: img.podcast }}
-          >
-            <div className="flex h-full flex-col justify-end p-5">
-              <p className="text-[10px] uppercase tracking-widest text-gold">
-                {c.podcast.eyebrow}
-              </p>
-              <h3 className="font-display text-xl text-cream">
-                {c.podcast.title}
-              </h3>
-            </div>
-          </BentoCard>
+          {wrap(
+            l.podcast,
+            <BentoCard
+              className="h-full min-h-[300px]"
+              image={{ tone: "dark", label: "Podcast — Mic", src: img.podcast }}
+            >
+              <div className="flex h-full flex-col justify-end p-5">
+                <p className="text-[10px] uppercase tracking-widest text-gold">
+                  {c.podcast.eyebrow}
+                </p>
+                <h3 className="font-display text-xl text-cream">
+                  {c.podcast.title}
+                </h3>
+              </div>
+            </BentoCard>,
+          )}
         </RevealItem>
 
         {/* Book Caleb */}
         <RevealItem>
-          <Link href="/book-caleb" className="block h-full">
+          {wrap(
+            l.book,
             <BentoCard
               className="h-full min-h-[300px]"
               image={{ tone: "gold", label: "Book Caleb", src: img.book }}
@@ -165,8 +202,8 @@ export default async function AllThings() {
                   {c.book.body}
                 </p>
               </div>
-            </BentoCard>
-          </Link>
+            </BentoCard>,
+          )}
         </RevealItem>
       </Reveal>
     </section>

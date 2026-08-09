@@ -456,6 +456,7 @@ export interface ApiAboutAbout extends Struct.SingleTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     donateCta: Schema.Attribute.String;
+    donateCtaUrl: Schema.Attribute.String;
     eyebrow: Schema.Attribute.String;
     headingLead: Schema.Attribute.String;
     headingName: Schema.Attribute.String;
@@ -514,6 +515,13 @@ export interface ApiAllThingAllThing extends Struct.SingleTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    urlBook: Schema.Attribute.String;
+    urlGive: Schema.Attribute.String;
+    urlPodcast: Schema.Attribute.String;
+    urlShop: Schema.Attribute.String;
+    urlTestimony: Schema.Attribute.String;
+    urlTiktok: Schema.Attribute.String;
+    urlYoutube: Schema.Attribute.String;
   };
 }
 
@@ -686,6 +694,7 @@ export interface ApiCollectionCollection extends Struct.SingleTypeSchema {
     eyebrow: Schema.Attribute.String;
     heading: Schema.Attribute.String;
     link: Schema.Attribute.String;
+    linkUrl: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -696,6 +705,7 @@ export interface ApiCollectionCollection extends Struct.SingleTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     quoteBody: Schema.Attribute.Text;
     quoteCta: Schema.Attribute.String;
+    quoteCtaUrl: Schema.Attribute.String;
     quoteText: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -782,6 +792,89 @@ export interface ApiContactContact extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiDonateDonate extends Struct.SingleTypeSchema {
+  collectionName: 'donates';
+  info: {
+    displayName: 'Page \u2014 Donate';
+    pluralName: 'donates';
+    singularName: 'donate';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    assuranceBody: Schema.Attribute.Text;
+    assuranceTitle: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    fundOptions: Schema.Attribute.Component<'shared.text-item', true>;
+    heroAccent: Schema.Attribute.String;
+    heroEyebrow: Schema.Attribute.String;
+    heroHeading: Schema.Attribute.String;
+    heroImage: Schema.Attribute.Media<'images'>;
+    heroSubtext: Schema.Attribute.Text;
+    impactHeading: Schema.Attribute.String;
+    impactStats: Schema.Attribute.Component<'shared.stat', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::donate.donate'
+    > &
+      Schema.Attribute.Private;
+    presets: Schema.Attribute.Component<'shared.text-item', true>;
+    proceedsNote: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    thankYouBody: Schema.Attribute.Text;
+    thankYouHeading: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDonationDonation extends Struct.CollectionTypeSchema {
+  collectionName: 'donations';
+  info: {
+    displayName: 'Donation';
+    pluralName: 'donations';
+    singularName: 'donation';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    amount: Schema.Attribute.Decimal;
+    anonymous: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currency: Schema.Attribute.String;
+    email: Schema.Attribute.Email;
+    fund: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::donation.donation'
+    > &
+      Schema.Attribute.Private;
+    message: Schema.Attribute.Text;
+    name: Schema.Attribute.String;
+    paypalCaptureId: Schema.Attribute.String;
+    paypalOrderId: Schema.Attribute.String & Schema.Attribute.Unique;
+    provider: Schema.Attribute.Enumeration<['paypal', 'stripe']>;
+    publishedAt: Schema.Attribute.DateTime;
+    recurring: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    status: Schema.Attribute.Enumeration<['completed', 'refunded']> &
+      Schema.Attribute.DefaultTo<'completed'>;
+    stripePaymentIntentId: Schema.Attribute.String;
+    stripeSessionId: Schema.Attribute.String & Schema.Attribute.Unique;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiEyebrowEyebrow extends Struct.SingleTypeSchema {
   collectionName: 'eyebrows';
   info: {
@@ -833,6 +926,7 @@ export interface ApiFaqFaq extends Struct.SingleTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     supportBody: Schema.Attribute.Text;
     supportCta: Schema.Attribute.String;
+    supportCtaUrl: Schema.Attribute.String;
     supportEyebrow: Schema.Attribute.String;
     supportHeading: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
@@ -857,7 +951,7 @@ export interface ApiFooterFooter extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    legal: Schema.Attribute.Component<'shared.text-item', true>;
+    legal: Schema.Attribute.Component<'shared.link', true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -891,6 +985,7 @@ export interface ApiHeroHero extends Struct.SingleTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     cta: Schema.Attribute.String;
+    ctaUrl: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::hero.hero'> &
       Schema.Attribute.Private;
@@ -918,7 +1013,7 @@ export interface ApiNavNav extends Struct.SingleTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     cta: Schema.Attribute.String;
-    links: Schema.Attribute.Component<'shared.text-item', true>;
+    links: Schema.Attribute.Component<'shared.link', true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::nav.nav'> &
       Schema.Attribute.Private;
@@ -1202,10 +1297,12 @@ export interface ApiStoreStore extends Struct.SingleTypeSchema {
     currency: Schema.Attribute.String;
     founderBody: Schema.Attribute.Text;
     founderCta: Schema.Attribute.String;
+    founderCtaUrl: Schema.Attribute.String;
     founderEyebrow: Schema.Attribute.String;
     founderHeading: Schema.Attribute.String;
     founderImage: Schema.Attribute.Media<'images'>;
     heroCta: Schema.Attribute.String;
+    heroCtaUrl: Schema.Attribute.String;
     heroEyebrow: Schema.Attribute.String;
     heroHeading: Schema.Attribute.String;
     heroImage: Schema.Attribute.Media<'images'>;
@@ -1217,6 +1314,43 @@ export interface ApiStoreStore extends Struct.SingleTypeSchema {
     proceedsBanner: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     shippingFee: Schema.Attribute.Decimal;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiThemeSettingThemeSetting extends Struct.SingleTypeSchema {
+  collectionName: 'theme_settings';
+  info: {
+    displayName: 'Settings \u2014 Theme Colors';
+    pluralName: 'theme-settings';
+    singularName: 'theme-setting';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    accent: Schema.Attribute.String &
+      Schema.Attribute.CustomField<'plugin::color-picker.color'>;
+    blue: Schema.Attribute.String &
+      Schema.Attribute.CustomField<'plugin::color-picker.color'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    darkSection: Schema.Attribute.String &
+      Schema.Attribute.CustomField<'plugin::color-picker.color'>;
+    ink: Schema.Attribute.String &
+      Schema.Attribute.CustomField<'plugin::color-picker.color'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::theme-setting.theme-setting'
+    > &
+      Schema.Attribute.Private;
+    paper: Schema.Attribute.String &
+      Schema.Attribute.CustomField<'plugin::color-picker.color'>;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1266,6 +1400,7 @@ export interface ApiUpcomingBookUpcomingBook extends Struct.SingleTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     cta: Schema.Attribute.String;
+    ctaUrl: Schema.Attribute.String;
     eyebrow: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -1805,6 +1940,8 @@ declare module '@strapi/strapi' {
       'api::collection.collection': ApiCollectionCollection;
       'api::contact-message.contact-message': ApiContactMessageContactMessage;
       'api::contact.contact': ApiContactContact;
+      'api::donate.donate': ApiDonateDonate;
+      'api::donation.donation': ApiDonationDonation;
       'api::eyebrow.eyebrow': ApiEyebrowEyebrow;
       'api::faq.faq': ApiFaqFaq;
       'api::footer.footer': ApiFooterFooter;
@@ -1818,6 +1955,7 @@ declare module '@strapi/strapi' {
       'api::prayer.prayer': ApiPrayerPrayer;
       'api::product.product': ApiProductProduct;
       'api::store.store': ApiStoreStore;
+      'api::theme-setting.theme-setting': ApiThemeSettingThemeSetting;
       'api::tour.tour': ApiTourTour;
       'api::upcoming-book.upcoming-book': ApiUpcomingBookUpcomingBook;
       'plugin::content-releases.release': PluginContentReleasesRelease;

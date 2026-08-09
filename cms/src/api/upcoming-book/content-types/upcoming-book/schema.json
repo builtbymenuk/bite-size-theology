@@ -29,6 +29,9 @@
     "releaseLabel": {
       "type": "string"
     },
+    "ctaUrl": {
+      "type": "string"
+    },
     "cta": {
       "type": "string"
     },

@@ -18,7 +18,7 @@ export default async function Faq() {
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink/60">
             {faq.supportBody}
           </p>
-          <ArrowButton label={faq.supportCta} className="mt-6" />
+          <ArrowButton label={faq.supportCta} href={faq.supportCtaUrl} className="mt-6" />
         </Reveal>
 
         <Reveal>

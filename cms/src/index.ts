@@ -4,7 +4,7 @@ import seedData from "./seed-data.json";
 // `store` is the storefront's editorial single type; the rest are the marketing pages.
 const NAMES = [
   "nav", "hero", "eyebrow", "calling", "all-thing", "upcoming-book", "collection", "podcast",
-  "podcast-page", "faq", "footer", "about", "contact", "book-caleb", "prayer", "tour",
+  "podcast-page", "faq", "footer", "about", "contact", "book-caleb", "prayer", "theme-setting", "donate", "tour",
   "store",
 ];
 
@@ -48,6 +48,13 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     imgShop: { label: "Photo — Shop card" },
     imgPodcast: { label: "Photo — Podcast card" },
     imgBook: { label: "Photo — Book Caleb card" },
+    urlTestimony: { label: "Link — Testimony tile", description: "Full https:// or /page; blank = not clickable" },
+    urlYoutube: { label: "Link — YouTube tile", description: "Full https:// or /page; blank = not clickable" },
+    urlTiktok: { label: "Link — TikTok tile", description: "Full https:// or /page; blank = not clickable" },
+    urlShop: { label: "Link — Shop tile", description: "Full https:// or /page; blank = not clickable" },
+    urlPodcast: { label: "Link — Podcast tile", description: "Full https:// or /page; blank = not clickable" },
+    urlBook: { label: "Link — Book Caleb tile", description: "Full https:// or /page; blank = not clickable" },
+    urlGive: { label: "Link — Give tile", description: "Full https:// or /page; blank = not clickable" },
   },
   "upcoming-book": {
     visible: { label: "Show on homepage", description: "Off until the book is published — tick to make the section visible" },
@@ -179,6 +186,36 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     contactTo: { label: "Contact form → email", description: "Where Contact submissions are sent. Blank = server default." },
     bookingTo: { label: "Book Caleb form → email", description: "Where booking requests are sent. Blank = server default." },
     prayerTo: { label: "Prayer form → email", description: "Where prayer requests are sent. Blank = server default." },
+  },
+  donate: {
+    heroEyebrow: { label: "Hero — Eyebrow" },
+    heroHeading: { label: "Hero — Heading" },
+    heroAccent: { label: "Hero — Accent word (plum italic)" },
+    heroSubtext: { label: "Hero — Subtext" },
+    heroImage: { label: "Hero — Image (optional)" },
+    presets: { label: "Suggested amounts", description: "Dollar values only, e.g. 50" },
+    fundOptions: { label: "Fund / designation options" },
+    impactHeading: { label: "Impact — Heading" },
+    impactStats: { label: "Impact — Stats", description: "Value + label + icon (mic/globe/award)" },
+    proceedsNote: { label: "Proceeds banner text" },
+    assuranceTitle: { label: "Assurance — Title" },
+    assuranceBody: { label: "Assurance — Body" },
+    thankYouHeading: { label: "Thank-you — Heading" },
+    thankYouBody: { label: "Thank-you — Body / verse" },
+  },
+  donation: {
+    amount: { label: "Amount" },
+    fund: { label: "Fund / designation" },
+    anonymous: { label: "Anonymous" },
+    provider: { label: "Payment provider" },
+    recurring: { label: "Recurring", description: "Reserved for future monthly giving" },
+  },
+  "theme-setting": {
+    paper: { label: "Background (paper)", description: "Hex, e.g. #EDF1F7. Blank = brand default." },
+    ink: { label: "Text & dark (navy)", description: "Hex, e.g. #0E2038. Main text + darkest fills." },
+    accent: { label: "Accent (plum)", description: "Hex, e.g. #B0577C. Script words, badges, hovers." },
+    darkSection: { label: "Dark sections (navy)", description: "Hex, e.g. #16294C. Hero, footer, buttons." },
+    blue: { label: "Links & buttons (blue)", description: "Hex, e.g. #2563AD. Donate CTA, links." },
   },
   tour: {
     regions: { label: "Tour regions", description: "Each region has an optional heading + code, and a list of dates" },
@@ -334,6 +371,50 @@ export default {
       }
     } catch (e) {
       strapi.log.error("seed: failed backfilling podcast episodes");
+      strapi.log.error(e);
+    }
+
+    // 2d. Footer links backfill. Footer column links + legal moved from `shared.text-item` (label
+    //     only) to `shared.link` (label + url); the old link rows don't survive the component-type
+    //     change. Re-seed columns + legal from seed-data when they're empty OR still the old shape
+    //     (a link lacking a `label` key). Idempotent — skips once migrated.
+    try {
+      const uid = "api::footer.footer";
+      const doc = await strapi
+        .documents(uid)
+        .findFirst({ populate: { columns: { populate: ["links"] }, legal: true } });
+      const seed = (seedData as Record<string, any>).footer ?? {};
+      if (doc && seed.columns) {
+        const stale = (arr: any[]) => !arr?.length || arr.some((l) => l?.label === undefined);
+        const colsBad = !doc.columns?.length || doc.columns.some((c: any) => stale(c.links));
+        if (colsBad || stale(doc.legal)) {
+          await strapi
+            .documents(uid)
+            .update({ documentId: doc.documentId, data: { columns: seed.columns, legal: seed.legal } });
+          strapi.log.info("seed: backfilled footer links (label+url)");
+        }
+      }
+    } catch (e) {
+      strapi.log.error("seed: failed backfilling footer links");
+      strapi.log.error(e);
+    }
+
+    // 2e. Nav links backfill. `nav.links` moved from `shared.text-item` (label only) to
+    //     `shared.link` (label + url); the old rows don't survive the component-type change.
+    //     Re-seed from seed-data when links are empty OR still the old shape (missing `label`).
+    try {
+      const uid = "api::nav.nav";
+      const doc = await strapi.documents(uid).findFirst({ populate: ["links"] });
+      const seed = (seedData as Record<string, any>).nav ?? {};
+      if (doc && seed.links) {
+        const stale = (arr: any[]) => !arr?.length || arr.some((l) => l?.label === undefined);
+        if (stale(doc.links)) {
+          await strapi.documents(uid).update({ documentId: doc.documentId, data: { links: seed.links } });
+          strapi.log.info("seed: backfilled nav links (label+url)");
+        }
+      }
+    } catch (e) {
+      strapi.log.error("seed: failed backfilling nav links");
       strapi.log.error(e);
     }
 

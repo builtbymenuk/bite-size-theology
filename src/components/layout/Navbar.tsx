@@ -6,10 +6,12 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useLenis } from "lenis/react";
 import type { Nav } from "@/lib/content";
+import { linkProps } from "@/lib/links";
 import CartButton from "@/components/store/CartButton";
 
-// Links to routes that actually exist; every other label (e.g. "Book Caleb") stays a placeholder
-// anchor for now. "Sermons/Videos" is the podcast page.
+// Fallback internal routes by label, used only when a nav item's CMS url is blank — so known
+// pages keep working even if an editor clears the URL. Editors can override any of these (or point
+// a label anywhere) via the "Shared — Navbar" links (label + url) in the admin.
 const HREFS: Record<string, string> = {
   About: "/about",
   "Sermons/Videos": "/podcast",
@@ -29,6 +31,7 @@ export default function Navbar({ nav }: { nav: Nav }) {
     pathname?.startsWith("/contact") ||
     pathname?.startsWith("/book-caleb") ||
     pathname?.startsWith("/prayer") ||
+    pathname?.startsWith("/donate") ||
     pathname?.startsWith("/about") ||
     pathname?.startsWith("/podcast") ||
     pathname?.startsWith("/store")
@@ -66,38 +69,43 @@ export default function Navbar({ nav }: { nav: Nav }) {
         </Link>
 
         <div className="hidden items-center gap-7 md:flex">
-          {nav.links.map((l) => (
-            // Masked text-swap on hover: the label rolls up, a duplicate rolls in from below.
-            <Link
-              key={l}
-              href={HREFS[l] ?? "#"}
-              className={`group/ts relative block overflow-hidden text-[11px] font-medium uppercase tracking-[0.18em] ${
-                onDark ? "text-cream/80" : "text-ink/70"
-              }`}
-            >
-              <span className="block transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/ts:-translate-y-full">
-                {l}
-              </span>
-              <span
-                aria-hidden
-                className={`absolute inset-0 block translate-y-full transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/ts:translate-y-0 ${
-                  onDark ? "text-cream" : "text-ink"
+          {nav.links.map((l) => {
+            const href = l.url || HREFS[l.label] || "#";
+            const ext = /^https?:\/\//i.test(href);
+            return (
+              // Masked text-swap on hover: the label rolls up, a duplicate rolls in from below.
+              <Link
+                key={l.label}
+                href={href}
+                {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className={`group/ts relative block overflow-hidden text-[11px] font-medium uppercase tracking-[0.18em] ${
+                  onDark ? "text-cream/80" : "text-ink/70"
                 }`}
               >
-                {l}
-              </span>
-            </Link>
-          ))}
+                <span className="block transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/ts:-translate-y-full">
+                  {l.label}
+                </span>
+                <span
+                  aria-hidden
+                  className={`absolute inset-0 block translate-y-full transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/ts:translate-y-0 ${
+                    onDark ? "text-cream" : "text-ink"
+                  }`}
+                >
+                  {l.label}
+                </span>
+              </Link>
+            );
+          })}
         </div>
 
         <div className="flex items-center gap-2">
           <CartButton dark={onDark} />
-          <a
-            href="#"
+          <Link
+            href="/donate"
             className="hidden rounded-full bg-blue px-5 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-blue/90 md:inline-block"
           >
             {nav.cta}
-          </a>
+          </Link>
           <button
             aria-label="Open menu"
             onClick={() => setOpen(true)}
@@ -132,23 +140,28 @@ export default function Navbar({ nav }: { nav: Nav }) {
               </button>
             </div>
             <div className="mt-8 flex flex-col gap-6">
-              {nav.links.map((l) => (
-                <Link
-                  key={l}
-                  href={HREFS[l] ?? "#"}
-                  onClick={() => setOpen(false)}
-                  className="font-display text-3xl"
-                >
-                  {l}
-                </Link>
-              ))}
-              <a
-                href="#"
+              {nav.links.map((l) => {
+                const href = l.url || HREFS[l.label] || "#";
+                const ext = /^https?:\/\//i.test(href);
+                return (
+                  <Link
+                    key={l.label}
+                    href={href}
+                    {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    onClick={() => setOpen(false)}
+                    className="font-display text-3xl"
+                  >
+                    {l.label}
+                  </Link>
+                );
+              })}
+              <Link
+                href="/donate"
                 onClick={() => setOpen(false)}
                 className="mt-4 inline-block w-fit rounded-full bg-blue px-6 py-3 text-xs uppercase tracking-widest text-white"
               >
                 {nav.cta}
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}

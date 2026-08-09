@@ -16,6 +16,9 @@
     "heading": {
       "type": "string"
     },
+    "linkUrl": {
+      "type": "string"
+    },
     "link": {
       "type": "string"
     },
@@ -29,6 +32,9 @@
     },
     "quoteBody": {
       "type": "text"
+    },
+    "quoteCtaUrl": {
+      "type": "string"
     },
     "quoteCta": {
       "type": "string"

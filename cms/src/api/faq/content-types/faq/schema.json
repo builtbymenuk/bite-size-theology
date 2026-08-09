@@ -19,6 +19,9 @@
     "supportBody": {
       "type": "text"
     },
+    "supportCtaUrl": {
+      "type": "string"
+    },
     "supportCta": {
       "type": "string"
     },

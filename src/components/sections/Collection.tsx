@@ -2,6 +2,7 @@ import Reveal from "@/components/ui/Reveal";
 import BentoCard from "@/components/ui/BentoCard";
 import ArrowButton from "@/components/ui/ArrowButton";
 import { getCollection } from "@/lib/cms";
+import { linkProps } from "@/lib/links";
 import type { Product } from "@/lib/content";
 
 function ProductCard({
@@ -11,8 +12,9 @@ function ProductCard({
   product: Product;
   imageLabel: string;
 }) {
-  return (
-    <Reveal>
+  const p = linkProps(product.url); // clickable only when a CMS url is set
+  const inner = (
+    <>
       <BentoCard
         className="aspect-[4/5]"
         image={{ tone: product.tone, label: imageLabel, src: product.image }}
@@ -29,8 +31,9 @@ function ProductCard({
         </h3>
         <span className="shrink-0 text-sm text-ink/60">{product.price}</span>
       </div>
-    </Reveal>
+    </>
   );
+  return <Reveal>{p.href ? <a {...p} className="block">{inner}</a> : inner}</Reveal>;
 }
 
 export default async function Collection() {
@@ -48,9 +51,12 @@ export default async function Collection() {
             {collection.heading}
           </h2>
         </div>
-        <button className="hidden text-[11px] uppercase tracking-widest text-ink/60 md:block">
+        <a
+          {...linkProps(collection.linkUrl)}
+          className="hidden text-[11px] uppercase tracking-widest text-ink/60 transition-colors hover:text-ink md:block"
+        >
           {collection.link} →
-        </button>
+        </a>
       </Reveal>
 
       <div className="mt-12 grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2">
@@ -64,7 +70,7 @@ export default async function Collection() {
           <p className="mt-6 max-w-md text-sm leading-relaxed text-ink/60">
             {collection.quote.body}
           </p>
-          <ArrowButton label={collection.quote.cta} className="mt-8" />
+          <ArrowButton label={collection.quote.cta} href={collection.quote.ctaUrl} className="mt-8" />
         </Reveal>
 
         <ProductCard product={journal} imageLabel="Sermon Journal" />

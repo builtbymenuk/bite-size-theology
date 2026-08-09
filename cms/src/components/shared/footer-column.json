@@ -11,7 +11,7 @@
     "links": {
       "type": "component",
       "repeatable": true,
-      "component": "shared.text-item"
+      "component": "shared.link"
     }
   }
 }

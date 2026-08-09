@@ -11,7 +11,7 @@ import * as fb from "./content";
 import { getYouTubeVideos } from "./youtube";
 import type {
   Nav, Hero, Calling, AllThings, UpcomingBook, Collection, Podcast, PodcastPage,
-  Faq, Footer, About, Contact, BookCaleb, Prayer, Tour, StoreProduct, Store, Category,
+  Faq, Footer, About, Contact, BookCaleb, Prayer, ThemeColors, Donate, Tour, StoreProduct, Store, Category,
 } from "./content";
 
 const BASE = process.env.STRAPI_URL;
@@ -84,7 +84,7 @@ export async function getNav(): Promise<Nav> {
   return {
     logo: d.logo || fb.nav.logo,
     cta: d.cta || fb.nav.cta,
-    links: arr(d.links, (l) => l.value, fb.nav.links),
+    links: arr(d.links, (l) => ({ label: l.label, url: l.url || "" }), fb.nav.links),
   };
 }
 
@@ -96,6 +96,7 @@ export async function getHero(): Promise<Hero> {
     tagline: d.tagline || fb.hero.tagline,
     subtext: d.subtext || fb.hero.subtext,
     cta: d.cta || fb.hero.cta,
+    ctaUrl: d.ctaUrl || fb.hero.ctaUrl,
     bgImage: absolutize(d.bgImage?.url) || fb.hero.bgImage,
   };
 }
@@ -143,6 +144,15 @@ export async function getAllThings(): Promise<AllThings> {
       podcast: absolutize(d.imgPodcast?.url) || fb.allThings.images?.podcast,
       book: absolutize(d.imgBook?.url) || fb.allThings.images?.book,
     },
+    links: {
+      testimony: d.urlTestimony || fb.allThings.links.testimony,
+      youtube: d.urlYoutube || fb.allThings.links.youtube,
+      tiktok: d.urlTiktok || fb.allThings.links.tiktok,
+      shop: d.urlShop || fb.allThings.links.shop,
+      podcast: d.urlPodcast || fb.allThings.links.podcast,
+      book: d.urlBook || fb.allThings.links.book,
+      give: d.urlGive || fb.allThings.links.give,
+    },
   };
 }
 
@@ -158,6 +168,7 @@ export async function getUpcomingBook(): Promise<UpcomingBook> {
     body: d.body || fb.upcomingBook.body,
     releaseLabel: d.releaseLabel || fb.upcomingBook.releaseLabel,
     cta: d.cta || fb.upcomingBook.cta,
+    ctaUrl: d.ctaUrl || fb.upcomingBook.ctaUrl,
     image: absolutize(d.image?.url) || fb.upcomingBook.image,
   };
 }
@@ -169,6 +180,7 @@ export async function getCollection(): Promise<Collection> {
     eyebrow: d.eyebrow || fb.collection.eyebrow,
     heading: d.heading || fb.collection.heading,
     link: d.link || fb.collection.link,
+    linkUrl: d.linkUrl || fb.collection.linkUrl,
     products: arr(
       d.products,
       (p, i) => ({
@@ -177,6 +189,7 @@ export async function getCollection(): Promise<Collection> {
         tag: p.tag || undefined,
         tone: p.tone,
         image: absolutize(p.image?.url) || fb.collection.products[i]?.image,
+        url: p.url || undefined,
       }),
       fb.collection.products,
     ),
@@ -184,6 +197,7 @@ export async function getCollection(): Promise<Collection> {
       text: d.quoteText || fb.collection.quote.text,
       body: d.quoteBody || fb.collection.quote.body,
       cta: d.quoteCta || fb.collection.quote.cta,
+      ctaUrl: d.quoteCtaUrl || fb.collection.quote.ctaUrl,
     },
   };
 }
@@ -227,7 +241,7 @@ export async function getPodcast(): Promise<Podcast> {
     },
     actions: arr(
       d.actions,
-      (a) => ({ label: a.label, platform: a.platform }),
+      (a) => ({ label: a.label, platform: a.platform, url: a.url || undefined }),
       fb.podcast.actions,
     ),
     episodes: vids.length ? ytTiles(vids) : cmsEpisodes,
@@ -267,6 +281,7 @@ export async function getFaq(): Promise<Faq> {
     supportHeading: d.supportHeading || fb.faq.supportHeading,
     supportBody: d.supportBody || fb.faq.supportBody,
     supportCta: d.supportCta || fb.faq.supportCta,
+    supportCtaUrl: d.supportCtaUrl || fb.faq.supportCtaUrl,
     headingLead: d.headingLead || fb.faq.headingLead,
     headingScript: d.headingScript || fb.faq.headingScript,
     items: arr(d.items, (i) => ({ q: i.q, a: i.a }), fb.faq.items),
@@ -282,7 +297,10 @@ export async function getFooter(): Promise<Footer> {
   return {
     columns: arr(
       d.columns,
-      (c) => ({ title: c.title, links: arr(c.links, (l: any) => l.value, []) }),
+      (c) => ({
+        title: c.title,
+        links: arr(c.links, (l: any) => ({ label: l.label, url: l.url || "" }), []),
+      }),
       fb.footer.columns,
     ),
     messageLead: d.messageLead || fb.footer.messageLead,
@@ -290,7 +308,7 @@ export async function getFooter(): Promise<Footer> {
     messageBody: d.messageBody || fb.footer.messageBody,
     wordmark: d.wordmark || fb.footer.wordmark,
     copyright: d.copyright || fb.footer.copyright,
-    legal: arr(d.legal, (l) => l.value, fb.footer.legal),
+    legal: arr(d.legal, (l) => ({ label: l.label, url: l.url || "" }), fb.footer.legal),
   };
 }
 
@@ -304,6 +322,7 @@ export async function getAbout(): Promise<About> {
     name: d.name || fb.about.name,
     role: d.role || fb.about.role,
     donateCta: d.donateCta || fb.about.donateCta,
+    donateCtaUrl: d.donateCtaUrl || fb.about.donateCtaUrl,
     intro: d.intro || fb.about.intro,
     turnLead: d.turnLead || fb.about.turnLead,
     story: arr(d.story, (p) => p.value, fb.about.story),
@@ -339,7 +358,7 @@ export async function getContact(): Promise<Contact> {
     connectLabel: d.connectLabel || fb.contact.connectLabel,
     socials: arr(
       d.socials,
-      (s) => ({ name: s.name, handle: s.handle }),
+      (s) => ({ name: s.name, handle: s.handle, url: s.url || undefined }),
       fb.contact.socials,
     ),
     form: {
@@ -427,6 +446,25 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
   }
 }
 
+// Admin-editable theme colors → override the Tailwind @theme tokens at runtime (see layout.tsx).
+// Each field is validated as a hex; empty/invalid falls back to the brand default so a typo in the
+// admin can never break the site.
+const HEX = /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+export async function getThemeColors(): Promise<ThemeColors> {
+  const d = await single("theme-setting");
+  const pick = (v: unknown, fallback: string) => {
+    const s = String(v ?? "").trim();
+    return HEX.test(s) ? s : fallback;
+  };
+  return {
+    paper: pick(d?.paper, fb.themeColors.paper),
+    ink: pick(d?.ink, fb.themeColors.ink),
+    accent: pick(d?.accent, fb.themeColors.accent),
+    darkSection: pick(d?.darkSection, fb.themeColors.darkSection),
+    blue: pick(d?.blue, fb.themeColors.blue),
+  };
+}
+
 export async function getPrayer(): Promise<Prayer> {
   const d = await single("prayer");
   if (!d) return fb.prayer;
@@ -450,6 +488,31 @@ export async function getPrayer(): Promise<Prayer> {
       urgentLabel: d.urgentLabel || fb.prayer.form.urgentLabel,
       submit: d.formSubmit || fb.prayer.form.submit,
     },
+  };
+}
+
+export async function getDonate(): Promise<Donate> {
+  const d = await single("donate"); // populate=* covers presets, fundOptions, impactStats, heroImage
+  if (!d) return fb.donate;
+  return {
+    heroEyebrow: d.heroEyebrow || fb.donate.heroEyebrow,
+    heroHeading: d.heroHeading || fb.donate.heroHeading,
+    heroAccent: d.heroAccent || fb.donate.heroAccent,
+    heroSubtext: d.heroSubtext || fb.donate.heroSubtext,
+    heroImage: absolutize(d.heroImage?.url) || fb.donate.heroImage,
+    presets: arr(d.presets, (p) => p.value, fb.donate.presets),
+    fundOptions: arr(d.fundOptions, (f) => f.value, fb.donate.fundOptions),
+    impactHeading: d.impactHeading || fb.donate.impactHeading,
+    impactStats: arr(
+      d.impactStats,
+      (s) => ({ value: s.value, label: s.label, icon: s.icon }),
+      fb.donate.impactStats,
+    ),
+    proceedsNote: d.proceedsNote || fb.donate.proceedsNote,
+    assuranceTitle: d.assuranceTitle || fb.donate.assuranceTitle,
+    assuranceBody: d.assuranceBody || fb.donate.assuranceBody,
+    thankYouHeading: d.thankYouHeading || fb.donate.thankYouHeading,
+    thankYouBody: d.thankYouBody || fb.donate.thankYouBody,
   };
 }
 
@@ -522,6 +585,7 @@ export async function getStore(): Promise<Store> {
     heroHeading: d.heroHeading || fb.store.heroHeading,
     heroSubtext: d.heroSubtext || fb.store.heroSubtext,
     heroCta: d.heroCta || fb.store.heroCta,
+    heroCtaUrl: d.heroCtaUrl || fb.store.heroCtaUrl,
     heroImage: absolutize(d.heroImage?.url) || fb.store.heroImage,
     proceedsBanner: d.proceedsBanner || fb.store.proceedsBanner,
     bestSellersHeading: d.bestSellersHeading || fb.store.bestSellersHeading,
@@ -530,6 +594,7 @@ export async function getStore(): Promise<Store> {
     founderHeading: d.founderHeading || fb.store.founderHeading,
     founderBody: d.founderBody || fb.store.founderBody,
     founderCta: d.founderCta || fb.store.founderCta,
+    founderCtaUrl: d.founderCtaUrl || fb.store.founderCtaUrl,
     founderImage: absolutize(d.founderImage?.url) || fb.store.founderImage,
     shippingFee: d.shippingFee != null ? Number(d.shippingFee) : fb.store.shippingFee,
     currency: d.currency || fb.store.currency,

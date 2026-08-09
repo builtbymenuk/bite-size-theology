@@ -1,0 +1,69 @@
+{
+  "kind": "collectionType",
+  "collectionName": "donations",
+  "info": {
+    "singularName": "donation",
+    "pluralName": "donations",
+    "displayName": "Donation"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "amount": {
+      "type": "decimal"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "fund": {
+      "type": "string"
+    },
+    "message": {
+      "type": "text"
+    },
+    "anonymous": {
+      "type": "boolean",
+      "default": false
+    },
+    "provider": {
+      "type": "enumeration",
+      "enum": [
+        "paypal",
+        "stripe"
+      ]
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "completed",
+        "refunded"
+      ],
+      "default": "completed"
+    },
+    "paypalOrderId": {
+      "type": "string",
+      "unique": true
+    },
+    "paypalCaptureId": {
+      "type": "string"
+    },
+    "stripeSessionId": {
+      "type": "string",
+      "unique": true
+    },
+    "stripePaymentIntentId": {
+      "type": "string"
+    },
+    "recurring": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

@@ -19,6 +19,9 @@
     "cta": {
       "type": "string"
     },
+    "ctaUrl": {
+      "type": "string"
+    },
     "bgImage": {
       "type": "media",
       "multiple": false,

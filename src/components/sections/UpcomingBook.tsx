@@ -37,7 +37,7 @@ export default async function UpcomingBook() {
               {book.releaseLabel}
             </p>
           ) : null}
-          <ArrowButton label={book.cta} className="mt-8" />
+          <ArrowButton label={book.cta} href={book.ctaUrl} className="mt-8" />
         </div>
       </Reveal>
     </section>

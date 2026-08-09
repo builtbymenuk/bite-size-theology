@@ -7,7 +7,7 @@ import PageBackground from "@/components/layout/PageBackground";
 import { CartProvider } from "@/lib/cart";
 import CartDrawer from "@/components/store/CartDrawer";
 import CustomCursor from "@/components/layout/CustomCursor";
-import { getNav } from "@/lib/cms";
+import { getNav, getThemeColors } from "@/lib/cms";
 
 // Fraunces roman+italic covers both display serif and the gold script accent — one family, not two.
 const display = Fraunces({
@@ -40,9 +40,23 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const nav = await getNav();
+  const [nav, theme] = await Promise.all([getNav(), getThemeColors()]);
+  // Override the Tailwind @theme tokens at runtime from the CMS. Inline on <html> beats the
+  // :root defaults and cascades to every var()-based utility (incl. opacity variants). Legacy
+  // token names kept (cream=paper, gold=accent, charcoal=dark section).
+  const themeVars = {
+    "--color-cream": theme.paper,
+    "--color-ink": theme.ink,
+    "--color-gold": theme.accent,
+    "--color-charcoal": theme.darkSection,
+    "--color-blue": theme.blue,
+  } as React.CSSProperties;
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${wordmark.variable}`}>
+    <html
+      lang="en"
+      className={`${display.variable} ${body.variable} ${wordmark.variable}`}
+      style={themeVars}
+    >
       {/* suppressHydrationWarning: browser extensions (ColorZilla, Grammarly, etc.) inject
           attributes on <body> before React hydrates, tripping a false dev hydration error. */}
       <body className="bg-cream text-ink antialiased" suppressHydrationWarning>

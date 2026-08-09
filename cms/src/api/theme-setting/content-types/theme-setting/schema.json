@@ -1,0 +1,34 @@
+{
+  "kind": "singleType",
+  "collectionName": "theme_settings",
+  "info": {
+    "singularName": "theme-setting",
+    "pluralName": "theme-settings",
+    "displayName": "Settings — Theme Colors"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "paper": {
+      "type": "customField",
+      "customField": "plugin::color-picker.color"
+    },
+    "ink": {
+      "type": "customField",
+      "customField": "plugin::color-picker.color"
+    },
+    "accent": {
+      "type": "customField",
+      "customField": "plugin::color-picker.color"
+    },
+    "darkSection": {
+      "type": "customField",
+      "customField": "plugin::color-picker.color"
+    },
+    "blue": {
+      "type": "customField",
+      "customField": "plugin::color-picker.color"
+    }
+  }
+}

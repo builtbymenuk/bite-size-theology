@@ -19,6 +19,9 @@
     "heroSubtext": {
       "type": "text"
     },
+    "heroCtaUrl": {
+      "type": "string"
+    },
     "heroCta": {
       "type": "string"
     },
@@ -46,6 +49,9 @@
     },
     "founderBody": {
       "type": "text"
+    },
+    "founderCtaUrl": {
+      "type": "string"
     },
     "founderCta": {
       "type": "string"

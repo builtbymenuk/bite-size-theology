@@ -14,7 +14,7 @@ export type Status = "sold-out" | "get-tickets";
 
 export interface Nav {
   logo: string;
-  links: string[];
+  links: LinkItem[];
   cta: string;
 }
 
@@ -23,6 +23,7 @@ export interface Hero {
   titleLines: string[];
   subtext: string;
   cta: string;
+  ctaUrl: string; // blank = inert button
   bgImage?: string; // optional CMS media; falls back to the tone Placeholder
 }
 
@@ -58,6 +59,11 @@ export interface AllThings {
     testimony?: string; vlog?: string; youtube?: string; tiktok?: string;
     shop?: string; podcast?: string; book?: string;
   };
+  // Admin-editable link targets per tile; blank → tile not clickable.
+  links: {
+    testimony: string; youtube: string; tiktok: string;
+    shop: string; podcast: string; book: string; give: string;
+  };
 }
 
 // Homepage "Upcoming Book" promo. `visible` is the CMS on/off toggle — the section
@@ -70,6 +76,7 @@ export interface UpcomingBook {
   body: string;
   releaseLabel: string;
   cta: string;
+  ctaUrl: string;
   image?: string; // optional CMS media; falls back to the tone Placeholder
 }
 
@@ -79,14 +86,16 @@ export interface Product {
   tag?: string;
   tone: Tone;
   image?: string; // optional CMS media
+  url?: string; // optional link target for the card
 }
 
 export interface Collection {
   eyebrow: string;
   heading: string;
   link: string;
+  linkUrl: string;
   products: Product[];
-  quote: { text: string; body: string; cta: string };
+  quote: { text: string; body: string; cta: string; ctaUrl: string };
 }
 
 // --- Store (e-commerce) ---
@@ -117,6 +126,7 @@ export interface Store {
   heroHeading: string;
   heroSubtext: string;
   heroCta: string;
+  heroCtaUrl: string;
   heroImage?: string;
   proceedsBanner: string;
   bestSellersHeading: string;
@@ -125,6 +135,7 @@ export interface Store {
   founderHeading: string;
   founderBody: string;
   founderCta: string;
+  founderCtaUrl: string;
   founderImage?: string;
   shippingFee: number; // flat rate added to every order; 0 = free
   currency: string;
@@ -133,6 +144,7 @@ export interface Store {
 export interface PodcastAction {
   label: string;
   platform: Platform;
+  url?: string;
 }
 
 // One episode tile in the podcast wall. All optional: an empty slot falls back to the `gallery`
@@ -177,14 +189,20 @@ export interface Faq {
   supportHeading: string;
   supportBody: string;
   supportCta: string;
+  supportCtaUrl: string;
   headingLead: string;
   headingScript: string;
   items: FaqItem[];
 }
 
+export interface LinkItem {
+  label: string;
+  url: string; // full https:// (external, opens new tab) or /path (internal); "" = disabled
+}
+
 export interface FooterColumn {
   title: string;
-  links: string[];
+  links: LinkItem[];
 }
 
 export interface Footer {
@@ -194,7 +212,7 @@ export interface Footer {
   messageBody: string;
   wordmark: string;
   copyright: string;
-  legal: string[];
+  legal: LinkItem[];
 }
 
 export interface AboutImage {
@@ -210,6 +228,7 @@ export interface About {
   name: string;
   role: string;
   donateCta: string;
+  donateCtaUrl: string;
   intro: string;
   turnLead: string;
   story: string[];
@@ -221,6 +240,7 @@ export interface About {
 export interface Social {
   name: string;
   handle: string;
+  url?: string;
 }
 
 export interface Contact {
@@ -282,6 +302,32 @@ export interface Prayer {
   };
 }
 
+// Admin-editable theme colors (roles → the Tailwind @theme tokens they override at runtime).
+export interface ThemeColors {
+  paper: string; // --color-cream (page background)
+  ink: string; // --color-ink (text / darkest fills)
+  accent: string; // --color-gold (accent: script words, badges, hovers)
+  darkSection: string; // --color-charcoal (hero/footer/dark sections)
+  blue: string; // --color-blue (links, CTA)
+}
+
+export interface Donate {
+  heroEyebrow: string;
+  heroHeading: string;
+  heroAccent: string; // last word, plum italic
+  heroSubtext: string;
+  heroImage?: string;
+  presets: string[]; // dollar amounts as strings, e.g. "50"
+  fundOptions: string[];
+  impactHeading: string;
+  impactStats: { value: string; label: string; icon: "mic" | "globe" | "award" }[];
+  proceedsNote: string; // marquee strip
+  assuranceTitle: string;
+  assuranceBody: string;
+  thankYouHeading: string;
+  thankYouBody: string;
+}
+
 export interface TourDate {
   city: string;
   venue: string;
@@ -308,7 +354,13 @@ export interface Tour {
 
 export const nav: Nav = {
   logo: "Caleb",
-  links: ["About", "Sermons/Videos", "Shop", "Book Caleb", "Contact"],
+  links: [
+    { label: "About", url: "/about" },
+    { label: "Sermons/Videos", url: "/podcast" },
+    { label: "Shop", url: "/store" },
+    { label: "Book Caleb", url: "/book-caleb" },
+    { label: "Contact", url: "/contact" },
+  ],
   cta: "Donate Now",
 };
 
@@ -318,6 +370,7 @@ export const hero: Hero = {
   subtext:
     "Honest, unfiltered conversations about faith, culture, and the Bible. Welcome to Bite Size Theology.",
   cta: "Discover the Message",
+  ctaUrl: "",
   bgImage: "/hero-caleb.png", // pastor crop (wordmark removed); CMS Hero → bgImage overrides
 };
 
@@ -390,6 +443,16 @@ export const allThings: AllThings = {
     podcast: "/placeholders/at-podcast.jpg",
     book: "/placeholders/at-book.jpg",
   },
+  // Per-tile link targets (admin-editable). Social ones blank until the client supplies them.
+  links: {
+    testimony: "",
+    youtube: "https://www.youtube.com/channel/UC7VL8Ljt2f0luWz4HMkUGuw",
+    tiktok: "",
+    shop: "/store",
+    podcast: "/podcast",
+    book: "/book-caleb",
+    give: "/donate",
+  },
 };
 
 // visible:false → hidden until the pastor's book launches. Flip in Strapi (or here) to publish.
@@ -401,6 +464,7 @@ export const upcomingBook: UpcomingBook = {
   body: "Placeholder description — the pastor's upcoming book. This section stays hidden until launch; replace this copy and the cover, then flip “Show on homepage” to publish.",
   releaseLabel: "Coming Fall 2026",
   cta: "Notify Me",
+  ctaUrl: "",
   image: "/placeholders/book-cover.jpg",
 };
 
@@ -408,6 +472,7 @@ export const collection: Collection = {
   eyebrow: "Curated Goods",
   heading: "THE COLLECTION",
   link: "Explore all resources",
+  linkUrl: "/store",
   products: [
     {
       name: "The Calling: Study Guide",
@@ -433,6 +498,7 @@ export const collection: Collection = {
     text: "We believe theology isn't just for the scholars—it's for the everyday believer.",
     body: "Every item in our collection is intentionally designed to spark conversations, deepen your faith, and remind you of the profound truths found in scripture throughout your daily life.",
     cta: "Read the Story",
+    ctaUrl: "/about",
   },
 };
 
@@ -494,6 +560,7 @@ export const faq: Faq = {
   supportBody:
     "No worries! If you have any other questions or need more information, feel free to reach out directly to contact@calebgriffith.com.",
   supportCta: "Ask me a question",
+  supportCtaUrl: "/contact",
   headingLead: "FREQUENT",
   headingScript: "asks",
   items: [
@@ -524,11 +591,21 @@ export const footer: Footer = {
   columns: [
     {
       title: "Connect",
-      links: ["Church Online", "Find a Location", "Prayer Request", "Give"],
+      links: [
+        { label: "Church Online", url: "" },
+        { label: "Find a Location", url: "" },
+        { label: "Prayer Request", url: "/prayer" },
+        { label: "Give", url: "/donate" },
+      ],
     },
     {
       title: "Social",
-      links: ["Instagram", "YouTube", "Twitter", "Contact"],
+      links: [
+        { label: "Instagram", url: "" },
+        { label: "YouTube", url: "" },
+        { label: "Twitter", url: "" },
+        { label: "Contact", url: "/contact" },
+      ],
     },
   ],
   messageLead: "A message of",
@@ -537,7 +614,10 @@ export const footer: Footer = {
     "Available for speaking engagements, podcasts, and unfiltered conversations about faith.",
   wordmark: "BITE SIZE THEOLOGY",
   copyright: "© 2026 Bite Size Theology. All rights reserved.",
-  legal: ["Privacy", "Terms"],
+  legal: [
+    { label: "Privacy", url: "" },
+    { label: "Terms", url: "" },
+  ],
 };
 
 export const about: About = {
@@ -547,6 +627,7 @@ export const about: About = {
   name: "Caleb Griffith",
   role: "Social Media & Street Evangelist",
   donateCta: "Donate Now",
+  donateCtaUrl: "/donate",
   intro:
     "Raised in church, Caleb carried a deep faith but wrestled with depression and anxiety for years.",
   turnLead: "But, God!",
@@ -582,9 +663,9 @@ export const contact: Contact = {
   },
   connectLabel: "Connect",
   socials: [
-    { name: "Instagram", handle: "@calebgriffith" },
-    { name: "YouTube", handle: "bitesizetheology" },
-    { name: "Twitter", handle: "@bitesizetheo" },
+    { name: "Instagram", handle: "@calebgriffith", url: "" },
+    { name: "YouTube", handle: "bitesizetheology", url: "" },
+    { name: "Twitter", handle: "@bitesizetheo", url: "" },
   ],
   form: {
     heading: "Send a Message",
@@ -668,6 +749,37 @@ export const prayer: Prayer = {
   },
 };
 
+export const themeColors: ThemeColors = {
+  paper: "#edf1f7",
+  ink: "#0e2038",
+  accent: "#b0577c",
+  darkSection: "#16294c",
+  blue: "#2563ad",
+};
+
+export const donate: Donate = {
+  heroEyebrow: "Partner with the mission",
+  heroHeading: "Help take the gospel to the",
+  heroAccent: "streets.",
+  heroSubtext:
+    "Your gift fuels honest, unfiltered conversations about faith — reaching people where they are, on the streets, online, and around the world. Every dollar goes further than you know.",
+  presets: ["25", "50", "100", "250"],
+  fundOptions: ["Where needed most", "Missions & Outreach", "Media & Content"],
+  impactHeading: "Your generosity at work",
+  impactStats: [
+    { value: "10M+", label: "Views a month", icon: "globe" },
+    { value: "40+", label: "Nations reached", icon: "award" },
+    { value: "100%", label: "Toward the mission", icon: "mic" },
+  ],
+  proceedsNote: "Every gift supports street evangelism, media, and outreach",
+  assuranceTitle: "Give with confidence",
+  assuranceBody:
+    "Payments are processed securely through Stripe and PayPal — we never see or store your card details. You'll receive an emailed receipt for every gift.",
+  thankYouHeading: "Thank you for your generosity.",
+  thankYouBody:
+    "“Each of you should give what you have decided in your heart to give… for God loves a cheerful giver.” — 2 Corinthians 9:7\n\nYour gift is already at work. A receipt is on its way to your inbox.",
+};
+
 export const tour: Tour = {
   heroImage: "Tour — Concert Crowd",
   secondImage: "The Podcast — Live",
@@ -713,6 +825,7 @@ export const store: Store = {
   heroSubtext:
     "Wearable conversation starters — every piece is a chance to share the hope of Jesus. 10% of proceeds support mission work.",
   heroCta: "Shop the Collection",
+  heroCtaUrl: "#catalog",
   heroImage: "/placeholders/store-hero.jpg",
   founderImage: "/placeholders/store-founder.jpg",
   proceedsBanner: "10% of proceeds support mission work",
@@ -723,6 +836,7 @@ export const store: Store = {
   founderBody:
     "Bryce Crawford is a social media and street evangelist with a deep passion for helping people discover their identity in Jesus Christ. After being saved in a Waffle House, Bryce became filled with the love of Jesus and began sharing the Gospel everywhere he went. He created these shirts as walking conversation starters, hoping to bring Jesus to every corner of the earth and empower lives with compassion and faith.",
   founderCta: "Shop Bite Size Theology",
+  founderCtaUrl: "#catalog",
   shippingFee: 5.99,
   currency: "USD",
 };

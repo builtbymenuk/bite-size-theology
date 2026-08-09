@@ -67,6 +67,27 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "urlTestimony": {
+      "type": "string"
+    },
+    "urlYoutube": {
+      "type": "string"
+    },
+    "urlTiktok": {
+      "type": "string"
+    },
+    "urlShop": {
+      "type": "string"
+    },
+    "urlPodcast": {
+      "type": "string"
+    },
+    "urlBook": {
+      "type": "string"
+    },
+    "urlGive": {
+      "type": "string"
     }
   }
 }

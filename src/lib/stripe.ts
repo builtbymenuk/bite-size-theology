@@ -70,6 +70,39 @@ export async function createCheckoutSession(opts: {
   });
 }
 
+// One-time donation Checkout session: a single ad-hoc line for the (server-clamped) amount, no
+// shipping address, submit button reads "Donate". Donor metadata rides on the session so confirm
+// can record it. Amount is already validated/clamped by donation.ts before this is called.
+export async function createDonationSession(opts: {
+  amountCents: number;
+  currency: string;
+  origin: string;
+  metadata: Record<string, string>;
+}): Promise<Stripe.Checkout.Session> {
+  const { amountCents, currency, origin, metadata } = opts;
+  const cur = currency.toLowerCase();
+  return getStripe().checkout.sessions.create({
+    mode: "payment",
+    submit_type: "donate",
+    line_items: [
+      {
+        quantity: 1,
+        price_data: {
+          currency: cur,
+          unit_amount: amountCents,
+          product_data: {
+            name: "Donation — Bite Size Theology",
+            ...(metadata.fund ? { description: `Fund: ${metadata.fund}` } : {}),
+          },
+        },
+      },
+    ],
+    metadata,
+    success_url: `${origin}/donate/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${origin}/donate`,
+  });
+}
+
 // Expand line items (+ their product for the slug/size metadata) so confirm can rebuild the order
 // snapshot from what Stripe actually charged — no cart blob in session metadata, no size cap.
 export async function retrieveSession(id: string): Promise<Stripe.Checkout.Session> {

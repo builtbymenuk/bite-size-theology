@@ -1,19 +1,27 @@
 "use client";
 
 import { motion } from "motion/react";
+import Link from "next/link";
+import { linkProps } from "@/lib/links";
+
+const MotionLink = motion(Link);
 
 export default function ArrowButton({
   label,
   className,
   dark,
+  href,
 }: {
   label?: string;
   className?: string;
   dark?: boolean;
+  href?: string;
 }) {
+  const link = linkProps(href); // external → new tab; internal → same tab; blank → {} (button)
+  const Comp: any = link.href ? MotionLink : motion.button;
   return (
-    <motion.button
-      type="button"
+    <Comp
+      {...(link.href ? link : { type: "button" })}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.97 }}
       className={`group inline-flex items-center gap-3 ${className ?? ""}`}
@@ -44,6 +52,6 @@ export default function ArrowButton({
           />
         </svg>
       </span>
-    </motion.button>
+    </Comp>
   );
 }

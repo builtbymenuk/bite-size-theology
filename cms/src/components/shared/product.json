@@ -25,6 +25,9 @@
         "yellow"
       ]
     },
+    "url": {
+      "type": "string"
+    },
     "image": {
       "type": "media",
       "multiple": false,

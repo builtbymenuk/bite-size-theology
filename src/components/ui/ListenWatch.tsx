@@ -1,6 +1,7 @@
 "use client";
 
 import type { PodcastAction } from "@/lib/content";
+import { linkProps } from "@/lib/links";
 
 function PlatformIcon({ platform }: { platform: "spotify" | "youtube" }) {
   if (platform === "spotify") {
@@ -44,9 +45,10 @@ export default function ListenWatch({
             {a.label}
           </>
         );
-        const href = a.platform === "youtube" ? youtubeUrl : undefined;
-        return href ? (
-          <a key={a.label} href={href} target="_blank" rel="noreferrer" className={cls}>
+        // CMS action.url wins; YouTube falls back to the channel URL. Blank → inert button.
+        const p = linkProps(a.url || (a.platform === "youtube" ? youtubeUrl : undefined));
+        return p.href ? (
+          <a key={a.label} {...p} className={cls}>
             {inner}
           </a>
         ) : (

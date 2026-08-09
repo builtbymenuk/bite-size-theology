@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 // window. In dev this is a no-op (fetches are already uncached — see REVALIDATE in cms.ts).
 const TAGS = [
   "nav", "hero", "eyebrow", "calling", "all-thing", "collection", "podcast",
-  "podcast-page", "faq", "footer", "about", "contact", "book-caleb", "prayer", "tour",
+  "podcast-page", "faq", "footer", "about", "contact", "book-caleb", "prayer", "theme-setting", "donate", "tour",
   "store", "products", "categories",
 ];
 

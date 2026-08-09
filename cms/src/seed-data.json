@@ -3,11 +3,11 @@
     "logo": "Caleb",
     "cta": "Donate Now",
     "links": [
-      { "value": "About" },
-      { "value": "Sermons/Videos" },
-      { "value": "Shop" },
-      { "value": "Book Caleb" },
-      { "value": "Contact" }
+      { "label": "About", "url": "/about" },
+      { "label": "Sermons/Videos", "url": "/podcast" },
+      { "label": "Shop", "url": "/store" },
+      { "label": "Book Caleb", "url": "/book-caleb" },
+      { "label": "Contact", "url": "/contact" }
     ]
   },
   "hero": {
@@ -34,7 +34,14 @@
   "all-thing": {
     "headingLead": "ALL THE",
     "headingScript": "things",
-    "subtext": "Connect with us and stay updated on our journey! Find out about new events, interviews, merch drops, and more."
+    "subtext": "Connect with us and stay updated on our journey! Find out about new events, interviews, merch drops, and more.",
+    "urlTestimony": "",
+    "urlYoutube": "https://www.youtube.com/channel/UC7VL8Ljt2f0luWz4HMkUGuw",
+    "urlTiktok": "",
+    "urlShop": "/store",
+    "urlPodcast": "/podcast",
+    "urlBook": "/book-caleb",
+    "urlGive": "/donate"
   },
   "upcoming-book": {
     "visible": false,
@@ -49,6 +56,8 @@
     "eyebrow": "Curated Goods",
     "heading": "THE COLLECTION",
     "link": "Explore all resources",
+    "linkUrl": "/store",
+    "quoteCtaUrl": "/about",
     "products": [
       {
         "name": "The Calling: Study Guide",
@@ -110,6 +119,7 @@
     "supportHeading": "Didn't find your answer?",
     "supportBody": "No worries! If you have any other questions or need more information, feel free to reach out directly to contact@calebgriffith.com.",
     "supportCta": "Ask me a question",
+    "supportCtaUrl": "/contact",
     "headingLead": "FREQUENT",
     "headingScript": "asks",
     "items": [
@@ -140,19 +150,19 @@
       {
         "title": "Connect",
         "links": [
-          { "value": "Church Online" },
-          { "value": "Find a Location" },
-          { "value": "Prayer Request" },
-          { "value": "Give" }
+          { "label": "Church Online", "url": "" },
+          { "label": "Find a Location", "url": "" },
+          { "label": "Prayer Request", "url": "/prayer" },
+          { "label": "Give", "url": "/donate" }
         ]
       },
       {
         "title": "Social",
         "links": [
-          { "value": "Instagram" },
-          { "value": "YouTube" },
-          { "value": "Twitter" },
-          { "value": "Contact" }
+          { "label": "Instagram", "url": "" },
+          { "label": "YouTube", "url": "" },
+          { "label": "Twitter", "url": "" },
+          { "label": "Contact", "url": "/contact" }
         ]
       }
     ],
@@ -162,8 +172,8 @@
     "wordmark": "BITE SIZE THEOLOGY",
     "copyright": "© 2026 Bite Size Theology. All rights reserved.",
     "legal": [
-      { "value": "Privacy" },
-      { "value": "Terms" }
+      { "label": "Privacy", "url": "" },
+      { "label": "Terms", "url": "" }
     ]
   },
   "about": {
@@ -173,6 +183,7 @@
     "name": "Caleb Griffith",
     "role": "Social Media & Street Evangelist",
     "donateCta": "Donate Now",
+    "donateCtaUrl": "/donate",
     "intro": "Raised in church, Caleb carried a deep faith but wrestled with depression and anxiety for years.",
     "turnLead": "But, God!",
     "missionLabel": "The Mission",
@@ -198,9 +209,9 @@
       { "value": "Nashville, TN 37203" }
     ],
     "socials": [
-      { "name": "Instagram", "handle": "@calebgriffith" },
-      { "name": "YouTube", "handle": "bitesizetheology" },
-      { "name": "Twitter", "handle": "@bitesizetheo" }
+      { "name": "Instagram", "handle": "@calebgriffith", "url": "" },
+      { "name": "YouTube", "handle": "bitesizetheology", "url": "" },
+      { "name": "Twitter", "handle": "@bitesizetheo", "url": "" }
     ],
     "formHeading": "Send a Message",
     "formSubheading": "We'll get back to you shortly",
@@ -262,6 +273,41 @@
     "urgentLabel": "This is urgent",
     "formSubmit": "Send Prayer Request"
   },
+  "donate": {
+    "heroEyebrow": "Partner with the mission",
+    "heroHeading": "Help take the gospel to the",
+    "heroAccent": "streets.",
+    "heroSubtext": "Your gift fuels honest, unfiltered conversations about faith — reaching people where they are, on the streets, online, and around the world. Every dollar goes further than you know.",
+    "presets": [
+      { "value": "25" },
+      { "value": "50" },
+      { "value": "100" },
+      { "value": "250" }
+    ],
+    "fundOptions": [
+      { "value": "Where needed most" },
+      { "value": "Missions & Outreach" },
+      { "value": "Media & Content" }
+    ],
+    "impactHeading": "Your generosity at work",
+    "impactStats": [
+      { "value": "10M+", "label": "Views a month", "icon": "globe" },
+      { "value": "40+", "label": "Nations reached", "icon": "award" },
+      { "value": "100%", "label": "Toward the mission", "icon": "mic" }
+    ],
+    "proceedsNote": "Every gift supports street evangelism, media, and outreach",
+    "assuranceTitle": "Give with confidence",
+    "assuranceBody": "Payments are processed securely through Stripe and PayPal — we never see or store your card details. You'll receive an emailed receipt for every gift.",
+    "thankYouHeading": "Thank you for your generosity.",
+    "thankYouBody": "“Each of you should give what you have decided in your heart to give… for God loves a cheerful giver.” — 2 Corinthians 9:7\n\nYour gift is already at work. A receipt is on its way to your inbox."
+  },
+  "theme-setting": {
+    "paper": "#edf1f7",
+    "ink": "#0e2038",
+    "accent": "#b0577c",
+    "darkSection": "#16294c",
+    "blue": "#2563ad"
+  },
   "tour": {
     "regions": [
       {
@@ -300,6 +346,7 @@
     "heroHeading": "Christian Apparel With Purpose",
     "heroSubtext": "Wearable conversation starters — every piece is a chance to share the hope of Jesus. 10% of proceeds support mission work.",
     "heroCta": "Shop the Collection",
+    "heroCtaUrl": "#catalog",
     "proceedsBanner": "10% of proceeds support mission work",
     "bestSellersHeading": "Best Sellers",
     "newArrivalsHeading": "New Arrivals",
@@ -307,6 +354,7 @@
     "founderHeading": "About Bite Size Theology",
     "founderBody": "Bryce Crawford is a social media and street evangelist with a deep passion for helping people discover their identity in Jesus Christ. After being saved in a Waffle House, Bryce became filled with the love of Jesus and began sharing the Gospel everywhere he went. He created these shirts as walking conversation starters, hoping to bring Jesus to every corner of the earth and empower lives with compassion and faith.",
     "founderCta": "Shop Bite Size Theology",
+    "founderCtaUrl": "#catalog",
     "shippingFee": 5.99,
     "currency": "USD"
   },

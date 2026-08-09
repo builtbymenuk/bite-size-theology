@@ -25,6 +25,9 @@
     "role": {
       "type": "string"
     },
+    "donateCtaUrl": {
+      "type": "string"
+    },
     "donateCta": {
       "type": "string"
     },

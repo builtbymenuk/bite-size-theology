@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import { getStore, getProducts, getCategories } from "@/lib/cms";
+import { linkProps } from "@/lib/links";
 import Footer from "@/components/layout/Footer";
 import Reveal from "@/components/ui/Reveal";
 import Marquee from "@/components/ui/Marquee";
@@ -54,7 +55,7 @@ export default async function StorePage() {
               {store.heroSubtext}
             </p>
             <a
-              href="#catalog"
+              {...(linkProps(store.heroCtaUrl).href ? linkProps(store.heroCtaUrl) : { href: "#catalog" })}
               className="mt-8 inline-flex items-center rounded-full bg-ink px-7 py-3.5 text-[11px] font-medium uppercase tracking-[0.22em] text-cream transition-colors hover:bg-charcoal"
             >
               {store.heroCta}
@@ -109,7 +110,7 @@ export default async function StorePage() {
               {store.founderBody}
             </p>
             <a
-              href="#catalog"
+              {...(linkProps(store.founderCtaUrl).href ? linkProps(store.founderCtaUrl) : { href: "#catalog" })}
               className="mt-8 inline-block rounded-full border border-ink px-7 py-3.5 text-[11px] font-medium uppercase tracking-[0.22em] text-ink transition-colors hover:bg-ink hover:text-cream"
             >
               {store.founderCta}
