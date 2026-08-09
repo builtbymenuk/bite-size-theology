@@ -399,6 +399,34 @@ export async function getBookCaleb(): Promise<BookCaleb> {
   };
 }
 
+// Admin-editable recipient overrides for the three forms. Read UNCACHED (no-store) so a change in
+// the admin applies on the very next submission. Server-only (token'd); never exposed publicly.
+// Any failure → {} so the routes fall back to their env vars exactly as before.
+export interface NotificationSettings {
+  contactTo?: string;
+  bookingTo?: string;
+  prayerTo?: string;
+}
+export async function getNotificationSettings(): Promise<NotificationSettings> {
+  if (!BASE) return {};
+  try {
+    const res = await fetch(`${BASE}/api/notification-settings`, {
+      headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {},
+      cache: "no-store",
+    });
+    if (!res.ok) return {};
+    const d = (await res.json())?.data;
+    if (!d) return {};
+    const t = (v: unknown) => {
+      const s = String(v ?? "").trim();
+      return s || undefined;
+    };
+    return { contactTo: t(d.contactTo), bookingTo: t(d.bookingTo), prayerTo: t(d.prayerTo) };
+  } catch {
+    return {};
+  }
+}
+
 export async function getPrayer(): Promise<Prayer> {
   const d = await single("prayer");
   if (!d) return fb.prayer;

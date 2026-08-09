@@ -930,6 +930,37 @@ export interface ApiNavNav extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiNotificationSettingsNotificationSettings
+  extends Struct.SingleTypeSchema {
+  collectionName: 'notification_settings';
+  info: {
+    displayName: 'Settings \u2014 Form Emails';
+    pluralName: 'notification-settings-list';
+    singularName: 'notification-settings';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    bookingTo: Schema.Attribute.String;
+    contactTo: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::notification-settings.notification-settings'
+    > &
+      Schema.Attribute.Private;
+    prayerTo: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
   collectionName: 'orders';
   info: {
@@ -1779,6 +1810,7 @@ declare module '@strapi/strapi' {
       'api::footer.footer': ApiFooterFooter;
       'api::hero.hero': ApiHeroHero;
       'api::nav.nav': ApiNavNav;
+      'api::notification-settings.notification-settings': ApiNotificationSettingsNotificationSettings;
       'api::order.order': ApiOrderOrder;
       'api::podcast-page.podcast-page': ApiPodcastPagePodcastPage;
       'api::podcast.podcast': ApiPodcastPodcast;

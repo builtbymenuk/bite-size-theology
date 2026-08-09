@@ -175,6 +175,11 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     urgent: { label: "Urgent" },
     handled: { label: "Handled", description: "Tick once the prayer team has followed up" },
   },
+  "notification-settings": {
+    contactTo: { label: "Contact form → email", description: "Where Contact submissions are sent. Blank = server default." },
+    bookingTo: { label: "Book Caleb form → email", description: "Where booking requests are sent. Blank = server default." },
+    prayerTo: { label: "Prayer form → email", description: "Where prayer requests are sent. Blank = server default." },
+  },
   tour: {
     regions: { label: "Tour regions", description: "Each region has an optional heading + code, and a list of dates" },
   },

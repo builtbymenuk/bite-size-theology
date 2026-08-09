@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getBookCaleb } from "@/lib/cms";
+import { getBookCaleb, getNotificationSettings } from "@/lib/cms";
 import { validate, type BookingPayload } from "@/lib/booking";
 import { sendResend } from "@/lib/mail";
 
@@ -51,7 +51,8 @@ export async function POST(req: Request) {
   await store(v.data); // best-effort
   const d = v.data;
   // Pastor's inbox. BOOKING_TO falls back to CONTACT_TO, then the page's direct-email address.
-  const to = process.env.BOOKING_TO || process.env.CONTACT_TO || (await getBookCaleb()).directEmail.address;
+  const s = await getNotificationSettings();
+  const to = s.bookingTo || process.env.BOOKING_TO || process.env.CONTACT_TO || (await getBookCaleb()).directEmail.address;
   const emailed = await sendResend({
     to,
     replyTo: d.email,

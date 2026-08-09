@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getContact } from "@/lib/cms";
+import { getContact, getNotificationSettings } from "@/lib/cms";
 import { validate, type ContactPayload } from "@/lib/contact";
 import { sendResend } from "@/lib/mail";
 
@@ -38,7 +38,8 @@ export async function POST(req: Request) {
 
   await store(v.data); // best-effort
   const d = v.data;
-  const to = process.env.CONTACT_TO || (await getContact()).email.address;
+  const s = await getNotificationSettings();
+  const to = s.contactTo || process.env.CONTACT_TO || (await getContact()).email.address;
   const emailed = await sendResend({
     to,
     replyTo: d.email,

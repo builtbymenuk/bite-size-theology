@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { validate, type PrayerPayload } from "@/lib/prayer";
+import { getNotificationSettings } from "@/lib/cms";
 import { sendResend } from "@/lib/mail";
 
 export const runtime = "nodejs";
@@ -45,7 +46,8 @@ export async function POST(req: Request) {
 
   await store(v.data); // best-effort
   const d = v.data;
-  const to = process.env.PRAYER_TO || process.env.CONTACT_TO;
+  const s = await getNotificationSettings();
+  const to = s.prayerTo || process.env.PRAYER_TO || process.env.CONTACT_TO;
   const emailed = await sendResend({
     to: to || "",
     replyTo: d.email || undefined,

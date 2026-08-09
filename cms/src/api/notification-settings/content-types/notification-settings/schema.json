@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "notification_settings",
+  "info": {
+    "singularName": "notification-settings",
+    "pluralName": "notification-settings-list",
+    "displayName": "Settings — Form Emails"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "contactTo": {
+      "type": "string"
+    },
+    "bookingTo": {
+      "type": "string"
+    },
+    "prayerTo": {
+      "type": "string"
+    }
+  }
+}
