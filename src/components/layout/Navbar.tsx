@@ -94,9 +94,7 @@ export default function Navbar({ nav }: { nav: Nav }) {
           <CartButton dark={onDark} />
           <a
             href="#"
-            className={`hidden rounded-full px-5 py-2 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors md:inline-block ${
-              onDark ? "bg-cream text-ink" : "bg-ink text-cream"
-            }`}
+            className="hidden rounded-full bg-blue px-5 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-blue/90 md:inline-block"
           >
             {nav.cta}
           </a>
@@ -147,7 +145,7 @@ export default function Navbar({ nav }: { nav: Nav }) {
               <a
                 href="#"
                 onClick={() => setOpen(false)}
-                className="mt-4 inline-block w-fit rounded-full bg-cream px-6 py-3 text-xs uppercase tracking-widest text-ink"
+                className="mt-4 inline-block w-fit rounded-full bg-blue px-6 py-3 text-xs uppercase tracking-widest text-white"
               >
                 {nav.cta}
               </a>

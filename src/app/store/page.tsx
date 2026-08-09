@@ -87,7 +87,7 @@ export default async function StorePage() {
       <Catalog heading="Shop All" products={products} categories={categories} />
 
       {/* Founder */}
-      <section className="border-t border-ink/10 bg-[#efe9df]">
+      <section className="border-t border-ink/10 bg-[#e6ecf4]">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 py-24 md:grid-cols-2 md:items-center">
           <Reveal>
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">

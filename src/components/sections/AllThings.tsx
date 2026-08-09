@@ -15,7 +15,7 @@ function ChatBubble({
     <div
       className={`max-w-[82%] rounded-2xl px-3 py-2 text-xs leading-snug ${
         side === "right"
-          ? "self-end bg-[#2563eb] text-white"
+          ? "self-end bg-blue text-white"
           : "self-start bg-white text-ink"
       }`}
     >
@@ -46,7 +46,7 @@ export default async function AllThings() {
       >
         {/* Testimony — 2 wide */}
         <RevealItem className="lg:col-span-2">
-          <BentoCard className="h-full min-h-[300px] bg-[#e9e3d7] p-6">
+          <BentoCard className="h-full min-h-[300px] bg-[#dfe7f1] p-6">
             <div className="relative flex h-full items-center">
               <div>
                 <h3 className="font-display text-2xl">{c.testimony.title}</h3>
@@ -107,7 +107,7 @@ export default async function AllThings() {
 
         {/* Give Now */}
         <RevealItem>
-          <BentoCard className="h-full min-h-[300px] bg-[#e9e3d7] p-5">
+          <BentoCard className="h-full min-h-[300px] bg-[#dfe7f1] p-5">
             <div className="flex h-full flex-col justify-between">
               <h3 className="font-display text-2xl">{c.give.title}</h3>
               <div>
@@ -122,7 +122,7 @@ export default async function AllThings() {
 
         {/* Chat — tall */}
         <RevealItem className="lg:row-span-2">
-          <BentoCard className="h-full min-h-[300px] bg-[#e9e3d7] p-4">
+          <BentoCard className="h-full min-h-[300px] bg-[#dfe7f1] p-4">
             <div className="flex h-full flex-col justify-end gap-2">
               <ChatBubble side="left">{c.chat.question}</ChatBubble>
               {c.chat.replies.map((r, i) => (

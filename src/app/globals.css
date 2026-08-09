@@ -1,10 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #f5f1ea;
-  --color-ink: #1a1714;
-  --color-gold: #b8945f;
-  --color-charcoal: #23201c;
+  /* Brand palette (from the client's dove logo + YouTube). Token NAMES are legacy — their values
+     were rebranded from the old warm cream/ink/gold to the cool navy/plum identity:
+       cream    = cool paper (page bg / text on dark)     ink   = brand deep navy (text / dark fills)
+       charcoal = navy (dark sections / CTA hover)         gold  = plum-rose ACCENT (script words, badges)
+       blue     = royal-blue structural accent (links, CTA, tour price) */
+  --color-cream: #edf1f7;
+  --color-ink: #0e2038;
+  --color-gold: #b0577c;
+  --color-charcoal: #16294c;
+  --color-blue: #2563ad;
   --font-display: var(--font-fraunces);
   --font-body: var(--font-inter);
   --font-wordmark: var(--font-cinzel);

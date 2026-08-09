@@ -56,8 +56,10 @@ export default function CustomCursor() {
         height: SIZE,
         marginLeft: -SIZE / 2, // center the circle on the pointer
         marginTop: -SIZE / 2,
-        backdropFilter: "invert(1)",
-        WebkitBackdropFilter: "invert(1)",
+        // invert keeps the cursor self-contrasting on light/dark; grayscale strips the hue so it
+        // never shows an off-brand color (e.g. the negative of the blue CTA read as gold/tan).
+        backdropFilter: "invert(1) grayscale(1)",
+        WebkitBackdropFilter: "invert(1) grayscale(1)",
         opacity: visible ? 1 : 0,
       }}
     />

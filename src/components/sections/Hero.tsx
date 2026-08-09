@@ -1,8 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-import Parallax from "@/components/ui/Parallax";
-import Placeholder from "@/components/ui/Placeholder";
 import ArrowButton from "@/components/ui/ArrowButton";
 import type { Hero } from "@/lib/content";
 
@@ -11,12 +9,21 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export default function Hero({ hero }: { hero: Hero }) {
   return (
     <section className="relative flex h-[100svh] min-h-[640px] w-full items-center overflow-hidden bg-charcoal text-cream">
-      <div className="absolute inset-0">
-        <Parallax className="h-full w-full" amount={8}>
-          <Placeholder tone="dark" label="Hero — Cathedral Interior" src={hero.bgImage} />
-        </Parallax>
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/50 to-charcoal/20" />
+      {/* Pastor portrait, anchored far right and blended into the navy so the title stays clear on
+          the left. Cropped from the brand banner (wordmark removed). */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-[72%] translate-x-[10%] sm:w-[56%] lg:w-[46%]">
+        {/* eslint-disable-next-line @next/next/no-img-element -- CMS/remote or local crop; fill layout */}
+        <img
+          src={hero.bgImage}
+          alt="Caleb Griffith"
+          className="absolute inset-0 h-full w-full object-cover object-top"
+        />
+        {/* fade the crop's left edge + bottom into the navy (hides the rectangular seam) */}
+        <div className="absolute inset-0 bg-gradient-to-r from-charcoal via-charcoal/55 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/10 to-transparent" />
       </div>
+      {/* Royal-blue glow echoing the YouTube banner */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_55%_at_22%_16%,rgba(37,99,173,0.42),transparent_70%)]" />
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6">
         <motion.p

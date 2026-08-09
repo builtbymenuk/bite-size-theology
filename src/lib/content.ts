@@ -318,7 +318,7 @@ export const hero: Hero = {
   subtext:
     "Honest, unfiltered conversations about faith, culture, and the Bible. Welcome to Bite Size Theology.",
   cta: "Discover the Message",
-  bgImage: "/placeholders/hero-cathedral.jpg", // themed default; CMS bgImage overrides
+  bgImage: "/hero-caleb.png", // pastor crop (wordmark removed); CMS Hero → bgImage overrides
 };
 
 export const eyebrow: string = "Bite Size Theology / Explore the Word";

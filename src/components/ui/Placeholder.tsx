@@ -3,13 +3,14 @@
 // slots without an uploaded image look exactly as before.
 import Image from "next/image";
 
+// Brand-family gradients (legacy tone names kept). Cool navy/blue/teal + plum accent.
 const tones = {
-  dark: "from-charcoal to-[#3a352d] text-cream/40",
-  warm: "from-[#c9a06a] to-[#8a6a3f] text-white/50",
-  light: "from-[#e9e3d7] to-[#d6ccba] text-ink/30",
-  cool: "from-[#8794a0] to-[#4a555c] text-white/50",
-  gold: "from-[#d8b072] to-[#b8945f] text-white/60",
-  yellow: "from-[#f4d54a] to-[#e0b800] text-black/40",
+  dark: "from-charcoal to-[#0a1a33] text-cream/40",
+  warm: "from-[#b06a86] to-[#7a3f59] text-white/50",
+  light: "from-[#dbe3ef] to-[#c2cede] text-ink/30",
+  cool: "from-[#5b7aa8] to-[#2b3f63] text-white/50",
+  gold: "from-[#c98aa6] to-[#b0577c] text-white/60",
+  yellow: "from-[#4fb0c0] to-[#2c7a8c] text-white/50",
 } as const;
 
 export default function Placeholder({

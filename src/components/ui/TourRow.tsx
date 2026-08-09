@@ -28,7 +28,7 @@ export default function TourRow({
         <span className="hidden flex-1 text-center text-[11px] uppercase tracking-[0.2em] text-ink/50 md:block">
           {date.venue}
         </span>
-        <span className="ml-auto w-20 text-right text-xs font-medium text-[#2f56d1] md:w-28 md:text-sm">
+        <span className="ml-auto w-20 text-right text-xs font-medium text-blue md:w-28 md:text-sm">
           {date.date}
         </span>
         <span className="w-24 shrink-0 text-right md:w-32">
