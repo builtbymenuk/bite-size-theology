@@ -1,5 +1,5 @@
 import Reveal from "@/components/ui/Reveal";
-import Placeholder from "@/components/ui/Placeholder";
+import CallingPhotos from "@/components/sections/CallingPhotos";
 import { getCalling } from "@/lib/cms";
 
 export default async function Calling() {
@@ -32,16 +32,8 @@ export default async function Calling() {
           <p className="mt-8 font-display text-2xl italic">{calling.signature}</p>
         </Reveal>
 
-        <Reveal className="relative min-h-[620px]">
-          {/* Open Bible — tall, dominant, anchored right. No tilt. */}
-          <div className="absolute right-0 top-0 aspect-[3/4] w-[70%] overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/5">
-            <Placeholder tone="warm" label="Open Bible" src={calling.images?.bible} />
-          </div>
-
-          {/* Scripture — smaller, overlaps the Open Bible's left edge. */}
-          <div className="absolute left-0 top-32 aspect-[4/5] w-[54%] overflow-hidden rounded-2xl shadow-xl ring-4 ring-cream">
-            <Placeholder tone="dark" label="Scripture" src={calling.images?.scripture} />
-          </div>
+        <Reveal>
+          <CallingPhotos bible={calling.images?.bible} scripture={calling.images?.scripture} />
         </Reveal>
       </div>
     </section>
