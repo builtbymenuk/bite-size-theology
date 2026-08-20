@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import Footer from "@/components/layout/Footer";
 import PodcastHero from "@/components/sections/PodcastHero";
 import Podcast from "@/components/sections/Podcast";
+import PodcastSeries from "@/components/sections/PodcastSeries";
 import PodcastStats from "@/components/sections/PodcastStats";
 import PodcastCta from "@/components/sections/PodcastCta";
 import { getPodcast } from "@/lib/cms";
@@ -23,6 +24,7 @@ export default async function PodcastPage() {
       <main>
         <PodcastHero />
         <Podcast podcast={podcast} />
+        <PodcastSeries />
         <PodcastStats />
         <PodcastCta />
       </main>

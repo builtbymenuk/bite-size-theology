@@ -9,7 +9,7 @@ const tones = {
   warm: "from-[#b06a86] to-[#7a3f59] text-white/50",
   light: "from-[#dbe3ef] to-[#c2cede] text-ink/30",
   cool: "from-[#5b7aa8] to-[#2b3f63] text-white/50",
-  gold: "from-[#c98aa6] to-[#b0577c] text-white/60",
+  gold: "from-[#d8bb8c] to-[#b8945f] text-white/60",
   yellow: "from-[#4fb0c0] to-[#2c7a8c] text-white/50",
 } as const;
 

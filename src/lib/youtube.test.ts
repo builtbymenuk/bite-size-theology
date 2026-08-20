@@ -1,6 +1,11 @@
 // Self-check for the RSS parser. Run: npx tsx src/lib/youtube.test.ts
 import assert from "node:assert";
-import { parseYouTubeFeed, extractChannelId } from "./youtube";
+import {
+  parseYouTubeFeed,
+  extractChannelId,
+  extractPlaylistId,
+  extractVideoId,
+} from "./youtube";
 
 const SAMPLE = `<?xml version="1.0"?>
 <feed xmlns:yt="http://www.youtube.com/xml/schemas/2015">
@@ -39,5 +44,44 @@ assert.equal(
 assert.equal(extractChannelId("UC7VL8Ljt2f0luWz4HMkUGuw"), "UC7VL8Ljt2f0luWz4HMkUGuw", "bare id");
 assert.equal(extractChannelId("@bitesizetheology"), null, "handle not resolved");
 assert.equal(extractChannelId(""), null);
+
+assert.equal(
+  extractPlaylistId("https://www.youtube.com/playlist?list=PLabc123DEF_-456xyz"),
+  "PLabc123DEF_-456xyz",
+  "id from playlist URL",
+);
+assert.equal(
+  extractPlaylistId("https://www.youtube.com/watch?v=abc12345678&list=PLabc123DEF_-456xyz"),
+  "PLabc123DEF_-456xyz",
+  "id from watch URL",
+);
+assert.equal(extractPlaylistId("  PLabc123DEF_-456xyz  "), "PLabc123DEF_-456xyz", "bare id, trimmed");
+assert.equal(extractPlaylistId("https://www.youtube.com/playlist"), null, "no list param");
+assert.equal(extractPlaylistId("PL<script>"), null, "rejects unsafe chars");
+assert.equal(extractPlaylistId("PLshort"), null, "rejects too-short id");
+assert.equal(extractPlaylistId("   "), null, "whitespace only");
+assert.equal(extractPlaylistId(""), null);
+
+assert.equal(extractVideoId("yuQabQ_4Nmc"), "yuQabQ_4Nmc", "bare video id");
+assert.equal(
+  extractVideoId("https://www.youtube.com/watch?v=yuQabQ_4Nmc&list=PLabc123DEF_-456xyz"),
+  "yuQabQ_4Nmc",
+  "id from watch URL",
+);
+assert.equal(
+  extractVideoId("https://youtu.be/yuQabQ_4Nmc?si=AbCdEfGhIjKl"),
+  "yuQabQ_4Nmc",
+  "Share-button short link — the most likely paste from the admin",
+);
+assert.equal(
+  extractVideoId("https://www.youtube.com/@cornerstonestatesville"),
+  null,
+  "channel URL is not a video",
+);
+assert.equal(extractVideoId("  yuQabQ_4Nmc  "), "yuQabQ_4Nmc", "trimmed");
+assert.equal(extractVideoId("yuQabQ_4Nm"), null, "10 chars rejected");
+assert.equal(extractVideoId("yuQabQ_4Nmcx"), null, "12 chars rejected");
+assert.equal(extractVideoId("<script>abc"), null, "unsafe chars rejected");
+assert.equal(extractVideoId(""), null);
 
 console.log("youtube parse: OK");

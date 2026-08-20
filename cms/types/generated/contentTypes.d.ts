@@ -536,27 +536,24 @@ export interface ApiBookCalebBookCaleb extends Struct.SingleTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    attendanceOptions: Schema.Attribute.Component<'shared.text-item', true>;
+    budgetOptions: Schema.Attribute.Component<'shared.text-item', true>;
+    corporateEventTypes: Schema.Attribute.Component<'shared.text-item', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     directEmailAddress: Schema.Attribute.String;
     directEmailLabel: Schema.Attribute.String;
     eventTypeOptions: Schema.Attribute.Component<'shared.text-item', true>;
-    fieldAudience: Schema.Attribute.String;
-    fieldEmail: Schema.Attribute.String;
-    fieldEventDate: Schema.Attribute.String;
-    fieldEventType: Schema.Attribute.String;
-    fieldLocation: Schema.Attribute.String;
-    fieldMessage: Schema.Attribute.String;
-    fieldName: Schema.Attribute.String;
-    fieldOrganization: Schema.Attribute.String;
-    fieldPhone: Schema.Attribute.String;
     formHeading: Schema.Attribute.String;
+    formNote: Schema.Attribute.String;
     formSubheading: Schema.Attribute.String;
     formSubmit: Schema.Attribute.String;
-    formSuccess: Schema.Attribute.String;
+    formSuccess: Schema.Attribute.Text;
     headingLead: Schema.Attribute.String;
     headingScript: Schema.Attribute.String;
+    heardAboutOptions: Schema.Attribute.Component<'shared.text-item', true>;
+    industryOptions: Schema.Attribute.Component<'shared.text-item', true>;
     intro: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -565,7 +562,10 @@ export interface ApiBookCalebBookCaleb extends Struct.SingleTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
-    responseNote: Schema.Attribute.String;
+    responseNote: Schema.Attribute.Text;
+    tabChurch: Schema.Attribute.String;
+    tabCorporate: Schema.Attribute.String;
+    timelineOptions: Schema.Attribute.Component<'shared.text-item', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -584,10 +584,12 @@ export interface ApiBookingRequestBookingRequest
     draftAndPublish: false;
   };
   attributes: {
+    audience: Schema.Attribute.String;
     audienceSize: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    details: Schema.Attribute.Text;
     email: Schema.Attribute.Email & Schema.Attribute.Required;
     eventDate: Schema.Attribute.String;
     eventType: Schema.Attribute.String;
@@ -602,8 +604,10 @@ export interface ApiBookingRequestBookingRequest
     message: Schema.Attribute.Text & Schema.Attribute.Required;
     name: Schema.Attribute.String & Schema.Attribute.Required;
     organization: Schema.Attribute.String & Schema.Attribute.Required;
+    orgWebsite: Schema.Attribute.String;
     phone: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    role: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1126,6 +1130,14 @@ export interface ApiPodcastPagePodcastPage extends Struct.SingleTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    seriesBody: Schema.Attribute.Text;
+    seriesCta: Schema.Attribute.String;
+    seriesCtaUrl: Schema.Attribute.String;
+    seriesEyebrow: Schema.Attribute.String;
+    seriesHeadingAccent: Schema.Attribute.String;
+    seriesHeadingLead: Schema.Attribute.String;
+    seriesItems: Schema.Attribute.Component<'shared.series', true>;
+    seriesVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     stats: Schema.Attribute.Component<'shared.stat', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

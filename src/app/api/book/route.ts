@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getBookCaleb, getNotificationSettings } from "@/lib/cms";
-import { validate, type BookingPayload } from "@/lib/booking";
+import { validate, summary, type BookingPayload } from "@/lib/booking";
 import { sendResend } from "@/lib/mail";
 
 export const runtime = "nodejs";
@@ -18,15 +18,20 @@ async function store(d: BookingPayload): Promise<void> {
       headers: { Authorization: `Bearer ${TOKEN}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         data: {
+          audience: d.audience,
           name: d.name,
           email: d.email,
           phone: d.phone,
+          role: d.role,
           organization: d.organization,
+          orgWebsite: d.orgWebsite,
           eventType: d.eventType,
           eventDate: d.eventDate,
           location: d.location,
           audienceSize: d.audienceSize,
           message: d.message,
+          // Everything the two tabs don't share, as one readable block — see summary().
+          details: summary(d),
         },
       }),
       cache: "no-store",

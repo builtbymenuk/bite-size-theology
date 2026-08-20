@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_series",
+  "info": {
+    "displayName": "series"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "video": {
+      "type": "string"
+    },
+    "playlist": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    }
+  }
+}

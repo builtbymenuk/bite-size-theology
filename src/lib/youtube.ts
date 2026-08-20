@@ -34,6 +34,26 @@ export function extractChannelId(input?: string): string | null {
   return input.match(/UC[A-Za-z0-9_-]{22}/)?.[0] ?? null;
 }
 
+// Accept a full playlist/watch URL (…?list=PL…) or a bare id. Also the sanitizer for the embed
+// src — the value is admin-pasted, so anything outside [A-Za-z0-9_-] returns null and the caller
+// renders nothing. Trims too: cms.ts's `d.x || fb.x` doesn't, and "  " would otherwise pass.
+export function extractPlaylistId(input?: string): string | null {
+  if (!input) return null;
+  const s = input.trim();
+  const id = s.match(/[?&]list=([A-Za-z0-9_-]+)/)?.[1] ?? s;
+  return /^[A-Za-z0-9_-]{12,}$/.test(id) ? id : null;
+}
+
+// Admin-pasted ids land in an iframe src and an i.ytimg URL, so sanitize like the two above:
+// a bare 11-char id or any URL YouTube's own UI hands out — watch?v=, the Share button's
+// youtu.be/… short link, /shorts/ and /live/ — else null and the caller renders nothing.
+export function extractVideoId(input?: string): string | null {
+  if (!input) return null;
+  const s = input.trim();
+  const id = s.match(/(?:[?&]v=|youtu\.be\/|\/shorts\/|\/live\/)([A-Za-z0-9_-]{11})/)?.[1] ?? s;
+  return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : null;
+}
+
 // Pure: parse the Atom feed XML into videos. Exported for the self-check.
 // ponytail: regex-parse the stable YouTube Atom feed; swap to fast-xml-parser only if it changes.
 export function parseYouTubeFeed(xml: string): YtVideo[] {

@@ -270,6 +270,30 @@ export async function getPodcastPage(): Promise<PodcastPage> {
       headingAccent: d.ctaHeadingAccent || fb.podcastPage.cta.headingAccent,
       body: d.ctaBody || fb.podcastPage.cta.body,
     },
+    series: {
+      // `??` not `!!` — this boolean is new on a single type that already has a row everywhere,
+      // so it reads back null. `!!null` would hide the section even after a playlist is pasted.
+      // Never-set = on; an explicit false from the admin still hides it.
+      visible: d.seriesVisible ?? true,
+      eyebrow: d.seriesEyebrow || fb.podcastPage.series.eyebrow,
+      headingLead: d.seriesHeadingLead || fb.podcastPage.series.headingLead,
+      headingAccent: d.seriesHeadingAccent || fb.podcastPage.series.headingAccent,
+      body: d.seriesBody || fb.podcastPage.series.body,
+      cta: d.seriesCta || fb.podcastPage.series.cta,
+      ctaUrl: d.seriesCtaUrl || fb.podcastPage.series.ctaUrl,
+      // Blank strings, not undefined: a half-filled card is a legitimate state (an editor pastes
+      // the video before the playlist), and the grid branches on `video` being empty.
+      items: arr(
+        d.seriesItems,
+        (v) => ({
+          title: v.title || "",
+          video: v.video || "",
+          playlist: v.playlist || "",
+          note: v.note || "",
+        }),
+        fb.podcastPage.series.items,
+      ),
+    },
   };
 }
 
@@ -384,36 +408,32 @@ export async function getContact(): Promise<Contact> {
 export async function getBookCaleb(): Promise<BookCaleb> {
   const d = await single("book-caleb");
   if (!d) return fb.bookCaleb;
+  const f = fb.bookCaleb;
+  const opts = (v: unknown, fallback: string[]) => arr(v, (o) => o.value, fallback);
   return {
-    headingLead: d.headingLead || fb.bookCaleb.headingLead,
-    headingScript: d.headingScript || fb.bookCaleb.headingScript,
-    intro: d.intro || fb.bookCaleb.intro,
-    responseNote: d.responseNote || fb.bookCaleb.responseNote,
+    headingLead: d.headingLead || f.headingLead,
+    headingScript: d.headingScript || f.headingScript,
+    intro: d.intro || f.intro,
+    responseNote: d.responseNote || f.responseNote,
     directEmail: {
-      label: d.directEmailLabel || fb.bookCaleb.directEmail.label,
-      address: d.directEmailAddress || fb.bookCaleb.directEmail.address,
+      label: d.directEmailLabel || f.directEmail.label,
+      address: d.directEmailAddress || f.directEmail.address,
     },
     form: {
-      heading: d.formHeading || fb.bookCaleb.form.heading,
-      subheading: d.formSubheading || fb.bookCaleb.form.subheading,
-      fields: {
-        name: d.fieldName || fb.bookCaleb.form.fields.name,
-        email: d.fieldEmail || fb.bookCaleb.form.fields.email,
-        phone: d.fieldPhone || fb.bookCaleb.form.fields.phone,
-        organization: d.fieldOrganization || fb.bookCaleb.form.fields.organization,
-        eventType: d.fieldEventType || fb.bookCaleb.form.fields.eventType,
-        eventDate: d.fieldEventDate || fb.bookCaleb.form.fields.eventDate,
-        location: d.fieldLocation || fb.bookCaleb.form.fields.location,
-        audience: d.fieldAudience || fb.bookCaleb.form.fields.audience,
-        message: d.fieldMessage || fb.bookCaleb.form.fields.message,
-      },
-      eventTypeOptions: arr(
-        d.eventTypeOptions,
-        (o) => o.value,
-        fb.bookCaleb.form.eventTypeOptions,
-      ),
-      submit: d.formSubmit || fb.bookCaleb.form.submit,
-      success: d.formSuccess || fb.bookCaleb.form.success,
+      heading: d.formHeading || f.form.heading,
+      subheading: d.formSubheading || f.form.subheading,
+      tabChurch: d.tabChurch || f.form.tabChurch,
+      tabCorporate: d.tabCorporate || f.form.tabCorporate,
+      submit: d.formSubmit || f.form.submit,
+      note: d.formNote || f.form.note,
+      success: d.formSuccess || f.form.success,
+      eventTypeOptions: opts(d.eventTypeOptions, f.form.eventTypeOptions),
+      corporateEventTypes: opts(d.corporateEventTypes, f.form.corporateEventTypes),
+      attendanceOptions: opts(d.attendanceOptions, f.form.attendanceOptions),
+      industryOptions: opts(d.industryOptions, f.form.industryOptions),
+      budgetOptions: opts(d.budgetOptions, f.form.budgetOptions),
+      heardAboutOptions: opts(d.heardAboutOptions, f.form.heardAboutOptions),
+      timelineOptions: opts(d.timelineOptions, f.form.timelineOptions),
     },
   };
 }

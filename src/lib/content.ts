@@ -173,10 +173,29 @@ export interface Stat {
   icon: Icon;
 }
 
+export interface SeriesCard {
+  title: string; // series name, set huge across the still
+  video: string; // watch/share URL or bare 11-char id; unresolvable = a "more coming" tile
+  playlist: string; // playlist URL or bare PL… id, for "Full series →"
+  note: string; // small-caps meta line, e.g. "12 parts"
+}
+
 export interface PodcastPage {
   hero: { name: string; heading: string; headingAccent: string; subtext: string };
   stats: Stat[];
   cta: { pills: string[]; headingLead: string; headingAccent: string; body: string };
+  // The church-channel preaching series cards, below the personal-channel wall. Required (not
+  // optional) because getPodcastPage returns this whole object verbatim when Strapi is down.
+  series: {
+    visible: boolean;
+    eyebrow: string;
+    headingLead: string;
+    headingAccent: string;
+    body: string;
+    cta: string;
+    ctaUrl: string;
+    items: SeriesCard[]; // the cards; empty = section hidden
+  };
 }
 
 export interface FaqItem {
@@ -270,20 +289,20 @@ export interface BookCaleb {
   form: {
     heading: string;
     subheading: string;
-    fields: {
-      name: string;
-      email: string;
-      phone: string;
-      organization: string;
-      eventType: string;
-      eventDate: string;
-      location: string;
-      audience: string;
-      message: string;
-    };
-    eventTypeOptions: string[];
+    tabChurch: string;
+    tabCorporate: string;
     submit: string;
+    note: string;
     success: string;
+    // Admin-tunable dropdown contents. The field labels themselves live in BookCalebForm —
+    // they're structure, not copy.
+    eventTypeOptions: string[]; // church tab
+    corporateEventTypes: string[];
+    attendanceOptions: string[]; // shared by every "how many people" select
+    industryOptions: string[];
+    budgetOptions: string[];
+    heardAboutOptions: string[];
+    timelineOptions: string[];
   };
 }
 
@@ -552,6 +571,56 @@ export const podcastPage: PodcastPage = {
     body:
       "Subscribe to our YouTube channel and never miss a new episode of Bite Size Theology.",
   },
+  // Caleb's preaching series on Cornerstone Church Statesville's channel, promoted below the
+  // personal-channel wall. Editable in Strapi (Page — Podcast → "Series — Cards"); a card with a
+  // blank video renders as a "Coming soon" placeholder, and unchecking "Show this section" or
+  // emptying the list hides the whole thing.
+  series: {
+    visible: true,
+    eyebrow: "Preaching Series",
+    headingLead: "Watch a whole series",
+    headingAccent: "start to finish.",
+    body:
+      "Pastor Caleb's sermon series from the pulpit at Cornerstone — pick one and watch the whole run in order.",
+    cta: "All sermons on YouTube",
+    ctaUrl: "https://www.youtube.com/@cornerstonestatesville/playlists",
+    items: [
+      {
+        title: "Sow Seed, Bear Fruit",
+        video: "https://www.youtube.com/watch?v=4JOnaInwGa0",
+        playlist:
+          "https://www.youtube.com/playlist?list=PLTKxXrMpXbkKZLlt445yVI0vhjdshuCOw",
+        note: "12 parts",
+      },
+      {
+        title: "Plot Twists and Prophets",
+        video: "https://www.youtube.com/watch?v=ln5ZDu5sUsY",
+        playlist:
+          "https://www.youtube.com/playlist?list=PLTKxXrMpXbkIrHhYjgvtG2pQxvKJTncrP",
+        note: "5 parts",
+      },
+      {
+        title: "Subject to Change",
+        video: "https://www.youtube.com/watch?v=hcWQNlqFrBE",
+        playlist:
+          "https://www.youtube.com/playlist?list=PLTKxXrMpXbkKuQwHxqDECQdDRwNC65v5C",
+        note: "5 parts",
+      },
+      {
+        title: "Pursuing the Presence of God",
+        video: "https://www.youtube.com/watch?v=tSCBSUm8BYE",
+        playlist:
+          "https://www.youtube.com/playlist?list=PLTKxXrMpXbkK_5eoFoavaJ90rPYNQJ2nK",
+        note: "8 parts",
+      },
+      // Placeholders — the editor fills these in from Strapi as new series land.
+      { title: "", video: "", playlist: "", note: "" },
+      { title: "", video: "", playlist: "", note: "" },
+      { title: "", video: "", playlist: "", note: "" },
+      { title: "", video: "", playlist: "", note: "" },
+      { title: "", video: "", playlist: "", note: "" },
+    ],
+  },
 };
 
 export const faq: Faq = {
@@ -691,8 +760,7 @@ export const contact: Contact = {
 export const bookCaleb: BookCaleb = {
   headingLead: "Have Caleb",
   headingScript: "speak.",
-  intro:
-    "Conferences, Sunday services, retreats, youth events—wherever people are hungry for the Word, Caleb would be honored to come. Send us the details of your event and our team will follow up.",
+  intro: "Conferences, Sunday services, retreats, youth events—wherever people are hungry for the Word, Caleb would be honored to come. Send us the details of your event and our team will follow up.",
   responseNote: "We review every request and respond within a few business days.",
   directEmail: {
     label: "Prefer email?",
@@ -701,28 +769,72 @@ export const bookCaleb: BookCaleb = {
   form: {
     heading: "Request a Booking",
     subheading: "Tell us about your event",
-    fields: {
-      name: "Full Name",
-      email: "Email Address",
-      phone: "Phone (optional)",
-      organization: "Church / Organization",
-      eventType: "Event Type",
-      eventDate: "Preferred Date(s)",
-      location: "Location (city / venue)",
-      audience: "Estimated Audience Size (optional)",
-      message: "Tell us about your event",
-    },
+    tabChurch: "Church / Ministry",
+    tabCorporate: "Corporate / Organization",
+    submit: "Send Request",
+    note: "* Required fields. Our team will respond within a few business days.",
+    success: "Thank you — your booking request is on its way. Our team will be in touch soon.",
     eventTypeOptions: [
+      "Sunday service",
       "Conference",
-      "Sunday Service",
+      "Revival / special series",
+      "Men's event",
+      "Women's event",
+      "Youth event",
       "Retreat",
-      "Youth Event",
-      "Podcast / Media",
+      "Leadership weekend",
       "Other",
     ],
-    submit: "Send Request",
-    success:
-      "Thank you — your booking request is on its way. Our team will be in touch soon.",
+    corporateEventTypes: [
+      "Leadership summit",
+      "Staff retreat",
+      "Corporate kickoff",
+      "Campus / student program",
+      "Executive gathering",
+      "Panel or fireside chat",
+      "Other",
+    ],
+    attendanceOptions: [
+      "Under 100",
+      "100–250",
+      "250–500",
+      "500–1,000",
+      "1,000–2,500",
+      "2,500+",
+    ],
+    industryOptions: [
+      "Nonprofit",
+      "Education",
+      "Healthcare",
+      "Technology",
+      "Finance",
+      "Sports / athletics",
+      "Government",
+      "Other",
+    ],
+    budgetOptions: [
+      "Prefer not to say",
+      "Under $2,500",
+      "$2,500–$5,000",
+      "$5,000–$10,000",
+      "$10,000+",
+      "Let's discuss",
+    ],
+    heardAboutOptions: [
+      "YouTube",
+      "The podcast",
+      "A friend or colleague",
+      "Heard Caleb speak",
+      "Social media",
+      "Search",
+      "Other",
+    ],
+    timelineOptions: [
+      "Decided — ready to book",
+      "Within 2 weeks",
+      "Within a month",
+      "Still exploring",
+    ],
   },
 };
 
@@ -752,7 +864,7 @@ export const prayer: Prayer = {
 export const themeColors: ThemeColors = {
   paper: "#edf1f7",
   ink: "#0e2038",
-  accent: "#b0577c",
+  accent: "#b8945f",
   darkSection: "#16294c",
   blue: "#2563ad",
 };

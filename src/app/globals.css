@@ -4,11 +4,11 @@
   /* Brand palette (from the client's dove logo + YouTube). Token NAMES are legacy — their values
      were rebranded from the old warm cream/ink/gold to the cool navy/plum identity:
        cream    = cool paper (page bg / text on dark)     ink   = brand deep navy (text / dark fills)
-       charcoal = navy (dark sections / CTA hover)         gold  = plum-rose ACCENT (script words, badges)
+       charcoal = navy (dark sections / CTA hover)         gold  = warm gold ACCENT (script words, badges)
        blue     = royal-blue structural accent (links, CTA, tour price) */
   --color-cream: #edf1f7;
   --color-ink: #0e2038;
-  --color-gold: #b0577c;
+  --color-gold: #b8945f;
   --color-charcoal: #16294c;
   --color-blue: #2563ad;
   --font-display: var(--font-fraunces);
@@ -80,6 +80,24 @@ details[open]::details-content {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Preaching-series poster wall (SeriesWall.tsx). Each column renders its posters twice, so
+   translating a full -50% lands the copy exactly where the original started — a seamless loop.
+   Applied with Tailwind's motion-safe: variant rather than relying on the reduced-motion guard
+   above: an infinite animation forced to 0.01ms would thrash through cycles instead of stopping. */
+@keyframes wall-up {
+  to {
+    transform: translateY(-50%);
+  }
+}
+@keyframes wall-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
   }
 }
 

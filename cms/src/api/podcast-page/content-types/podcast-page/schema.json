@@ -40,6 +40,33 @@
       "type": "component",
       "repeatable": true,
       "component": "shared.text-item"
+    },
+    "seriesVisible": {
+      "type": "boolean",
+      "default": true
+    },
+    "seriesEyebrow": {
+      "type": "string"
+    },
+    "seriesHeadingLead": {
+      "type": "string"
+    },
+    "seriesHeadingAccent": {
+      "type": "string"
+    },
+    "seriesBody": {
+      "type": "text"
+    },
+    "seriesCta": {
+      "type": "string"
+    },
+    "seriesCtaUrl": {
+      "type": "string"
+    },
+    "seriesItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.series"
     }
   }
 }

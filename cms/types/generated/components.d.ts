@@ -74,6 +74,19 @@ export interface SharedProduct extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedSeries extends Struct.ComponentSchema {
+  collectionName: 'components_shared_series';
+  info: {
+    displayName: 'series';
+  };
+  attributes: {
+    note: Schema.Attribute.String;
+    playlist: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+    video: Schema.Attribute.String;
+  };
+}
+
 export interface SharedSocial extends Struct.ComponentSchema {
   collectionName: 'components_shared_socials';
   info: {
@@ -145,6 +158,7 @@ declare module '@strapi/strapi' {
       'shared.link': SharedLink;
       'shared.podcast-action': SharedPodcastAction;
       'shared.product': SharedProduct;
+      'shared.series': SharedSeries;
       'shared.social': SharedSocial;
       'shared.stat': SharedStat;
       'shared.text-item': SharedTextItem;

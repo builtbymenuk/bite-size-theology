@@ -112,6 +112,24 @@
       { "value": "Theological Truths" },
       { "value": "Bite Size Theology" },
       { "value": "Watch on YouTube" }
+    ],
+    "seriesVisible": true,
+    "seriesEyebrow": "Preaching Series",
+    "seriesHeadingLead": "Watch a whole series",
+    "seriesHeadingAccent": "start to finish.",
+    "seriesBody": "Pastor Caleb's sermon series from the pulpit at Cornerstone — pick one and watch the whole run in order.",
+    "seriesCta": "All sermons on YouTube",
+    "seriesCtaUrl": "https://www.youtube.com/@cornerstonestatesville/playlists",
+    "seriesItems": [
+      { "title": "Sow Seed, Bear Fruit", "video": "https://www.youtube.com/watch?v=4JOnaInwGa0", "playlist": "https://www.youtube.com/playlist?list=PLTKxXrMpXbkKZLlt445yVI0vhjdshuCOw", "note": "12 parts" },
+      { "title": "Plot Twists and Prophets", "video": "https://www.youtube.com/watch?v=ln5ZDu5sUsY", "playlist": "https://www.youtube.com/playlist?list=PLTKxXrMpXbkIrHhYjgvtG2pQxvKJTncrP", "note": "5 parts" },
+      { "title": "Subject to Change", "video": "https://www.youtube.com/watch?v=hcWQNlqFrBE", "playlist": "https://www.youtube.com/playlist?list=PLTKxXrMpXbkKuQwHxqDECQdDRwNC65v5C", "note": "5 parts" },
+      { "title": "Pursuing the Presence of God", "video": "https://www.youtube.com/watch?v=tSCBSUm8BYE", "playlist": "https://www.youtube.com/playlist?list=PLTKxXrMpXbkK_5eoFoavaJ90rPYNQJ2nK", "note": "8 parts" },
+      { "title": "", "video": "", "playlist": "", "note": "" },
+      { "title": "", "video": "", "playlist": "", "note": "" },
+      { "title": "", "video": "", "playlist": "", "note": "" },
+      { "title": "", "video": "", "playlist": "", "note": "" },
+      { "title": "", "video": "", "playlist": "", "note": "" }
     ]
   },
   "faq": {
@@ -238,25 +256,72 @@
     "directEmailAddress": "hello@bitesizetheology.com",
     "formHeading": "Request a Booking",
     "formSubheading": "Tell us about your event",
-    "fieldName": "Full Name",
-    "fieldEmail": "Email Address",
-    "fieldPhone": "Phone (optional)",
-    "fieldOrganization": "Church / Organization",
-    "fieldEventType": "Event Type",
-    "fieldEventDate": "Preferred Date(s)",
-    "fieldLocation": "Location (city / venue)",
-    "fieldAudience": "Estimated Audience Size (optional)",
-    "fieldMessage": "Tell us about your event",
+    "tabChurch": "Church / Ministry",
+    "tabCorporate": "Corporate / Organization",
+    "formSubmit": "Send Request",
+    "formNote": "* Required fields. Our team will respond within a few business days.",
+    "formSuccess": "Thank you — your booking request is on its way. Our team will be in touch soon.",
     "eventTypeOptions": [
+      { "value": "Sunday service" },
       { "value": "Conference" },
-      { "value": "Sunday Service" },
+      { "value": "Revival / special series" },
+      { "value": "Men's event" },
+      { "value": "Women's event" },
+      { "value": "Youth event" },
       { "value": "Retreat" },
-      { "value": "Youth Event" },
-      { "value": "Podcast / Media" },
+      { "value": "Leadership weekend" },
       { "value": "Other" }
     ],
-    "formSubmit": "Send Request",
-    "formSuccess": "Thank you — your booking request is on its way. Our team will be in touch soon."
+    "corporateEventTypes": [
+      { "value": "Leadership summit" },
+      { "value": "Staff retreat" },
+      { "value": "Corporate kickoff" },
+      { "value": "Campus / student program" },
+      { "value": "Executive gathering" },
+      { "value": "Panel or fireside chat" },
+      { "value": "Other" }
+    ],
+    "attendanceOptions": [
+      { "value": "Under 100" },
+      { "value": "100–250" },
+      { "value": "250–500" },
+      { "value": "500–1,000" },
+      { "value": "1,000–2,500" },
+      { "value": "2,500+" }
+    ],
+    "industryOptions": [
+      { "value": "Nonprofit" },
+      { "value": "Education" },
+      { "value": "Healthcare" },
+      { "value": "Technology" },
+      { "value": "Finance" },
+      { "value": "Sports / athletics" },
+      { "value": "Government" },
+      { "value": "Other" }
+    ],
+    "budgetOptions": [
+      { "value": "Prefer not to say" },
+      { "value": "Under $2,500" },
+      { "value": "$2,500–$5,000" },
+      { "value": "$5,000–$10,000" },
+      { "value": "$10,000+" },
+      { "value": "Let's discuss" }
+    ],
+    "heardAboutOptions": [
+      { "value": "YouTube" },
+      { "value": "The podcast" },
+      { "value": "A friend or colleague" },
+      { "value": "Heard Caleb speak" },
+      { "value": "Social media" },
+      { "value": "Search" },
+      { "value": "Other" }
+    ],
+    "timelineOptions": [
+      { "value": "Decided — ready to book" },
+      { "value": "Within 2 weeks" },
+      { "value": "Within a month" },
+      { "value": "Still exploring" }
+    ]
   },
   "prayer": {
     "headingLead": "How can we",
@@ -304,7 +369,7 @@
   "theme-setting": {
     "paper": "#edf1f7",
     "ink": "#0e2038",
-    "accent": "#b0577c",
+    "accent": "#b8945f",
     "darkSection": "#16294c",
     "blue": "#2563ad"
   },

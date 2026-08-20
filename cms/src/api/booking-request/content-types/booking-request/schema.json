@@ -14,6 +14,9 @@
       "type": "string",
       "required": true
     },
+    "audience": {
+      "type": "string"
+    },
     "email": {
       "type": "email",
       "required": true
@@ -21,9 +24,15 @@
     "phone": {
       "type": "string"
     },
+    "role": {
+      "type": "string"
+    },
     "organization": {
       "type": "string",
       "required": true
+    },
+    "orgWebsite": {
+      "type": "string"
     },
     "eventType": {
       "type": "string"
@@ -40,6 +49,9 @@
     "message": {
       "type": "text",
       "required": true
+    },
+    "details": {
+      "type": "text"
     },
     "handled": {
       "type": "boolean",

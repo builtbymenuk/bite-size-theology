@@ -90,6 +90,14 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     ctaHeadingAccent: { label: "CTA — Accent word" },
     ctaBody: { label: "CTA — Body" },
     ctaPills: { label: "CTA — Keyword pills" },
+    seriesVisible: { label: "Series — Show this section", description: "Uncheck to hide the preaching-series cards" },
+    seriesEyebrow: { label: "Series — Eyebrow" },
+    seriesHeadingLead: { label: "Series — Heading lead" },
+    seriesHeadingAccent: { label: "Series — Accent word", description: "Shown italic/gold" },
+    seriesBody: { label: "Series — Body" },
+    seriesCta: { label: "Series — Button text" },
+    seriesCtaUrl: { label: "Series — Button link" },
+    seriesItems: { label: "Series — Cards", description: "One card per preaching series. Paste the YouTube video link (the card's thumbnail + player) and the playlist link. Leave the video blank for a \"Coming soon\" placeholder." },
   },
   faq: {
     supportEyebrow: { label: "Support — Eyebrow" },
@@ -141,21 +149,28 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     directEmailAddress: { label: "Direct email — Address" },
     formHeading: { label: "Form — Heading" },
     formSubheading: { label: "Form — Subheading" },
-    fieldName: { label: "Form placeholder — Name" },
-    fieldEmail: { label: "Form placeholder — Email" },
-    fieldPhone: { label: "Form placeholder — Phone" },
-    fieldOrganization: { label: "Form placeholder — Church / Organization" },
-    fieldEventType: { label: "Form placeholder — Event type" },
-    fieldEventDate: { label: "Form placeholder — Preferred date(s)" },
-    fieldLocation: { label: "Form placeholder — Location" },
-    fieldAudience: { label: "Form placeholder — Audience size" },
-    fieldMessage: { label: "Form placeholder — Message" },
-    eventTypeOptions: { label: "Form — Event type dropdown options" },
+    tabChurch: { label: "Form — Church tab label" },
+    tabCorporate: { label: "Form — Corporate tab label" },
     formSubmit: { label: "Form — Submit button" },
+    formNote: { label: "Form — Small print under the button" },
     formSuccess: { label: "Form — Success message" },
+    eventTypeOptions: { label: "Dropdown — Event type (church tab)" },
+    corporateEventTypes: { label: "Dropdown — Event type (corporate tab)" },
+    attendanceOptions: {
+      label: "Dropdown — Size ranges",
+      description: "Shared by every how-many-people question: weekend attendance, expected attendance, organization size.",
+    },
+    industryOptions: { label: "Dropdown — Industry / type (corporate tab)" },
+    budgetOptions: { label: "Dropdown — Speaking fee budget (corporate tab)" },
+    heardAboutOptions: { label: "Dropdown — How did you hear about Caleb?" },
+    timelineOptions: { label: "Dropdown — Decision timeline (corporate tab)" },
   },
   "booking-request": {
     name: { label: "Name" },
+    audience: { label: "Audience", description: "Which form tab the request came from — church or corporate." },
+    role: { label: "Role / title" },
+    orgWebsite: { label: "Website" },
+    details: { label: "Other answers", description: "The tab-specific answers (size, budget, travel, timeline, …) in one block." },
     organization: { label: "Church / Organization" },
     eventType: { label: "Event type" },
     eventDate: { label: "Preferred date(s)" },
@@ -415,6 +430,69 @@ export default {
       }
     } catch (e) {
       strapi.log.error("seed: failed backfilling nav links");
+      strapi.log.error(e);
+    }
+
+    // 2f. Preaching-series backfill. Step 2 only seeds a single type that has NO row, and
+    //     podcast-page always has one — so seed-data alone never reaches an existing install and
+    //     the editor would face an empty repeatable AND seven blank text fields. Unlike 2c-2e this
+    //     one fills the sibling scalars too, since they were added in the same never-seeded batch.
+    //     No stale-shape probe needed: the old sermon component is gone, so an install carrying the
+    //     previous list reads seriesItems back empty and re-seeds on its own.
+    try {
+      const uid = "api::podcast-page.podcast-page";
+      const doc = await strapi.documents(uid).findFirst({ populate: ["seriesItems"] });
+      const seed = seedData["podcast-page"] as Record<string, any>;
+      if (doc && seed?.seriesItems?.length && !doc.seriesItems?.length) {
+        await strapi.documents(uid).update({
+          documentId: doc.documentId,
+          data: {
+            seriesVisible: doc.seriesVisible ?? seed.seriesVisible,
+            seriesEyebrow: doc.seriesEyebrow || seed.seriesEyebrow,
+            seriesHeadingLead: doc.seriesHeadingLead || seed.seriesHeadingLead,
+            seriesHeadingAccent: doc.seriesHeadingAccent || seed.seriesHeadingAccent,
+            seriesBody: doc.seriesBody || seed.seriesBody,
+            seriesCta: doc.seriesCta || seed.seriesCta,
+            seriesCtaUrl: doc.seriesCtaUrl || seed.seriesCtaUrl,
+            seriesItems: seed.seriesItems,
+          },
+        });
+        strapi.log.info(`seed: backfilled ${seed.seriesItems.length} preaching series`);
+      }
+    } catch (e) {
+      strapi.log.error("seed: failed backfilling preaching series");
+      strapi.log.error(e);
+    }
+
+    // 2g. Book Caleb backfill. The form grew a second audience with its own question set, so the
+    //     tab labels and all seven dropdowns are new on a single type that already has a row
+    //     everywhere — step 2 skips it, and the editor would face empty option lists. Keyed on
+    //     corporateEventTypes, which only exists in the new shape.
+    try {
+      const uid = "api::book-caleb.book-caleb";
+      const doc = await strapi.documents(uid).findFirst({ populate: ["corporateEventTypes"] });
+      const seed = seedData["book-caleb"] as Record<string, any>;
+      if (doc && seed?.corporateEventTypes?.length && !doc.corporateEventTypes?.length) {
+        const keep = (field: string) => (doc as Record<string, any>)[field] || seed[field];
+        await strapi.documents(uid).update({
+          documentId: doc.documentId,
+          data: {
+            tabChurch: keep("tabChurch"),
+            tabCorporate: keep("tabCorporate"),
+            formNote: keep("formNote"),
+            eventTypeOptions: seed.eventTypeOptions,
+            corporateEventTypes: seed.corporateEventTypes,
+            attendanceOptions: seed.attendanceOptions,
+            industryOptions: seed.industryOptions,
+            budgetOptions: seed.budgetOptions,
+            heardAboutOptions: seed.heardAboutOptions,
+            timelineOptions: seed.timelineOptions,
+          },
+        });
+        strapi.log.info("seed: backfilled the Book Caleb form options");
+      }
+    } catch (e) {
+      strapi.log.error("seed: failed backfilling the Book Caleb form options");
       strapi.log.error(e);
     }
 

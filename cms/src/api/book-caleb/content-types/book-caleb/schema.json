@@ -10,67 +10,53 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "headingLead": {
-      "type": "string"
-    },
-    "headingScript": {
-      "type": "string"
-    },
-    "intro": {
-      "type": "text"
-    },
-    "responseNote": {
-      "type": "string"
-    },
-    "directEmailLabel": {
-      "type": "string"
-    },
-    "directEmailAddress": {
-      "type": "string"
-    },
-    "formHeading": {
-      "type": "string"
-    },
-    "formSubheading": {
-      "type": "string"
-    },
-    "fieldName": {
-      "type": "string"
-    },
-    "fieldEmail": {
-      "type": "string"
-    },
-    "fieldPhone": {
-      "type": "string"
-    },
-    "fieldOrganization": {
-      "type": "string"
-    },
-    "fieldEventType": {
-      "type": "string"
-    },
-    "fieldEventDate": {
-      "type": "string"
-    },
-    "fieldLocation": {
-      "type": "string"
-    },
-    "fieldAudience": {
-      "type": "string"
-    },
-    "fieldMessage": {
-      "type": "string"
-    },
+    "headingLead": { "type": "string" },
+    "headingScript": { "type": "string" },
+    "intro": { "type": "text" },
+    "responseNote": { "type": "text" },
+    "directEmailLabel": { "type": "string" },
+    "directEmailAddress": { "type": "string" },
+    "formHeading": { "type": "string" },
+    "formSubheading": { "type": "string" },
+    "tabChurch": { "type": "string" },
+    "tabCorporate": { "type": "string" },
+    "formSubmit": { "type": "string" },
+    "formNote": { "type": "string" },
+    "formSuccess": { "type": "text" },
     "eventTypeOptions": {
       "type": "component",
       "repeatable": true,
       "component": "shared.text-item"
     },
-    "formSubmit": {
-      "type": "string"
+    "corporateEventTypes": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
     },
-    "formSuccess": {
-      "type": "string"
+    "attendanceOptions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "industryOptions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "budgetOptions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "heardAboutOptions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
+    },
+    "timelineOptions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item"
     }
   }
 }
