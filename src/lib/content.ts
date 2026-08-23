@@ -12,6 +12,19 @@ export type Platform = "spotify" | "youtube";
 export type Icon = "mic" | "globe" | "award";
 export type Status = "sold-out" | "get-tickets";
 
+export type SocialPlatform =
+  | "instagram"
+  | "youtube"
+  | "tiktok"
+  | "facebook"
+  | "x"
+  | "spotify";
+
+export interface SocialLink {
+  platform: SocialPlatform;
+  url: string;
+}
+
 export interface Nav {
   logo: string;
   links: LinkItem[];
@@ -19,6 +32,9 @@ export interface Nav {
 }
 
 export interface Hero {
+  // All six platforms, always, in display order. A blank `url` is meaningful: it renders as a
+  // dimmed placeholder icon rather than disappearing, so the set always looks complete.
+  socials: SocialLink[];
   tagline: string;
   titleLines: string[];
   subtext: string;
@@ -69,7 +85,9 @@ export interface AllThings {
 // Homepage "Upcoming Book" promo. `visible` is the CMS on/off toggle — the section
 // is rendered only when true (kept false until the book is published).
 export interface UpcomingBook {
-  visible: boolean;
+  visible: boolean; // → the homepage section
+  showInStore: boolean; // → the featured band at the top of /store
+  product?: StoreProduct; // the book's store product: price + Add to cart. Absent → teaser only.
   eyebrow: string;
   title: string;
   subtitle: string;
@@ -384,6 +402,16 @@ export const nav: Nav = {
 };
 
 export const hero: Hero = {
+  // Strapi unreachable → the same six icons, all inert. Keeps the row's shape identical to the
+  // live version instead of collapsing the layout.
+  socials: [
+    { platform: "instagram", url: "" },
+    { platform: "youtube", url: "" },
+    { platform: "tiktok", url: "" },
+    { platform: "facebook", url: "" },
+    { platform: "x", url: "" },
+    { platform: "spotify", url: "" },
+  ],
   tagline: "Cultivating faith through truth.",
   titleLines: ["BITE SIZE", "THEOLOGY"],
   subtext:
@@ -477,6 +505,8 @@ export const allThings: AllThings = {
 // visible:false → hidden until the pastor's book launches. Flip in Strapi (or here) to publish.
 export const upcomingBook: UpcomingBook = {
   visible: false,
+  // Strapi unreachable → no band. It would have no live price to sell against anyway.
+  showInStore: false,
   eyebrow: "Coming Soon",
   title: "The Untitled Book",
   subtitle: "A new work from Pastor Caleb Griffith",
@@ -694,7 +724,7 @@ export const about: About = {
   headingLead: "Meet",
   headingName: "Caleb",
   name: "Caleb Griffith",
-  role: "Social Media & Street Evangelist",
+  role: "Pastor and International Evangelist",
   donateCta: "Donate Now",
   donateCtaUrl: "/donate",
   intro:

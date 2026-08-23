@@ -14,6 +14,7 @@
   --font-display: var(--font-fraunces);
   --font-body: var(--font-inter);
   --font-wordmark: var(--font-cinzel);
+  --font-lockup: var(--font-aileron);
 }
 
 body {

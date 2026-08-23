@@ -41,7 +41,10 @@ export default async function Footer() {
         </div>
 
         <div className="mt-16 overflow-hidden">
-          <h2 className="font-wordmark text-[clamp(2.5rem,13vw,11rem)] leading-none tracking-[0.04em] text-cream">
+          {/* Matches the hero wordmark — same Aileron Black Italic, so the brand reads the same at
+              the top and bottom of the page. The px/-mx pair gives the italic's overhang room
+              inside the parent's overflow-hidden without shifting the text off the left margin. */}
+          <h2 className="font-lockup px-[0.1em] -mx-[0.1em] text-[clamp(2.5rem,13vw,11rem)] font-black italic uppercase leading-none tracking-[-0.015em] text-cream">
             {footer.wordmark}
           </h2>
         </div>

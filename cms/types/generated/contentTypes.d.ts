@@ -999,6 +999,12 @@ export interface ApiHeroHero extends Struct.SingleTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    urlFacebook: Schema.Attribute.String;
+    urlInstagram: Schema.Attribute.String;
+    urlSpotify: Schema.Attribute.String;
+    urlTiktok: Schema.Attribute.String;
+    urlX: Schema.Attribute.String;
+    urlYoutube: Schema.Attribute.String;
   };
 }
 
@@ -1421,8 +1427,10 @@ export interface ApiUpcomingBookUpcomingBook extends Struct.SingleTypeSchema {
       'api::upcoming-book.upcoming-book'
     > &
       Schema.Attribute.Private;
+    product: Schema.Attribute.Relation<'oneToOne', 'api::product.product'>;
     publishedAt: Schema.Attribute.DateTime;
     releaseLabel: Schema.Attribute.String;
+    showInStore: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     subtitle: Schema.Attribute.String;
     title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;

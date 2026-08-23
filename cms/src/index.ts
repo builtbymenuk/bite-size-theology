@@ -27,6 +27,13 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
   },
   hero: {
     bgImage: { label: "Background image (optional)", description: "Falls back to a dark gradient if empty" },
+    // The social icons render in the hero's top-right corner, so their URLs live on the hero.
+    urlInstagram: { label: "Instagram URL", description: "Blank = the icon shows greyed out and unclickable" },
+    urlYoutube: { label: "YouTube URL", description: "Blank = the icon shows greyed out and unclickable" },
+    urlTiktok: { label: "TikTok URL", description: "Blank = the icon shows greyed out and unclickable" },
+    urlFacebook: { label: "Facebook URL", description: "Blank = the icon shows greyed out and unclickable" },
+    urlX: { label: "X / Twitter URL", description: "Blank = the icon shows greyed out and unclickable" },
+    urlSpotify: { label: "Spotify URL", description: "Blank = the icon shows greyed out and unclickable" },
   },
   calling: {
     headingScript: { label: "Heading — script word", description: 'The italic gold word (e.g. "The")' },
@@ -58,6 +65,8 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
   },
   "upcoming-book": {
     visible: { label: "Show on homepage", description: "Off until the book is published — tick to make the section visible" },
+    showInStore: { label: "Show on shop page", description: "Tick to feature the book at the top of the shop, above Best Sellers" },
+    product: { label: "Shop product", description: "The book's store product — supplies the price and the Add-to-cart button. Edit price/cover under Store — Products" },
     eyebrow: { label: "Eyebrow", description: 'Small label above the title, e.g. "Coming Soon"' },
     title: { label: "Book title" },
     subtitle: { label: "Subtitle / tagline" },
@@ -370,6 +379,43 @@ export default {
       strapi.log.error(e);
     }
 
+    // 2b-i. The book product, and the link from it to the Upcoming Book single type. Step 2b only
+    //       seeds products when the table is EMPTY, so on an already-seeded install the book would
+    //       never arrive — this find-or-creates that ONE slug and points the relation at it.
+    //       Re-creating on restart is deliberate: the book is hidden with the "Show on shop page"
+    //       toggle, not by deleting the product that holds its price.
+    try {
+      const seedBook = ((seedData as Record<string, any>).products ?? []).find(
+        (p: any) => p.slug === "the-untitled-book",
+      );
+      if (seedBook) {
+        let row = await strapi
+          .documents("api::product.product")
+          .findFirst({ filters: { slug: seedBook.slug } });
+        if (!row) {
+          const cat = await strapi
+            .documents("api::category.category")
+            .findFirst({ filters: { slug: seedBook.category } });
+          const { category, ...rest } = seedBook; // slug string → relation id below
+          row = await strapi.documents("api::product.product").create({
+            data: { ...rest, ...(cat ? { category: cat.documentId } : {}) },
+          });
+          strapi.log.info(`seed: created book product ${seedBook.slug}`);
+        }
+        const bookUid = "api::upcoming-book.upcoming-book";
+        const doc = await strapi.documents(bookUid).findFirst({ populate: ["product"] });
+        if (doc && !doc.product) {
+          await strapi
+            .documents(bookUid)
+            .update({ documentId: doc.documentId, data: { product: row.documentId } });
+          strapi.log.info("seed: linked book product to upcoming-book");
+        }
+      }
+    } catch (e) {
+      strapi.log.error("seed: failed seeding the book product");
+      strapi.log.error(e);
+    }
+
     // 2c. Backfill the podcast episode wall with 15 editable slots (Ep 1..15) when none exist, so
     //     editors UPDATE existing rows instead of creating them from scratch. Idempotent: skips once
     //     any episode is present. Empty image/url → the frontend still shows the tone placeholder, so
@@ -430,6 +476,25 @@ export default {
       }
     } catch (e) {
       strapi.log.error("seed: failed backfilling nav links");
+      strapi.log.error(e);
+    }
+
+    // 2e-i. Hero social URLs. Added to `hero` after this install was seeded, and step 2 only creates
+    //       single types that have NO row — so they'd read back null forever. Seed the one URL we
+    //       actually know; the rest stay blank, which renders as a greyed-out icon until an editor
+    //       pastes a link in.
+    try {
+      const uid = "api::hero.hero";
+      const doc = await strapi.documents(uid).findFirst();
+      const seed = (seedData as Record<string, any>).hero ?? {};
+      if (doc && !doc.urlYoutube && seed.urlYoutube) {
+        await strapi
+          .documents(uid)
+          .update({ documentId: doc.documentId, data: { urlYoutube: seed.urlYoutube } });
+        strapi.log.info("seed: backfilled hero YouTube URL");
+      }
+    } catch (e) {
+      strapi.log.error("seed: failed backfilling hero social URLs");
       strapi.log.error(e);
     }
 

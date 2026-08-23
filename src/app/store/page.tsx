@@ -10,6 +10,7 @@ import Reveal from "@/components/ui/Reveal";
 import Marquee from "@/components/ui/Marquee";
 import Placeholder from "@/components/ui/Placeholder";
 import ProductRow from "@/components/store/ProductRow";
+import BookFeature from "@/components/store/BookFeature";
 import Catalog from "@/components/store/Catalog";
 
 export const metadata: Metadata = {
@@ -81,6 +82,9 @@ export default async function StorePage() {
           className="w-full text-[11px] font-medium uppercase tracking-[0.25em]"
         />
       </div>
+
+      {/* Self-hiding: renders only while "Show on shop page" is ticked in the CMS. */}
+      <BookFeature />
 
       <ProductRow heading={store.bestSellersHeading} products={featured} />
       <ProductRow heading={store.newArrivalsHeading} products={newArrivals} />

@@ -10,6 +10,7 @@
 import * as fb from "./content";
 import { getYouTubeVideos } from "./youtube";
 import type {
+  SocialPlatform,
   Nav, Hero, Calling, AllThings, UpcomingBook, Collection, Podcast, PodcastPage,
   Faq, Footer, About, Contact, BookCaleb, Prayer, ThemeColors, Donate, Tour, StoreProduct, Store, Category,
 } from "./content";
@@ -78,6 +79,19 @@ async function one(path: string, query: string): Promise<any | null> {
   return (await list(path, query))[0] ?? null;
 }
 
+// The hero's social icons. Six flat fields on the hero single type collapse to one array here.
+// Blanks are KEPT, not dropped: the row always shows all six so it reads as a complete set, and
+// SocialLinks renders the ones without a URL as dimmed, non-clickable placeholders that go live as
+// each field is filled in.
+const SOCIAL_FIELDS: [SocialPlatform, string][] = [
+  ["instagram", "urlInstagram"],
+  ["youtube", "urlYoutube"],
+  ["tiktok", "urlTiktok"],
+  ["facebook", "urlFacebook"],
+  ["x", "urlX"],
+  ["spotify", "urlSpotify"],
+];
+
 export async function getNav(): Promise<Nav> {
   const d = await single("nav");
   if (!d) return fb.nav;
@@ -93,6 +107,10 @@ export async function getHero(): Promise<Hero> {
   if (!d) return fb.hero;
   return {
     ...fb.hero, // keeps titleLines (design token)
+    socials: SOCIAL_FIELDS.map(([platform, field]) => ({
+      platform,
+      url: String(d[field] ?? "").trim(),
+    })),
     tagline: d.tagline || fb.hero.tagline,
     subtext: d.subtext || fb.hero.subtext,
     cta: d.cta || fb.hero.cta,
@@ -157,11 +175,18 @@ export async function getAllThings(): Promise<AllThings> {
 }
 
 export async function getUpcomingBook(): Promise<UpcomingBook> {
-  const d = await single("upcoming-book");
+  // `populate=*` would return the product relation as a bare row with no images/category, so the
+  // relation is populated one level deeper — that row is what the store band prices and sells.
+  const d = await single(
+    "upcoming-book",
+    "populate[image]=true&populate[product][populate]=*",
+  );
   if (!d) return fb.upcomingBook;
   return {
     // Booleans: coerce, don't `||` — that would drop an editor's explicit `false` (toggle OFF).
     visible: !!d.visible,
+    showInStore: !!d.showInStore,
+    product: d.product ? mapProduct(d.product) : undefined,
     eyebrow: d.eyebrow || fb.upcomingBook.eyebrow,
     title: d.title || fb.upcomingBook.title,
     subtitle: d.subtitle || fb.upcomingBook.subtitle,

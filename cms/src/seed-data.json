@@ -11,6 +11,12 @@
     ]
   },
   "hero": {
+    "urlInstagram": "",
+    "urlYoutube": "https://www.youtube.com/channel/UC7VL8Ljt2f0luWz4HMkUGuw",
+    "urlTiktok": "",
+    "urlFacebook": "",
+    "urlX": "",
+    "urlSpotify": "",
     "tagline": "Cultivating faith through truth.",
     "subtext": "Honest, unfiltered conversations about faith, culture, and the Bible. Welcome to Bite Size Theology.",
     "cta": "Discover the Message"
@@ -45,6 +51,7 @@
   },
   "upcoming-book": {
     "visible": false,
+    "showInStore": false,
     "eyebrow": "Coming Soon",
     "title": "The Untitled Book",
     "subtitle": "A new work from Pastor Caleb Griffith",
@@ -199,7 +206,7 @@
     "headingLead": "Meet",
     "headingName": "Caleb",
     "name": "Caleb Griffith",
-    "role": "Social Media & Street Evangelist",
+    "role": "Pastor and International Evangelist",
     "donateCta": "Donate Now",
     "donateCtaUrl": "/donate",
     "intro": "Raised in church, Caleb carried a deep faith but wrestled with depression and anxiety for years.",
@@ -428,7 +435,8 @@
     { "name": "Hoodies", "slug": "hoodies", "order": 2 },
     { "name": "Sweatshirts", "slug": "sweatshirts", "order": 3 },
     { "name": "Stickers", "slug": "stickers", "order": 4 },
-    { "name": "Accessories", "slug": "accessories", "order": 5 }
+    { "name": "Accessories", "slug": "accessories", "order": 5 },
+    { "name": "Books", "slug": "books", "order": 6 }
   ],
   "products": [
     {
@@ -501,6 +509,17 @@
       "featured": false,
       "soldOut": false,
       "sizes": [{ "value": "S" }, { "value": "M" }, { "value": "L" }, { "value": "XL" }, { "value": "2XL" }]
+    },
+    {
+      "title": "The Untitled Book",
+      "slug": "the-untitled-book",
+      "description": "A new work from Pastor Caleb Griffith. Placeholder copy — replace the title, description, price and cover in the CMS before launch.",
+      "price": 24,
+      "category": "books",
+      "badge": "Coming Soon",
+      "featured": false,
+      "soldOut": false,
+      "sizes": []
     }
   ]
 }

@@ -12,6 +12,9 @@ import CartButton from "@/components/store/CartButton";
 // Fallback internal routes by label, used only when a nav item's CMS url is blank — so known
 // pages keep working even if an editor clears the URL. Editors can override any of these (or point
 // a label anywhere) via the "Shared — Navbar" links (label + url) in the admin.
+// The brand mark, used as a mask rather than an image — see the note at the logo Link.
+const BIRD = "url('/bst-bird.png')";
+
 const HREFS: Record<string, string> = {
   About: "/about",
   "Sermons/Videos": "/podcast",
@@ -59,11 +62,31 @@ export default function Navbar({ nav }: { nav: Nav }) {
             : "border-ink/10 bg-cream/80 shadow-sm"
         }`}
       >
-        <Link href="/" className="flex items-center gap-2">
-          <span className="h-3.5 w-3.5 rounded-full bg-gold" />
+        {/* Theme class sits on the Link so the mark and the label share one colour decision. */}
+        <Link
+          href="/"
+          className={`flex items-center gap-2.5 ${onDark ? "text-cream" : "text-ink"}`}
+        >
+          {/* The bird PNG is solid white, and this pill turns cream once you scroll past the hero —
+              an <img> would vanish there. Masking uses only the file's alpha channel, so the shape
+              is painted in currentColor and flips with the theme. Same maskImage trick as
+              SeriesWall's column fades, and it dodges next/image's SVG/PNG tint limits entirely. */}
           <span
-            className={`font-display text-sm ${onDark ? "text-cream" : "text-ink"}`}
-          >
+            aria-hidden
+            className="h-7 w-7 shrink-0 bg-current"
+            style={{
+              maskImage: BIRD,
+              WebkitMaskImage: BIRD,
+              maskSize: "contain",
+              WebkitMaskSize: "contain",
+              maskRepeat: "no-repeat",
+              WebkitMaskRepeat: "no-repeat",
+              maskPosition: "center",
+              WebkitMaskPosition: "center",
+            }}
+          />
+          {/* Same face as the hero wordmark — one brand voice across the page. */}
+          <span className="font-lockup text-base font-black italic uppercase tracking-[0.01em]">
             {nav.logo}
           </span>
         </Link>

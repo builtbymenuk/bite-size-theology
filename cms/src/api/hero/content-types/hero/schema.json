@@ -28,6 +28,24 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "urlInstagram": {
+      "type": "string"
+    },
+    "urlYoutube": {
+      "type": "string"
+    },
+    "urlTiktok": {
+      "type": "string"
+    },
+    "urlFacebook": {
+      "type": "string"
+    },
+    "urlX": {
+      "type": "string"
+    },
+    "urlSpotify": {
+      "type": "string"
     }
   }
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, Cinzel } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import Navbar from "@/components/layout/Navbar";
@@ -31,6 +32,21 @@ const wordmark = Cinzel({
   display: "swap",
 });
 
+// Aileron — the actual typeface from the client's logo, so the wordmark matches the brand exactly
+// rather than approximating it with a Google font. Not on Google Fonts; self-hosted from the
+// designer's own CC0 mirror (github.com/reinhart1010/aileron), ~13KB per weight.
+//
+// Black Italic is a REAL italic, which is why nothing here skews: the previous stand-ins had no
+// italic face, so the lean had to be faked with skewX. Drawn italics beat sheared uprights.
+const lockup = localFont({
+  src: [
+    { path: "./fonts/Aileron-Black.woff2", weight: "900", style: "normal" },
+    { path: "./fonts/Aileron-BlackItalic.woff2", weight: "900", style: "italic" },
+  ],
+  variable: "--font-aileron",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Bite Size Theology",
   description:
@@ -54,7 +70,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${body.variable} ${wordmark.variable}`}
+      className={`${display.variable} ${body.variable} ${wordmark.variable} ${lockup.variable}`}
       style={themeVars}
     >
       {/* suppressHydrationWarning: browser extensions (ColorZilla, Grammarly, etc.) inject
