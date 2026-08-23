@@ -135,6 +135,18 @@ details[open]::details-content {
 ::view-transition-new(navbar) {
   animation: none;
 }
+/* Same for the shop's fixed cart button — without this it would slide up with the page on every
+   /store navigation (anchored via viewTransitionName in CartButton.tsx). */
+::view-transition-group(cart) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(cart) {
+  display: none;
+}
+::view-transition-new(cart) {
+  animation: none;
+}
 
 /* Reduced motion: instant swap (regular * rules don't reach the ::view-transition pseudo-tree). */
 @media (prefers-reduced-motion: reduce) {

@@ -2,8 +2,7 @@ import SocialIcon, { SOCIAL_LABELS } from "@/components/ui/SocialIcons";
 import { linkProps } from "@/lib/links";
 import type { SocialLink } from "@/lib/content";
 
-// The social row in the hero's corner chip. `dark` mirrors CartButton so the icons flip with the
-// pill's theme.
+// The social row in the hero's corner chip. `dark` flips the icons with the pill's theme.
 //
 // Only platforms with a URL render. An icon with nowhere to go reads as a broken control rather
 // than a slot waiting to be filled, so clearing a field in Strapi removes its icon outright — and
