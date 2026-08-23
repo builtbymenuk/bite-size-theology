@@ -10,7 +10,7 @@ import Reveal from "@/components/ui/Reveal";
 import Marquee from "@/components/ui/Marquee";
 import Placeholder from "@/components/ui/Placeholder";
 import ProductRow from "@/components/store/ProductRow";
-import BookFeature from "@/components/store/BookFeature";
+import BookHero from "@/components/store/BookHero";
 import Catalog from "@/components/store/Catalog";
 
 export const metadata: Metadata = {
@@ -18,18 +18,6 @@ export const metadata: Metadata = {
   description:
     "Christian apparel with purpose — wearable conversation starters. 10% of proceeds support mission work.",
 };
-
-// Last word rendered as the gold italic script accent (site-wide heading motif).
-function accentHeading(text: string) {
-  const words = text.trim().split(/\s+/);
-  if (words.length < 2) return text;
-  const last = words.pop();
-  return (
-    <>
-      {words.join(" ")} <span className="italic text-gold">{last}</span>
-    </>
-  );
-}
 
 export default async function StorePage() {
   const [store, products, categories] = await Promise.all([
@@ -42,37 +30,7 @@ export default async function StorePage() {
 
   return (
     <div className="min-h-screen bg-cream text-ink">
-      {/* Hero */}
-      <section className="mx-auto max-w-7xl px-6 pb-10 pt-32 md:pt-40">
-        <div className="grid items-center gap-10 md:grid-cols-2">
-          <Reveal>
-            <p className="text-[11px] uppercase tracking-[0.3em] text-ink/50">
-              {store.heroEyebrow}
-            </p>
-            <h1 className="mt-5 font-display text-[clamp(2.5rem,7vw,5rem)] leading-[0.95] tracking-tight">
-              {accentHeading(store.heroHeading)}
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-ink/60">
-              {store.heroSubtext}
-            </p>
-            <a
-              {...(linkProps(store.heroCtaUrl).href ? linkProps(store.heroCtaUrl) : { href: "#catalog" })}
-              className="mt-8 inline-flex items-center rounded-full bg-ink px-7 py-3.5 text-[11px] font-medium uppercase tracking-[0.22em] text-cream transition-colors hover:bg-charcoal"
-            >
-              {store.heroCta}
-            </a>
-          </Reveal>
-          <Reveal>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl md:aspect-square">
-              <Placeholder
-                tone="warm"
-                src={store.heroImage}
-                label={store.heroImage ? "" : "Bite Size Theology — Apparel"}
-              />
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <BookHero />
 
       {/* Proceeds banner */}
       <div className="border-y border-ink/10 bg-gold/90 py-3 text-ink">
@@ -82,9 +40,6 @@ export default async function StorePage() {
           className="w-full text-[11px] font-medium uppercase tracking-[0.25em]"
         />
       </div>
-
-      {/* Self-hiding: renders only while "Show on shop page" is ticked in the CMS. */}
-      <BookFeature />
 
       <ProductRow heading={store.bestSellersHeading} products={featured} />
       <ProductRow heading={store.newArrivalsHeading} products={newArrivals} />

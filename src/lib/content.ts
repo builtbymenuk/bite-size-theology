@@ -85,7 +85,6 @@ export interface AllThings {
 // is rendered only when true (kept false until the book is published).
 export interface UpcomingBook {
   visible: boolean; // → the homepage section
-  showInStore: boolean; // → the featured band at the top of /store
   product?: StoreProduct; // the book's store product: price + Add to cart. Absent → teaser only.
   eyebrow: string;
   title: string;
@@ -139,12 +138,6 @@ export interface StoreProduct {
 }
 
 export interface Store {
-  heroEyebrow: string;
-  heroHeading: string;
-  heroSubtext: string;
-  heroCta: string;
-  heroCtaUrl: string;
-  heroImage?: string;
   proceedsBanner: string;
   bestSellersHeading: string;
   newArrivalsHeading: string;
@@ -497,12 +490,10 @@ export const allThings: AllThings = {
 // visible:false → hidden until the pastor's book launches. Flip in Strapi (or here) to publish.
 export const upcomingBook: UpcomingBook = {
   visible: false,
-  // Strapi unreachable → no band. It would have no live price to sell against anyway.
-  showInStore: false,
   eyebrow: "Coming Soon",
   title: "The Untitled Book",
   subtitle: "A new work from Pastor Caleb Griffith",
-  body: "Placeholder description — the pastor's upcoming book. This section stays hidden until launch; replace this copy and the cover, then flip “Show on homepage” to publish.",
+  body: "The teaching behind Bite Size Theology, gathered into one place — deep truths of the faith, written to be read in the margins of an ordinary day.",
   releaseLabel: "Coming Fall 2026",
   cta: "Notify Me",
   ctaUrl: "",
@@ -949,13 +940,6 @@ export const tour: Tour = {
 
 // Store fallback — mirrors cms/src/seed-data.json so /store renders even with Strapi down.
 export const store: Store = {
-  heroEyebrow: "Bite Size Theology / Apparel",
-  heroHeading: "Christian Apparel With Purpose",
-  heroSubtext:
-    "Wearable conversation starters — every piece is a chance to share the hope of Jesus. 10% of proceeds support mission work.",
-  heroCta: "Shop the Collection",
-  heroCtaUrl: "#catalog",
-  heroImage: "/placeholders/store-hero.jpg",
   founderImage: "/placeholders/store-founder.jpg",
   proceedsBanner: "10% of proceeds support mission work",
   bestSellersHeading: "Best Sellers",
@@ -979,6 +963,22 @@ export const categories: Category[] = [
 ];
 
 export const storeProducts: StoreProduct[] = [
+  // The book. Its Strapi product has no uploaded media yet, so this entry is what gives it a cover
+  // in the rows, the catalog, the product page and the cart — mapProduct falls back to this list by
+  // slug. Same file the /store hero and the homepage section show, so all four agree.
+  {
+    slug: "the-untitled-book",
+    title: "The Untitled Book",
+    description:
+      "A new work from Pastor Caleb Griffith. Placeholder copy — replace the title, description, price and cover in the CMS before launch.",
+    price: 24,
+    images: ["/placeholders/book-cover.jpg"],
+    sizes: [],
+    category: "books",
+    badge: "Coming Soon",
+    featured: false,
+    soldOut: true,
+  },
   {
     slug: "call-on-jesus-vintage-faded-hoodie",
     title: '"Call on Jesus" Vintage Faded Hooded Sweatshirt',

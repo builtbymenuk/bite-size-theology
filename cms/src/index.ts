@@ -65,7 +65,6 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
   },
   "upcoming-book": {
     visible: { label: "Show on homepage", description: "Off until the book is published — tick to make the section visible" },
-    showInStore: { label: "Show on shop page", description: "Tick to feature the book at the top of the shop, above Best Sellers" },
     product: { label: "Shop product", description: "The book's store product — supplies the price and the Add-to-cart button. Edit price/cover under Store — Products" },
     eyebrow: { label: "Eyebrow", description: 'Small label above the title, e.g. "Coming Soon"' },
     title: { label: "Book title" },
@@ -245,11 +244,6 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     regions: { label: "Tour regions", description: "Each region has an optional heading + code, and a list of dates" },
   },
   store: {
-    heroEyebrow: { label: "Hero — Eyebrow" },
-    heroHeading: { label: "Hero — Heading", description: 'e.g. "Christian Apparel With Purpose"' },
-    heroSubtext: { label: "Hero — Subtext" },
-    heroCta: { label: "Hero — Button" },
-    heroImage: { label: "Hero — Background image (optional)" },
     proceedsBanner: { label: "Proceeds banner", description: "The scrolling strip, e.g. 10% of proceeds support mission work" },
     bestSellersHeading: { label: "Best sellers — Heading" },
     newArrivalsHeading: { label: "New arrivals — Heading" },

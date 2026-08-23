@@ -10,28 +10,6 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "heroEyebrow": {
-      "type": "string"
-    },
-    "heroHeading": {
-      "type": "string"
-    },
-    "heroSubtext": {
-      "type": "text"
-    },
-    "heroCtaUrl": {
-      "type": "string"
-    },
-    "heroCta": {
-      "type": "string"
-    },
-    "heroImage": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
     "proceedsBanner": {
       "type": "string"
     },

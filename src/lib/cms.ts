@@ -183,9 +183,8 @@ export async function getUpcomingBook(): Promise<UpcomingBook> {
   );
   if (!d) return fb.upcomingBook;
   return {
-    // Booleans: coerce, don't `||` — that would drop an editor's explicit `false` (toggle OFF).
+    // Coerce, don't `||` — that would drop an editor's explicit `false` (toggle OFF).
     visible: !!d.visible,
-    showInStore: !!d.showInStore,
     product: d.product ? mapProduct(d.product) : undefined,
     eyebrow: d.eyebrow || fb.upcomingBook.eyebrow,
     title: d.title || fb.upcomingBook.title,
@@ -621,12 +620,6 @@ export async function getStore(): Promise<Store> {
   const d = await single("store");
   if (!d) return fb.store;
   return {
-    heroEyebrow: d.heroEyebrow || fb.store.heroEyebrow,
-    heroHeading: d.heroHeading || fb.store.heroHeading,
-    heroSubtext: d.heroSubtext || fb.store.heroSubtext,
-    heroCta: d.heroCta || fb.store.heroCta,
-    heroCtaUrl: d.heroCtaUrl || fb.store.heroCtaUrl,
-    heroImage: absolutize(d.heroImage?.url) || fb.store.heroImage,
     proceedsBanner: d.proceedsBanner || fb.store.proceedsBanner,
     bestSellersHeading: d.bestSellersHeading || fb.store.bestSellersHeading,
     newArrivalsHeading: d.newArrivalsHeading || fb.store.newArrivalsHeading,

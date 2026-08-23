@@ -14,10 +14,6 @@
       "type": "boolean",
       "default": false
     },
-    "showInStore": {
-      "type": "boolean",
-      "default": false
-    },
     "product": {
       "type": "relation",
       "relation": "oneToOne",

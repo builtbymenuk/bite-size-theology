@@ -51,7 +51,6 @@
   },
   "upcoming-book": {
     "visible": false,
-    "showInStore": false,
     "eyebrow": "Coming Soon",
     "title": "The Untitled Book",
     "subtitle": "A new work from Pastor Caleb Griffith",
@@ -409,11 +408,6 @@
     ]
   },
   "store": {
-    "heroEyebrow": "Bite Size Theology / Apparel",
-    "heroHeading": "Christian Apparel With Purpose",
-    "heroSubtext": "Wearable conversation starters — every piece is a chance to share the hope of Jesus. 10% of proceeds support mission work.",
-    "heroCta": "Shop the Collection",
-    "heroCtaUrl": "#catalog",
     "proceedsBanner": "10% of proceeds support mission work",
     "bestSellersHeading": "Best Sellers",
     "newArrivalsHeading": "New Arrivals",

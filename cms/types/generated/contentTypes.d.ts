@@ -1318,12 +1318,6 @@ export interface ApiStoreStore extends Struct.SingleTypeSchema {
     founderEyebrow: Schema.Attribute.String;
     founderHeading: Schema.Attribute.String;
     founderImage: Schema.Attribute.Media<'images'>;
-    heroCta: Schema.Attribute.String;
-    heroCtaUrl: Schema.Attribute.String;
-    heroEyebrow: Schema.Attribute.String;
-    heroHeading: Schema.Attribute.String;
-    heroImage: Schema.Attribute.Media<'images'>;
-    heroSubtext: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::store.store'> &
       Schema.Attribute.Private;
@@ -1429,7 +1423,6 @@ export interface ApiUpcomingBookUpcomingBook extends Struct.SingleTypeSchema {
     product: Schema.Attribute.Relation<'oneToOne', 'api::product.product'>;
     publishedAt: Schema.Attribute.DateTime;
     releaseLabel: Schema.Attribute.String;
-    showInStore: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     subtitle: Schema.Attribute.String;
     title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
