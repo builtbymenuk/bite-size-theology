@@ -621,12 +621,43 @@ export const podcastPage: PodcastPage = {
           "https://www.youtube.com/playlist?list=PLTKxXrMpXbkK_5eoFoavaJ90rPYNQJ2nK",
         note: "8 parts",
       },
-      // Placeholders — the editor fills these in from Strapi as new series land.
-      { title: "", video: "", playlist: "", note: "" },
-      { title: "", video: "", playlist: "", note: "" },
-      { title: "", video: "", playlist: "", note: "" },
-      { title: "", video: "", playlist: "", note: "" },
-      { title: "", video: "", playlist: "", note: "" },
+      {
+        title: "Story of God",
+        video: "https://www.youtube.com/watch?v=fYynW17VERA",
+        playlist:
+          "https://www.youtube.com/playlist?list=PLTKxXrMpXbkL-8hQ43cLm-YgPBtBfYKZG",
+        note: "42 parts",
+      },
+      {
+        title: "Like No Other",
+        video: "https://www.youtube.com/watch?v=SbHCCM69tOg",
+        playlist:
+          "https://www.youtube.com/playlist?list=PLTKxXrMpXbkLmoETUh6e3sCwMM0WVngtj",
+        note: "8 parts",
+      },
+      {
+        title: "7 Churches of Revelation",
+        video: "https://www.youtube.com/watch?v=XvDHjOFMzZg",
+        playlist:
+          "https://www.youtube.com/playlist?list=PLTKxXrMpXbkIXMlFHduKrucXAdBaD4h5l",
+        note: "7 parts",
+      },
+      {
+        title: "All Roads Lead to Romans",
+        video: "https://www.youtube.com/watch?v=0H9xUKtLHVg",
+        playlist:
+          "https://www.youtube.com/playlist?list=PLTKxXrMpXbkJORrGp-YtyBcZ8wwmLR4GH",
+        note: "7 parts",
+      },
+      {
+        title: "Jonah",
+        video: "https://www.youtube.com/watch?v=SSz2G3y2ye0",
+        playlist:
+          "https://www.youtube.com/playlist?list=PLTKxXrMpXbkJa0cy1gH0JRtkCQAyCuhqb",
+        note: "6 parts",
+      },
+      // Add a row here (and in Strapi) as each new series lands. A row with a blank `video`
+      // renders as a "Coming soon" frame, which is how a slot gets reserved before it is filmed.
     ],
   },
 };

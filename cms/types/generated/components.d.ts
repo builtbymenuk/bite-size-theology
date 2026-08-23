@@ -77,7 +77,7 @@ export interface SharedProduct extends Struct.ComponentSchema {
 export interface SharedSeries extends Struct.ComponentSchema {
   collectionName: 'components_shared_series';
   info: {
-    displayName: 'series';
+    displayName: 'Preaching series';
   };
   attributes: {
     note: Schema.Attribute.String;

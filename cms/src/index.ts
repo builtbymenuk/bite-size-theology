@@ -18,6 +18,33 @@ const GRANTS = [
   ...PUBLIC_COLLECTIONS.flatMap((n) => [`api::${n}.${n}.find`, `api::${n}.${n}.findOne`]),
 ];
 
+// Same idea as LABELS, but for the fields INSIDE a repeatable component. Strapi stores component
+// config in its own row and defaults every label to the raw key, so expanding a card in e.g.
+// "Series - Cards" showed bare title/video/playlist/note with no hint of what to paste.
+// Keyed by component uid -> field.
+const COMPONENT_LABELS: Record<string, Record<string, { label?: string; description?: string }>> = {
+  "shared.series": {
+    title: {
+      label: "Series title",
+      description: 'Shown under the poster, e.g. "7 Churches of Revelation"',
+    },
+    video: {
+      label: "YouTube video link",
+      description:
+        'Any one video from the series. It supplies the poster artwork and is what plays when the card is clicked. Paste a normal watch or Share link. Leave blank to show a "Coming soon" frame instead.',
+    },
+    playlist: {
+      label: "YouTube playlist link",
+      description:
+        'The whole series - this is what "Full series" opens. Copy it from the channel\'s Playlists tab.',
+    },
+    note: {
+      label: "Length label",
+      description: 'Small caps line under the title, e.g. "6 parts"',
+    },
+  },
+};
+
 // Friendly edit-view labels/help-text for the cryptic fields. Keyed by singularName → field.
 // Applied to strapi_core_store_settings in bootstrap (step 3), only over still-default labels.
 const LABELS: Record<string, Record<string, { label?: string; description?: string }>> = {
@@ -64,7 +91,7 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     urlGive: { label: "Link — Give tile", description: "Full https:// or /page; blank = not clickable" },
   },
   "upcoming-book": {
-    visible: { label: "Show on homepage", description: "Off until the book is published — tick to make the section visible" },
+    visible: { label: "Show on homepage", description: "Off until the book is published — tick to make the section visible. This record also fills the hero at the top of the shop, which always shows." },
     product: { label: "Shop product", description: "The book's store product — supplies the price and the Add-to-cart button. Edit price/cover under Store — Products" },
     eyebrow: { label: "Eyebrow", description: 'Small label above the title, e.g. "Coming Soon"' },
     title: { label: "Book title" },
@@ -560,23 +587,26 @@ export default {
     //    is still the default (== the field key) so any manual "Configure the view" tweak survives.
     try {
       const table = "strapi_core_store_settings";
-      for (const [name, fields] of Object.entries(LABELS)) {
-        const key = `plugin_content_manager_configuration_content_types::api::${name}.${name}`;
+      const applyLabels = async (
+        key: string,
+        fields: Record<string, { label?: string; description?: string }>,
+        what: string,
+      ) => {
         const row = await strapi.db.connection(table).where({ key }).first();
-        if (!row?.value) continue;
+        if (!row?.value) return;
         let cfg: any;
         try {
           cfg = JSON.parse(row.value);
         } catch {
-          continue;
+          return;
         }
-        if (!cfg?.metadatas) continue;
+        if (!cfg?.metadatas) return;
         let changed = false;
         for (const [field, meta] of Object.entries(fields)) {
           const edit = cfg.metadatas[field]?.edit;
           if (!edit) continue;
           if (edit.label === field) {
-            // still default → safe to override
+            // still default, safe to override
             if (meta.label) edit.label = meta.label;
             if (meta.description) edit.description = meta.description;
             changed = true;
@@ -584,8 +614,23 @@ export default {
         }
         if (changed) {
           await strapi.db.connection(table).where({ key }).update({ value: JSON.stringify(cfg) });
-          strapi.log.info(`labels: updated ${name}`);
+          strapi.log.info(`labels: updated ${what}`);
         }
+      };
+
+      for (const [name, fields] of Object.entries(LABELS)) {
+        await applyLabels(
+          `plugin_content_manager_configuration_content_types::api::${name}.${name}`,
+          fields,
+          name,
+        );
+      }
+      for (const [uid, fields] of Object.entries(COMPONENT_LABELS)) {
+        await applyLabels(
+          `plugin_content_manager_configuration_components::${uid}`,
+          fields,
+          uid,
+        );
       }
     } catch (e) {
       strapi.log.error("seed: failed applying field labels");
