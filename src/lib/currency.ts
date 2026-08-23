@@ -67,7 +67,7 @@ export const convert = (amount: number, rate: number, code: string): number => {
  * the response for a day, so this is one live call per day per server. Any failure (offline, bad
  * shape, missing code) falls through to FALLBACK_RATES — checkout must never break on FX.
  *
- * ponytail: fixed base of USD, matching the store's base currency. If the store's base ever becomes
+ * Fixed base of USD, matching the store's base currency. If the store's base ever becomes
  * configurable, request that base instead of dividing rates here.
  */
 export async function getRates(): Promise<Record<string, number>> {

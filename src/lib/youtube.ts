@@ -55,7 +55,7 @@ export function extractVideoId(input?: string): string | null {
 }
 
 // Pure: parse the Atom feed XML into videos. Exported for the self-check.
-// ponytail: regex-parse the stable YouTube Atom feed; swap to fast-xml-parser only if it changes.
+// Regex-parses the stable YouTube Atom feed; swap to fast-xml-parser only if that format changes.
 export function parseYouTubeFeed(xml: string): YtVideo[] {
   const out: YtVideo[] = [];
   for (const entry of xml.split("<entry>").slice(1)) {

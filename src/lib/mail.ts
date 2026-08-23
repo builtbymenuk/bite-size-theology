@@ -1,5 +1,5 @@
 // Resend email sender, shared by the contact and booking routes. Server-only.
-// ponytail: raw fetch over @resend/node — one call, no dependency.
+// Raw fetch rather than @resend/node — it's one call, so the dependency isn't worth it.
 
 const KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.RESEND_FROM;

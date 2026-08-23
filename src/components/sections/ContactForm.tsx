@@ -48,7 +48,7 @@ export default function ContactForm({ form }: { form: Contact["form"] }) {
         </p>
       ) : (
         <form onSubmit={onSubmit} className="mt-10 space-y-8">
-          {/* honeypot — real users never see or fill this; bots do. ponytail: no captcha yet */}
+          {/* honeypot — real users never see or fill this; bots do. No captcha yet. */}
           <input
             type="text"
             name="company"

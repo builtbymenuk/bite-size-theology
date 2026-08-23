@@ -16,7 +16,8 @@ export default function BentoCard({
   };
 }) {
   return (
-    // ponytail: clip only when there's an image (hover-zoom needs it); text cards stay visible so decor can spill out
+    // Clip only when there's an image (the hover-zoom needs it); text cards stay visible so
+    // decorative elements can spill outside the card.
     <div className={`group relative rounded-2xl ${image ? "overflow-hidden" : ""} ${className ?? ""}`}>
       {image ? (
         <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">

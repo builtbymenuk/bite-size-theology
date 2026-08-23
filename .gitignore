@@ -46,7 +46,6 @@ yarn-error.log*
 
 # ide / local tooling
 /.idea
-/.playwright-mcp
 /_dev-internal
 
 # vercel
