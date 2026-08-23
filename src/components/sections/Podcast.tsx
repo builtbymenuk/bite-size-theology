@@ -9,6 +9,7 @@ import {
   type MotionValue,
 } from "motion/react";
 import Reveal, { RevealItem } from "@/components/ui/Reveal";
+import TileReveal from "@/components/ui/TileReveal";
 import Placeholder from "@/components/ui/Placeholder";
 import ListenWatch from "@/components/ui/ListenWatch";
 import type { Podcast, Episode, Tone } from "@/lib/content";
@@ -25,7 +26,7 @@ const WALL_FADE_STYLE = {
 } as const;
 
 const TILE =
-  "aspect-[16/10] w-[clamp(240px,19vw,340px)] shrink-0 overflow-hidden rounded-xl";
+  "aspect-[16/10] w-[clamp(180px,24vw,340px)] shrink-0 overflow-hidden rounded-xl lg:w-[clamp(240px,19vw,340px)]";
 
 // One wall tile. With an episode URL it's a link (opens the video in a new tab); otherwise a plain
 // block. `className` sizes it (carousel vs mobile grid). `decorative` hides duplicated carousel
@@ -48,6 +49,7 @@ function Tile({
       src={tile.image}
       alt={decorative ? "" : label}
       label={`Ep ${n}`}
+      sizes="(min-width: 768px) 24vw, 50vw"
     />
   );
   if (!tile.url) return <div className={className}>{inner}</div>;
@@ -133,7 +135,7 @@ function Identity({ podcast }: { podcast: Podcast }) {
         </div>
       </div>
 
-      <h2 className="mt-3 font-display text-4xl font-medium uppercase leading-[0.95] tracking-tight md:text-5xl">
+      <h2 className="mt-3 font-display text-4xl font-medium uppercase leading-[0.95] tracking-tight lg:text-5xl">
         {podcast.titleLines.map((l) => (
           // lg keeps each line whole (2 lines total); mobile may wrap on narrow screens.
           <span key={l} className="block lg:whitespace-nowrap">
@@ -198,8 +200,9 @@ export default function Podcast({ podcast }: { podcast: Podcast }) {
         </RevealItem>
       </Reveal>
 
-      {/* Carousel band (lg) — normal-flow block below the quote; identity overlaid top-left */}
-      <div className="relative mt-20 hidden lg:block">
+      {/* Carousel band (md and up): normal-flow block below the quote; identity overlaid
+          top-left. Phones fall back to the grid further down. */}
+      <div className="relative mt-12 hidden md:block lg:mt-20">
         {/* No pointer-events-none here — tiles are links now and must be clickable. */}
         <div style={WALL_FADE_STYLE}>
           <div className="flex flex-col gap-3">
@@ -225,25 +228,27 @@ export default function Podcast({ podcast }: { podcast: Podcast }) {
             container is click-through (pointer-events-none) so it doesn't block the tiles behind/beside
             it; only the Identity block itself (title + buttons) re-enables pointer events. */}
         <div className="pointer-events-none absolute inset-x-0 top-0 z-10">
-          <Reveal className="pl-20 pr-8">
+          <Reveal className="pl-6 pr-6 lg:pl-20 lg:pr-8">
             <Identity podcast={podcast} />
           </Reveal>
         </div>
       </div>
 
-      {/* Mobile — identity, then a simple tile grid (carousel is lg-only) */}
-      <div className="mx-auto mt-10 max-w-7xl px-6 lg:hidden">
+      {/* Phones — identity, then a simple tile grid. The carousel needs md: below that its drift
+          would park episodes permanently off-screen, where the grid shows all 15. */}
+      <div className="mx-auto mt-10 max-w-7xl px-6 md:hidden">
         <Reveal>
           <Identity podcast={podcast} />
         </Reveal>
         <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3">
           {tiles.map((tile, i) => (
-            <Tile
-              key={i}
-              tile={tile}
-              n={i + 1}
-              className="aspect-[16/10] overflow-hidden rounded-lg"
-            />
+            <TileReveal key={i} x={i % 2 ? 26 : -26} delay={(i % 2) * 0.08}>
+              <Tile
+                tile={tile}
+                n={i + 1}
+                className="aspect-[16/10] overflow-hidden rounded-lg"
+              />
+            </TileReveal>
           ))}
         </div>
       </div>

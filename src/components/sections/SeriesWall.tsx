@@ -5,6 +5,7 @@ import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useLenis } from "lenis/react";
 import Reveal, { RevealItem } from "@/components/ui/Reveal";
+import TileReveal from "@/components/ui/TileReveal";
 import ArrowButton from "@/components/ui/ArrowButton";
 import type { PodcastPage } from "@/lib/content";
 
@@ -182,7 +183,7 @@ function Poster({
           <span className="text-[11px] uppercase tracking-[0.22em] text-ink/40">Coming soon</span>
         </div>
         {card.title ? (
-          <h3 className="mt-4 font-display text-lg tracking-tight text-ink/35 md:text-xl">
+          <h3 className="mt-4 font-display text-lg tracking-tight text-ink/35 lg:text-xl">
             {card.title}
           </h3>
         ) : null}
@@ -209,7 +210,7 @@ function Poster({
           src={thumb(id)}
           alt=""
           fill
-          sizes="(min-width: 1024px) 33vw, 50vw"
+          sizes="(min-width: 768px) 33vw, 50vw"
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
 
@@ -223,19 +224,19 @@ function Poster({
             src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&modestbranding=1&playsinline=1&rel=0`}
             allow="autoplay; encrypted-media"
             referrerPolicy="strict-origin-when-cross-origin"
-            className="pointer-events-none absolute inset-0 hidden h-full w-full scale-[1.35] lg:block"
+            className="pointer-events-none absolute inset-0 hidden h-full w-full scale-[1.35] md:block"
           />
         ) : null}
 
         <span className="pointer-events-none absolute inset-x-0 bottom-0 block h-1/3 bg-gradient-to-t from-ink/60 to-transparent" />
-        <span className="absolute bottom-4 left-4 flex h-11 w-11 items-center justify-center rounded-full border border-cream/50 bg-ink/25 text-cream backdrop-blur-sm transition duration-300 group-hover:border-cream group-hover:bg-cream group-hover:text-ink group-focus-visible:border-cream group-focus-visible:bg-cream group-focus-visible:text-ink">
-          <PlayGlyph className="ml-0.5 h-4 w-4" />
+        <span className="absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center rounded-full border border-cream/50 bg-ink/25 text-cream backdrop-blur-sm transition duration-300 group-hover:border-cream group-hover:bg-cream group-hover:text-ink group-focus-visible:border-cream group-focus-visible:bg-cream group-focus-visible:text-ink lg:bottom-4 lg:left-4 lg:h-11 lg:w-11">
+          <PlayGlyph className="ml-0.5 h-3.5 w-3.5 lg:h-4 lg:w-4" />
         </span>
       </button>
 
       {/* Caption sits below the poster, never on it: the church's thumbnails are title cards with
           the series name already burnt in, so type over them doubles up. */}
-      <h3 className="mt-4 font-display text-lg tracking-tight text-ink transition-colors group-hover:text-gold md:text-xl">
+      <h3 className="mt-4 font-display text-lg tracking-tight text-ink transition-colors group-hover:text-gold lg:text-xl">
         {card.title}
       </h3>
       {card.note ? (
@@ -270,7 +271,7 @@ function LoopColumn({
   // the loop would jump by half a gap every cycle. Trailing padding halves exactly.
   const run = (decorative?: boolean) =>
     cards.map((c, i) => (
-      <div key={`${decorative ? "b" : "a"}${i}`} className="pb-10">
+      <div key={`${decorative ? "b" : "a"}${i}`} className="pb-6 lg:pb-10">
         <Poster card={c} onPlay={() => onPlay(c)} decorative={decorative} />
       </div>
     ));
@@ -278,7 +279,7 @@ function LoopColumn({
   return (
     // The window the loop runs inside. Masked top and bottom so posters dissolve rather than
     // getting sliced off.
-    <div className="h-[760px] overflow-hidden" style={COL_FADE_STYLE}>
+    <div className="h-[600px] overflow-hidden lg:h-[760px]" style={COL_FADE_STYLE}>
       {/* Pauses under the cursor — a poster you are reading or aiming at should hold still. */}
       <div className={`flex flex-col hover:[animation-play-state:paused] ${loop}`}>
         {run()}
@@ -309,9 +310,9 @@ export default function SeriesWall({
     if (placeholders[i]) cards.push(placeholders[i]);
   }
 
-  // The mobile grid is TWO columns, and the same alternating order would drop every real poster
-  // into the left column and every empty frame into the right. One scrolling list wants the real
-  // ones first instead.
+  // The phone layout is TWO columns, and `cards`' alternating order would drop every real
+  // poster into the left one and every empty frame into the right. Real-posters-first, then
+  // dealt round-robin below, puts something worth looking at in both.
   const stacked = [...posters, ...placeholders];
   const columns = Array.from({ length: COLUMNS }, (_, c) =>
     cards.filter((_, i) => i % COLUMNS === c),
@@ -319,7 +320,7 @@ export default function SeriesWall({
 
   return (
     // overflow-hidden so nothing the loop translates can spill into the carousel above or the
-    // stats band below.
+    // CTA below.
     <section className="overflow-hidden bg-cream pt-20 pb-16 md:pt-28 md:pb-20">
       <div className="mx-auto max-w-7xl px-6">
         {/* Same header shape as Collection.tsx: heading left, supporting copy + CTA right. The
@@ -342,19 +343,25 @@ export default function SeriesWall({
           </RevealItem>
         </Reveal>
 
-        {/* Wall — three drifting columns on lg, a plain 2-col grid below it (same fallback shape
-            as Podcast.tsx's mobile grid). */}
-        {/* Below lg the wall is a plain grid, in source order, standing still — an endless loop on
-            a phone is battery for no benefit. Same fallback shape as Podcast.tsx's mobile grid. */}
-        <Reveal className="mt-14 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:hidden">
+        {/* Wall: three looping columns from md up. Phones keep a real 2-col grid so the
+            posters line up in rows, and get their motion on arrival instead - each one slides
+            in from its own side. An endless loop here would just be a moving tap target,
+            since there is no hover to pause it with. */}
+        <div className="mt-14 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:hidden">
           {stacked.map((c, i) => (
-            <Poster key={`${c.videoId ?? "soon"}-${i}`} card={c} onPlay={() => setOpen(c)} />
+            <TileReveal
+              key={`${c.videoId ?? "soon"}-${i}`}
+              x={i % 2 ? 26 : -26}
+              delay={(i % 2) * 0.08}
+            >
+              <Poster card={c} onPlay={() => setOpen(c)} />
+            </TileReveal>
           ))}
-        </Reveal>
+        </div>
 
         {/* No <Reveal> here on purpose — the wall announces itself by moving, so a fade-in on
             scroll would just be a second entrance competing with the loop. */}
-        <div className="mt-16 hidden gap-8 lg:grid lg:grid-cols-3">
+        <div className="mt-12 hidden gap-4 md:grid md:grid-cols-3 lg:mt-16 lg:gap-8">
           {columns.map((col, c) => (
             <LoopColumn key={c} cards={col} loop={LOOPS[c]} onPlay={setOpen} />
           ))}

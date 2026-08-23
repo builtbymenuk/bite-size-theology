@@ -19,12 +19,16 @@ export default function Placeholder({
   src,
   alt,
   className,
+  // Defaults to the full viewport so existing full-bleed callers are unchanged; small tiles
+  // (Podcast.tsx) pass a real value rather than fetching a 100vw candidate for a 340px box.
+  sizes = "100vw",
 }: {
   label?: string;
   tone?: keyof typeof tones;
   src?: string;
   alt?: string;
   className?: string;
+  sizes?: string;
 }) {
   if (src) {
     // Local decorative SVG (our themed defaults) → background-image, dodging next/image's
@@ -48,7 +52,7 @@ export default function Placeholder({
           alt={alt ?? label ?? ""}
           fill
           className="object-cover"
-          sizes="100vw"
+          sizes={sizes}
         />
       </div>
     );

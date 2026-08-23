@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useLenis } from "lenis/react";
 import type { Nav } from "@/lib/content";
-import { linkProps } from "@/lib/links";
 import CartButton from "@/components/store/CartButton";
 
 // Fallback internal routes by label, used only when a nav item's CMS url is blank — so known
@@ -86,12 +85,12 @@ export default function Navbar({ nav }: { nav: Nav }) {
             }}
           />
           {/* Same face as the hero wordmark — one brand voice across the page. */}
-          <span className="font-lockup text-base font-black italic uppercase tracking-[0.01em]">
+          <span className="font-lockup whitespace-nowrap text-sm font-black italic uppercase tracking-[0.01em] sm:text-base">
             {nav.logo}
           </span>
         </Link>
 
-        <div className="hidden items-center gap-7 md:flex">
+        <div className="hidden items-center gap-7 lg:flex">
           {nav.links.map((l) => {
             const href = l.url || HREFS[l.label] || "#";
             const ext = /^https?:\/\//i.test(href);
@@ -125,14 +124,14 @@ export default function Navbar({ nav }: { nav: Nav }) {
           <CartButton dark={onDark} />
           <Link
             href="/donate"
-            className="hidden rounded-full bg-blue px-5 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-blue/90 md:inline-block"
+            className="hidden rounded-full bg-blue px-5 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-blue/90 lg:inline-block"
           >
             {nav.cta}
           </Link>
           <button
             aria-label="Open menu"
             onClick={() => setOpen(true)}
-            className={`flex h-9 w-9 items-center justify-center md:hidden ${
+            className={`flex h-9 w-9 items-center justify-center lg:hidden ${
               onDark ? "text-cream" : "text-ink"
             }`}
           >
@@ -151,7 +150,7 @@ export default function Navbar({ nav }: { nav: Nav }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex flex-col bg-charcoal px-6 py-6 text-cream md:hidden"
+            className="fixed inset-0 z-50 flex flex-col bg-charcoal px-6 py-6 text-cream lg:hidden"
           >
             <div className="flex justify-end">
               <button
