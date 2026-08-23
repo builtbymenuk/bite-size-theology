@@ -2,6 +2,7 @@
 // price and persist orders identically. Server-only (reads STRAPI_API_TOKEN).
 import { getProduct, getStore } from "@/lib/cms";
 import { computeTotals, type Totals } from "@/lib/pricing";
+import { convert, decimalsFor, getRates, isSupported } from "@/lib/currency";
 import type { Store } from "@/lib/content";
 
 const STRAPI = process.env.STRAPI_URL;
@@ -23,12 +24,23 @@ export interface PricedLine {
 }
 
 export type PricedCart =
-  | { ok: true; lines: PricedLine[]; totals: Totals; currency: string; store: Store }
+  | {
+      ok: true;
+      lines: PricedLine[];
+      totals: Totals;
+      currency: string;
+      decimals: number;
+      store: Store;
+    }
   | { ok: false; status: number; error: string };
 
 // Reprices + validates the cart entirely from Strapi. The client only ever sends slug/size/qty,
 // so a tampered price/qty in the browser can't change what's charged. Used by BOTH gateways.
-export async function priceCart(raw: unknown): Promise<PricedCart> {
+//
+// `wanted` is the buyer's chosen presentment currency. It comes from the browser, so it is checked
+// against the offer list here — an unknown or unsupported code silently prices in the store's base
+// currency rather than reaching Stripe/PayPal.
+export async function priceCart(raw: unknown, wanted?: unknown): Promise<PricedCart> {
   const cart: IncomingItem[] = Array.isArray(raw) ? raw : [];
   if (!cart.length) return { ok: false, status: 400, error: "Your cart is empty." };
 
@@ -61,11 +73,32 @@ export async function priceCart(raw: unknown): Promise<PricedCart> {
 
   if (!lines.length) return { ok: false, status: 400, error: "Your cart is empty." };
 
+  const base = (store.currency || "USD").toUpperCase();
+  let target = isSupported(wanted) ? String(wanted).toUpperCase() : base;
+  let shippingFee = store.shippingFee;
+
+  // Convert each unit price and the shipping fee on its own, rounding each to the target precision
+  // BEFORE totalling. Rounding per line (not on the total) is what keeps PayPal's
+  // Σ(unit × qty) === item_total invariant true after conversion.
+  if (target !== base) {
+    const rate = (await getRates())[target];
+    if (rate) {
+      for (const l of lines) l.unitPrice = convert(l.unitPrice, rate, target);
+      shippingFee = convert(shippingFee, rate, target);
+    } else {
+      // No rate for a code we offer shouldn't happen (the fallback table covers all of them), but
+      // charging base-currency numbers under a foreign label would be a real overcharge. Stay in base.
+      target = base;
+    }
+  }
+
+  const decimals = decimalsFor(target);
   const totals = computeTotals(
     lines.map((l) => ({ unitPrice: l.unitPrice, qty: l.qty })),
-    store.shippingFee,
+    shippingFee,
+    decimals,
   );
-  return { ok: true, lines, totals, currency: store.currency || "USD", store };
+  return { ok: true, lines, totals, currency: target, decimals, store };
 }
 
 // Human-readable line snapshot for the Strapi Orders record. Reprices titles/prices from Strapi

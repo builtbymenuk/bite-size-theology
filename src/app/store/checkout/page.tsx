@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getStore } from "@/lib/cms";
 import { paypalConfigured } from "@/lib/paypal";
 import { stripeConfigured } from "@/lib/stripe";
+import { getRates } from "@/lib/currency";
 import Footer from "@/components/layout/Footer";
 import Checkout from "@/components/store/Checkout";
 
@@ -11,6 +12,9 @@ export const metadata: Metadata = {
 
 export default async function CheckoutPage() {
   const store = await getStore();
+  // Rates are fetched server-side (daily-cached) and handed to the client for display math only —
+  // every charged amount is re-converted on the server from these same rates.
+  const rates = await getRates();
   // Gate each gateway on the SAME check its server route uses, so we never render a button the
   // server can't service. (Only booleans cross to the client — no secret leaks.) The client also
   // needs NEXT_PUBLIC_PAYPAL_CLIENT_ID for the PayPal SDK; Checkout ANDs that in.
@@ -25,6 +29,7 @@ export default async function CheckoutPage() {
         <Checkout
           shippingFee={store.shippingFee}
           currency={store.currency}
+          rates={rates}
           paypalEnabled={paypalEnabled}
           stripeEnabled={stripeEnabled}
         />

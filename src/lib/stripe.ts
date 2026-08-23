@@ -2,7 +2,7 @@
 // The secret key never reaches the client — hosted Checkout redirects to session.url, so no
 // client-side Stripe.js is needed. Env: STRIPE_SECRET_KEY (+ optional STRIPE_WEBHOOK_SECRET later).
 import Stripe from "stripe";
-import { toCents } from "@/lib/pricing";
+import { toMinor } from "@/lib/pricing";
 import type { PricedLine } from "@/lib/store-order";
 
 const SECRET = process.env.STRIPE_SECRET_KEY;
@@ -29,16 +29,17 @@ export async function createCheckoutSession(opts: {
   lines: PricedLine[];
   shippingCents: number;
   currency: string;
+  decimals: number; // target-currency precision; 0 for zero-decimal currencies like JPY
   origin: string;
 }): Promise<Stripe.Checkout.Session> {
-  const { lines, shippingCents, currency, origin } = opts;
+  const { lines, shippingCents, currency, decimals, origin } = opts;
   const cur = currency.toLowerCase();
 
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = lines.map((l) => ({
     quantity: l.qty,
     price_data: {
       currency: cur,
-      unit_amount: toCents(l.unitPrice),
+      unit_amount: toMinor(l.unitPrice, decimals),
       product_data: {
         name: l.title,
         ...(l.description ? { description: l.description } : {}),
@@ -62,6 +63,11 @@ export async function createCheckoutSession(opts: {
 
   return getStripe().checkout.sessions.create({
     mode: "payment",
+  // Adaptive Pricing OFF. Left on, Stripe adds its own local-currency tile to the hosted page (a
+  // Sri Lankan IP gets an LKR one, pre-selected) on top of the currency the buyer already chose
+  // here — two conversions stacked, and a currency we don't even offer. The buyer's choice is ours
+  // to make, so we opt out per session rather than depending on a dashboard toggle.
+  adaptive_pricing: { enabled: false },
     line_items,
     shipping_options,
     shipping_address_collection: { allowed_countries: SHIP_TO },
@@ -84,6 +90,12 @@ export async function createDonationSession(opts: {
   return getStripe().checkout.sessions.create({
     mode: "payment",
     submit_type: "donate",
+  // Adaptive Pricing OFF. Left on, Stripe adds its own local-currency tile to the hosted page (a
+  // Sri Lankan IP gets an LKR one, pre-selected) on top of the currency the buyer already chose
+  // here — two conversions stacked, and a currency we don't even offer. The buyer's choice is ours
+  // to make, so we opt out per session rather than depending on a dashboard toggle.
+  adaptive_pricing: { enabled: false },
+
     line_items: [
       {
         quantity: 1,

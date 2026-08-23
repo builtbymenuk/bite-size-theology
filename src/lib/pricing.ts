@@ -4,6 +4,10 @@
 
 export const toCents = (dollars: number): number => Math.round(dollars * 100);
 
+/** Smallest-unit amount for a currency with `decimals` places — cents for USD, whole yen for JPY. */
+export const toMinor = (amount: number, decimals: number): number =>
+  Math.round(amount * 10 ** decimals);
+
 /** "$45.00" for UI display. */
 export const formatUSD = (dollars: number, currency = "USD"): string =>
   new Intl.NumberFormat("en-US", { style: "currency", currency }).format(dollars);
@@ -14,7 +18,7 @@ export interface PriceLine {
 }
 
 export interface Totals {
-  subtotalCents: number;
+  subtotalCents: number; // smallest units of the target currency (cents for USD, yen for JPY)
   shippingCents: number;
   totalCents: number;
   subtotal: string; // PayPal "value" format, e.g. "90.00"
@@ -26,15 +30,22 @@ export interface Totals {
  * Server-authoritative totals. `unitPrice` MUST come from Strapi, never from the client — the
  * checkout route looks each product up by slug and passes the stored price in here. Quantity is
  * clamped to a non-negative integer so a hostile payload can't produce negative/fractional charges.
+ *
+ * `decimals` is the target currency's precision (0 for zero-decimal currencies like JPY). Default 2
+ * keeps every USD caller unchanged. Amounts are still integer-minor-unit throughout.
  */
-export function computeTotals(lines: PriceLine[], shippingDollars: number): Totals {
+export function computeTotals(
+  lines: PriceLine[],
+  shippingDollars: number,
+  decimals = 2,
+): Totals {
   const subtotalCents = lines.reduce(
-    (sum, l) => sum + toCents(l.unitPrice) * Math.max(0, Math.trunc(l.qty)),
+    (sum, l) => sum + toMinor(l.unitPrice, decimals) * Math.max(0, Math.trunc(l.qty)),
     0,
   );
-  const shippingCents = toCents(shippingDollars);
+  const shippingCents = toMinor(shippingDollars, decimals);
   const totalCents = subtotalCents + shippingCents;
-  const money = (c: number) => (c / 100).toFixed(2);
+  const money = (c: number) => (c / 10 ** decimals).toFixed(decimals);
   return {
     subtotalCents,
     shippingCents,

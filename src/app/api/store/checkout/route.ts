@@ -17,13 +17,16 @@ export async function POST(req: Request) {
   }
 
   let items: unknown;
+  let currency: unknown;
   try {
-    items = (await req.json())?.items;
+    const body = await req.json();
+    items = body?.items;
+    currency = body?.currency;
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
 
-  const priced = await priceCart(items);
+  const priced = await priceCart(items, currency);
   if (!priced.ok) {
     return NextResponse.json({ error: priced.error }, { status: priced.status });
   }
@@ -31,7 +34,7 @@ export async function POST(req: Request) {
   const payPalItems: PayPalLineItem[] = priced.lines.map((l) => ({
     name: l.title,
     quantity: l.qty,
-    unitValue: l.unitPrice.toFixed(2),
+    unitValue: l.unitPrice.toFixed(priced.decimals),
     description: l.description,
   }));
 

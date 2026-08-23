@@ -12,13 +12,17 @@ export async function POST(req: Request) {
   }
 
   let items: unknown;
+  let currency: unknown;
   try {
-    items = (await req.json())?.items;
+    const body = await req.json();
+    items = body?.items;
+    currency = body?.currency;
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
 
-  const priced = await priceCart(items);
+  // priceCart validates `currency` against the offer list before it can reach Stripe.
+  const priced = await priceCart(items, currency);
   if (!priced.ok) {
     return NextResponse.json({ error: priced.error }, { status: priced.status });
   }
@@ -28,6 +32,7 @@ export async function POST(req: Request) {
       lines: priced.lines,
       shippingCents: priced.totals.shippingCents,
       currency: priced.currency,
+      decimals: priced.decimals,
       origin: new URL(req.url).origin,
     });
     return NextResponse.json({ url: session.url });

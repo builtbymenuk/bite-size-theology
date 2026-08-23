@@ -20,10 +20,12 @@ export async function POST(req: Request) {
 
   let orderID = "";
   let cart: IncomingItem[] = [];
+  let currency: unknown;
   try {
     const body = await req.json();
     orderID = String(body?.orderID ?? "");
     cart = Array.isArray(body?.items) ? body.items : [];
+    currency = body?.currency;
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
@@ -53,10 +55,11 @@ export async function POST(req: Request) {
     // PayPal's capture response omits amount.breakdown, so summarize() leaves subtotal/shipping at 0.
     // Reprice from Strapi (the same server-authoritative math the order was created with) to fill them
     // in; the captured total stays authoritative. Best-effort — a paid order must still save if this misses.
-    const priced = await priceCart(cart);
+    const priced = await priceCart(cart, currency);
     if (priced.ok) {
-      summary.subtotal = priced.totals.subtotalCents / 100;
-      summary.shipping = priced.totals.shippingCents / 100;
+      const unit = 10 ** priced.decimals;
+      summary.subtotal = priced.totals.subtotalCents / unit;
+      summary.shipping = priced.totals.shippingCents / unit;
     }
     const items = await snapshotItems(cart);
     await saveOrder(summary, items).catch((e) =>

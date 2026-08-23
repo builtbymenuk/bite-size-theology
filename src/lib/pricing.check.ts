@@ -1,7 +1,7 @@
 // Runnable money-path check — no test framework:
 //   node --experimental-strip-types src/lib/pricing.check.ts
 import assert from "node:assert/strict";
-import { computeTotals, toCents } from "./pricing.ts";
+import { computeTotals, toCents, toMinor } from "./pricing.ts";
 
 // round each unit to cents first, so float artifacts never reach a total
 assert.equal(toCents(19.99), 1999);
@@ -33,5 +33,14 @@ assert.equal(tampered.total, "30.00");
 // negative / fractional qty can't create negative or fractional charges
 assert.equal(computeTotals([{ unitPrice: 30, qty: -5 }], 0).total, "0.00");
 assert.equal(computeTotals([{ unitPrice: 30, qty: 1.9 }], 0).total, "30.00");
+
+// zero-decimal currency (JPY): smallest unit is the whole yen, and the string form carries no
+// decimal point — Stripe wants 1200 for ¥1,200 and PayPal rejects "1200.00".
+assert.equal(toMinor(1200, 0), 1200);
+assert.equal(toMinor(12.5, 2), 1250);
+const yen = computeTotals([{ unitPrice: 1200, qty: 2 }], 500, 0);
+assert.equal(yen.subtotal, "2400");
+assert.equal(yen.total, "2900");
+assert.equal(yen.subtotalCents + yen.shippingCents, yen.totalCents);
 
 console.log("pricing check: OK");
