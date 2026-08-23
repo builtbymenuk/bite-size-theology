@@ -8,7 +8,6 @@ import Reveal from "@/components/ui/Reveal";
 import MaskReveal from "@/components/ui/MaskReveal";
 import Parallax from "@/components/ui/Parallax";
 import Placeholder from "@/components/ui/Placeholder";
-import ArrowButton from "@/components/ui/ArrowButton";
 import { getAbout } from "@/lib/cms";
 
 export const metadata: Metadata = {
@@ -28,26 +27,27 @@ export default async function AboutPage() {
           <p className="text-[11px] uppercase tracking-[0.3em] text-gold">
             {about.eyebrow}
           </p>
+          {/* Name + role sit directly under the eyebrow now, reading as one left-aligned stack
+              before the headline, rather than floating opposite it on the right. */}
+          <div className="mt-5">
+            <p className="text-base font-medium text-ink">{about.name}</p>
+            <p className="mt-1 text-xs text-ink/55">{about.role}</p>
+          </div>
         </Reveal>
 
-        <div className="mt-6 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        {/* Spacing lives on this wrapper, NOT on the h1: MaskReveal clips its child with
+            overflow-hidden, so a margin on the heading itself sits inside the mask and fights the
+            reveal instead of separating the two blocks. */}
+        <div className="-mt-6">
           <MaskReveal>
             <h1 className="font-display text-7xl leading-[0.9] tracking-tight md:text-8xl">
               {about.headingLead}{" "}
               <span className="font-semibold italic">{about.headingName}</span>
             </h1>
           </MaskReveal>
-
-          <Reveal className="flex items-center gap-6 md:pb-3">
-            <div>
-              <p className="text-sm font-medium text-ink">{about.name}</p>
-              <p className="text-[11px] text-ink/50">{about.role}</p>
-            </div>
-            <ArrowButton label={about.donateCta} href={about.donateCtaUrl} />
-          </Reveal>
         </div>
 
-        <Reveal className="mt-12">
+        <Reveal>
           <Parallax
             className="grain relative aspect-[16/9] w-full overflow-hidden rounded-[2.5rem]"
             amount={14}
