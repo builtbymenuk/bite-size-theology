@@ -284,11 +284,6 @@ export async function getPodcastPage(): Promise<PodcastPage> {
       headingAccent: d.heroHeadingAccent || fb.podcastPage.hero.headingAccent,
       subtext: d.heroSubtext || fb.podcastPage.hero.subtext,
     },
-    stats: arr(
-      d.stats,
-      (s) => ({ value: s.value, label: s.label, icon: s.icon }),
-      fb.podcastPage.stats,
-    ),
     cta: {
       pills: arr(d.ctaPills, (p) => p.value, fb.podcastPage.cta.pills),
       headingLead: d.ctaHeadingLead || fb.podcastPage.cta.headingLead,

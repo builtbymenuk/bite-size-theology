@@ -1144,7 +1144,6 @@ export interface ApiPodcastPagePodcastPage extends Struct.SingleTypeSchema {
     seriesHeadingLead: Schema.Attribute.String;
     seriesItems: Schema.Attribute.Component<'shared.series', true>;
     seriesVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    stats: Schema.Attribute.Component<'shared.stat', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

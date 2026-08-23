@@ -104,11 +104,6 @@
     "heroHeading": "Deep faith.",
     "heroHeadingAccent": "Bite-sized.",
     "heroSubtext": "Join Pastor Caleb Griffith as he unpacks profound theological truths into accessible, everyday wisdom. New episodes every Wednesday.",
-    "stats": [
-      { "value": "200+", "label": "Episodes Published", "icon": "mic" },
-      { "value": "500k", "label": "Monthly Listeners", "icon": "globe" },
-      { "value": "4.9/5", "label": "Average Rating", "icon": "award" }
-    ],
     "ctaHeadingLead": "Ready to deepen your",
     "ctaHeadingAccent": "understanding?",
     "ctaBody": "Subscribe to our YouTube channel and never miss a new episode of Bite Size Theology.",

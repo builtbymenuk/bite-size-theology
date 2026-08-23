@@ -22,11 +22,6 @@
     "heroSubtext": {
       "type": "text"
     },
-    "stats": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.stat"
-    },
     "ctaHeadingLead": {
       "type": "string"
     },

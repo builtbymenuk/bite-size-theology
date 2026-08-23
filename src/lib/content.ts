@@ -9,7 +9,6 @@
 // --- Shared enums (Strapi enumeration fields mirror these) ---
 export type Tone = "dark" | "warm" | "light" | "cool" | "gold" | "yellow";
 export type Platform = "spotify" | "youtube";
-export type Icon = "mic" | "globe" | "award";
 export type Status = "sold-out" | "get-tickets";
 
 export type SocialPlatform =
@@ -185,12 +184,6 @@ export interface Podcast {
   youtubeChannelId?: string; // UC… — when set, the wall auto-fills from this channel's latest videos
 }
 
-export interface Stat {
-  value: string;
-  label: string;
-  icon: Icon;
-}
-
 export interface SeriesCard {
   title: string; // series name, set huge across the still
   video: string; // watch/share URL or bare 11-char id; unresolvable = a "more coming" tile
@@ -200,7 +193,6 @@ export interface SeriesCard {
 
 export interface PodcastPage {
   hero: { name: string; heading: string; headingAccent: string; subtext: string };
-  stats: Stat[];
   cta: { pills: string[]; headingLead: string; headingAccent: string; body: string };
   // The church-channel preaching series cards, below the personal-channel wall. Required (not
   // optional) because getPodcastPage returns this whole object verbatim when Strapi is down.
@@ -582,11 +574,6 @@ export const podcastPage: PodcastPage = {
     subtext:
       "Join Pastor Caleb Griffith as he unpacks profound theological truths into accessible, everyday wisdom. New episodes every Wednesday.",
   },
-  stats: [
-    { value: "200+", label: "Episodes Published", icon: "mic" as const },
-    { value: "500k", label: "Monthly Listeners", icon: "globe" as const },
-    { value: "4.9/5", label: "Average Rating", icon: "award" as const },
-  ],
   cta: {
     pills: [
       "Deep Faith",
