@@ -39,7 +39,7 @@ export default function Catalog({
         </h2>
         {tabs.length > 1 && (
           <div
-            className="flex flex-wrap gap-2"
+            className="-mx-6 flex w-full gap-2 overflow-x-auto px-6 [scrollbar-width:none] md:mx-0 md:w-auto md:flex-wrap md:overflow-visible md:px-0"
             role="tablist"
             aria-label="Filter products by category"
           >
@@ -52,7 +52,7 @@ export default function Catalog({
                   setActive(c.slug);
                   setVisible(PAGE); // reset paging when switching category
                 }}
-                className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.18em] transition-colors ${
+                className={`shrink-0 rounded-full border px-4 py-2.5 text-[11px] uppercase tracking-[0.18em] transition-colors ${
                   active === c.slug
                     ? "border-ink bg-ink text-cream"
                     : "border-ink/15 text-ink/60 hover:border-ink/40"
@@ -67,7 +67,7 @@ export default function Catalog({
 
       {shown.length ? (
         <>
-          <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
+          <div className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3 md:gap-y-12 lg:grid-cols-4">
             {paged.map((p) => (
               <ProductCard key={p.slug} product={p} />
             ))}

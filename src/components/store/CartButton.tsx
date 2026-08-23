@@ -2,10 +2,10 @@
 
 import { useCart } from "@/lib/cart";
 
-// The shop's cart trigger — mounted by src/app/store/layout.tsx, not the navbar, so it exists only
-// where there is something to buy. Pinned to the top-right corner: level with the nav pill on lg+
-// (h-[3.625rem] is that pill's exact height, so top-4 shares its baseline), tucked just below it on
-// narrower screens where the pill stretches out and its hamburger owns the corner.
+// The shop's cart trigger on lg+, mounted by src/app/store/layout.tsx rather than the navbar so it
+// exists only where there is something to buy. Pinned level with the nav pill in the free corner —
+// h-[3.625rem] is that pill's exact height, so top-4 shares its baseline. Below lg the corner sat
+// over the product grid and out of thumb reach, so CartBar takes over there.
 export default function CartButton() {
   const { count, openCart } = useCart();
   return (
@@ -18,7 +18,7 @@ export default function CartButton() {
       // z-40: under the header and the mobile menu overlay (both z-50, so the menu covers this),
       // far under CartDrawer (z-[110]). Borrows the nav pill's surface so it stays legible over the
       // hero, the gold marquee and the cream catalog alike.
-      className="fixed right-4 top-20 z-40 flex h-[3.625rem] w-[3.625rem] items-center justify-center rounded-full border border-ink/10 bg-cream/80 text-ink shadow-sm backdrop-blur-md transition-colors hover:bg-cream lg:top-4"
+      className="fixed right-4 top-4 z-40 hidden h-[3.625rem] w-[3.625rem] items-center justify-center rounded-full border border-ink/10 bg-cream/80 text-ink shadow-sm backdrop-blur-md transition-colors hover:bg-cream lg:flex"
     >
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden>
         <path

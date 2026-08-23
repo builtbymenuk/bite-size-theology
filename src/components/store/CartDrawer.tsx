@@ -81,7 +81,7 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "tween", duration: 0.4, ease: EASE }}
-            className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-cream text-ink shadow-2xl"
+            className="absolute right-0 top-0 flex h-dvh w-full max-w-md flex-col bg-cream text-ink shadow-2xl"
           >
             <header className="flex items-center justify-between border-b border-ink/10 px-6 py-5">
               <h2 className="font-display text-lg uppercase tracking-wide">
@@ -164,7 +164,7 @@ export default function CartDrawer() {
                     );
                   })}
                 </ul>
-                <footer className="border-t border-ink/10 px-6 py-5">
+                <footer className="border-t border-ink/10 px-6 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-ink/60">Subtotal</span>
                     <span className="font-medium tabular-nums">

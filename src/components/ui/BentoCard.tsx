@@ -12,6 +12,7 @@ export default function BentoCard({
     tone: React.ComponentProps<typeof Placeholder>["tone"];
     label?: string;
     src?: string;
+    sizes?: string;
   };
 }) {
   return (
@@ -19,7 +20,12 @@ export default function BentoCard({
     <div className={`group relative rounded-2xl ${image ? "overflow-hidden" : ""} ${className ?? ""}`}>
       {image ? (
         <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
-          <Placeholder tone={image.tone} label={image.label} src={image.src} />
+          <Placeholder
+            tone={image.tone}
+            label={image.label}
+            src={image.src}
+            sizes={image.sizes}
+          />
         </div>
       ) : null}
       {children ? (

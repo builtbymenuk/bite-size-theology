@@ -147,6 +147,17 @@ details[open]::details-content {
 ::view-transition-new(cart) {
   animation: none;
 }
+/* ...and for its mobile counterpart, the bottom cart bar (CartBar.tsx). */
+::view-transition-group(cartbar) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(cartbar) {
+  display: none;
+}
+::view-transition-new(cartbar) {
+  animation: none;
+}
 
 /* Reduced motion: instant swap (regular * rules don't reach the ::view-transition pseudo-tree). */
 @media (prefers-reduced-motion: reduce) {
