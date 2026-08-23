@@ -45,4 +45,6 @@ Open **http://localhost:3000**.
 
 ## Deploying to production
 
-See **`docs/DEPLOYMENT.html`** — a step-by-step runbook for hosting on Hostinger.
+A Docker setup is included — `cp .env.docker.example .env`, fill it in, then
+`docker compose up -d --build` brings up the database, the CMS and the website together.
+See the README for what has to move across besides the code.

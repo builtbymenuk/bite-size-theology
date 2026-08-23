@@ -1,47 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bite Size Theology
 
-## Store
+The Bite Size Theology website and its content management system.
 
-The site includes an e-commerce **Store** (`/store`) backed by Strapi, with PayPal and Stripe
-checkout. If you're the store owner, start here — everything you need to provide, decide, or manage:
+Two applications run side by side:
 
-📋 **[Store — Client Action Checklist](docs/STORE-CLIENT-CHECKLIST.md)** — accounts & credentials,
-business decisions, managing products/orders in the CMS, and going live.
+| | What it is | Port |
+|---|---|---|
+| **root** | The public website — Next.js 16 | `3000` |
+| **`cms/`** | The admin + content API — Strapi 5 | `1337` |
 
-Runs as two processes locally: `cd cms && npm run develop` (Strapi CMS, port 1337) and
-`npm run dev` (site, port 3000). Environment variables are documented in [`.env.example`](.env.example).
+Everything on the public site — text, images, products, prices, podcast episodes,
+page settings — is edited in the Strapi admin. No code changes needed for content.
 
-## Getting Started
+## Running it locally
 
-First, run the development server:
+See **[HOW-TO-RUN.md](HOW-TO-RUN.md)**. Short version: start Strapi first
+(`cd cms && npm install && npm run develop`), then the site (`npm install && npm run dev`).
+
+The site runs even with the CMS switched off — it falls back to built-in copy — so you
+can start the website on its own and connect the CMS afterwards.
+
+## Configuration
+
+Environment variables are documented inline in **[`.env.example`](.env.example)** (website)
+and **[`cms/.env.example`](cms/.env.example)** (CMS). Copy each to `.env.local` and `cms/.env`
+respectively and fill them in. Nothing secret is committed to this repository.
+
+## Deploying
+
+A complete Docker setup is included — `docker-compose.yml` brings up PostgreSQL, the CMS and
+the website together:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.docker.example .env    # then fill it in
+docker compose up -d --build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Both applications can also be run directly with Node 20+ behind any process manager.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Important
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The repository contains the **software**, not the **content**. The database and every
+uploaded image live outside it. Moving a site to a new server means moving those separately
+with Strapi's own export and import commands:
 
-## Learn More
+```bash
+cd cms
+npm run strapi export -- --no-encrypt --file backup   # on the old server
+npm run strapi import -- --force --file backup.tar.gz # on the new one
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Back both up regularly — a database backup without the uploads folder restores a site with
+no pictures.
