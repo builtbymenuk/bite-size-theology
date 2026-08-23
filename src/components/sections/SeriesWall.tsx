@@ -8,8 +8,8 @@ import Reveal, { RevealItem } from "@/components/ui/Reveal";
 import ArrowButton from "@/components/ui/ArrowButton";
 import type { PodcastPage } from "@/lib/content";
 
-// The preaching series as a poster wall: three columns of mixed-height posters looping vertically
-// at different speeds, forever. The carousel directly above moves HORIZONTALLY with page scroll —
+// The preaching series as a poster wall: three columns of 16:9 posters looping vertically at
+// different speeds, forever. The carousel directly above moves HORIZONTALLY with page scroll —
 // this moves on its own on the other axis, so the two sections rhyme instead of repeating.
 //
 // Three rules this file depends on:
@@ -33,10 +33,6 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 // How long the cursor must rest on a poster before the muted preview is worth an iframe.
 const PREVIEW_DWELL = 400;
-
-// Mixed shapes are what make this a wall and not a grid. Modulus 4 against the modulus-3 column
-// split guarantees every column gets a mix rather than one repeated shape.
-const ASPECTS = ["aspect-video", "aspect-[4/3]", "aspect-square", "aspect-[4/3]"];
 
 const COLUMNS = 3;
 
@@ -149,10 +145,9 @@ function Lightbox({ card, onClose }: { card: SeriesCardData; onClose: () => void
 // marks the duplicated loop copy: still clickable with a mouse, but invisible to AT and skipped by
 // Tab so each series is announced exactly once.
 function Poster({
-  card, aspect, onPlay, decorative,
+  card, onPlay, decorative,
 }: {
   card: SeriesCardData;
-  aspect: string;
   onPlay: () => void;
   decorative?: boolean;
 }) {
@@ -179,8 +174,8 @@ function Poster({
   );
 
   if (!card.videoId) {
-    // Always the shortest shape, whatever the rotation would have given it: empty frames earn the
-    // least room in the loop, so the real posters stay the thing you actually see.
+    // Same 16:9 box as a real poster, so an unfilled slot holds its place in the loop without
+    // disturbing the rhythm of the column.
     return (
       <div>
         <div className="flex aspect-video items-center justify-center rounded-xl border border-dashed border-ink/20 bg-ink/[0.04]">
@@ -206,9 +201,10 @@ function Poster({
         onPointerLeave={stop}
         aria-label={`Play ${card.title}`}
         tabIndex={decorative ? -1 : undefined}
-        className={`relative block ${aspect} w-full cursor-pointer overflow-hidden rounded-xl ring-1 ring-ink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold`}
+        className="relative block aspect-video w-full cursor-pointer overflow-hidden rounded-xl ring-1 ring-ink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
       >
-        {/* hqdefault always exists but is 4:3 with letterbox bars, so it must be cropped. */}
+        {/* hqdefault always exists but is 480x360 with letterbox bars. Covering a 16:9 box crops
+            off exactly those bars — which is the whole reason every poster is aspect-video. */}
         <Image
           src={thumb(id)}
           alt=""
@@ -217,8 +213,8 @@ function Poster({
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
 
-        {/* Muted preview — one iframe at a time, only while the cursor rests here. Tiles differ in
-            aspect, so it fills the box and lets overflow-hidden do the cropping. */}
+        {/* Muted preview — one iframe at a time, only while the cursor rests here. Scaled up past
+            the box so YouTube's own chrome falls outside it and overflow-hidden clips it. */}
         {preview ? (
           <iframe
             aria-hidden
@@ -263,10 +259,9 @@ function Poster({
 // One looping column of the wall. `y` comes from page scroll — no auto-play — exactly like the
 // ScrollRow in Podcast.tsx, only on the other axis.
 function LoopColumn({
-  cards, offsets, loop, onPlay,
+  cards, loop, onPlay,
 }: {
   cards: SeriesCardData[];
-  offsets: number[]; // original index of each card, so aspects stay stable across columns
   loop: string; // one of LOOPS — direction, speed and phase for this column
   onPlay: (card: SeriesCardData) => void;
 }) {
@@ -275,13 +270,8 @@ function LoopColumn({
   // the loop would jump by half a gap every cycle. Trailing padding halves exactly.
   const run = (decorative?: boolean) =>
     cards.map((c, i) => (
-      <div key={`${decorative ? "b" : "a"}${offsets[i]}`} className="pb-10">
-        <Poster
-          card={c}
-          aspect={ASPECTS[offsets[i] % ASPECTS.length]}
-          onPlay={() => onPlay(c)}
-          decorative={decorative}
-        />
+      <div key={`${decorative ? "b" : "a"}${i}`} className="pb-10">
+        <Poster card={c} onPlay={() => onPlay(c)} decorative={decorative} />
       </div>
     ));
 
@@ -324,7 +314,7 @@ export default function SeriesWall({
   // ones first instead.
   const stacked = [...posters, ...placeholders];
   const columns = Array.from({ length: COLUMNS }, (_, c) =>
-    cards.map((card, i) => ({ card, i })).filter(({ i }) => i % COLUMNS === c),
+    cards.filter((_, i) => i % COLUMNS === c),
   );
 
   return (
@@ -358,12 +348,7 @@ export default function SeriesWall({
             a phone is battery for no benefit. Same fallback shape as Podcast.tsx's mobile grid. */}
         <Reveal className="mt-14 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:hidden">
           {stacked.map((c, i) => (
-            <Poster
-              key={`${c.videoId ?? "soon"}-${i}`}
-              card={c}
-              aspect={ASPECTS[i % ASPECTS.length]}
-              onPlay={() => setOpen(c)}
-            />
+            <Poster key={`${c.videoId ?? "soon"}-${i}`} card={c} onPlay={() => setOpen(c)} />
           ))}
         </Reveal>
 
@@ -371,13 +356,7 @@ export default function SeriesWall({
             scroll would just be a second entrance competing with the loop. */}
         <div className="mt-16 hidden gap-8 lg:grid lg:grid-cols-3">
           {columns.map((col, c) => (
-            <LoopColumn
-              key={c}
-              cards={col.map((x) => x.card)}
-              offsets={col.map((x) => x.i)}
-              loop={LOOPS[c]}
-              onPlay={setOpen}
-            />
+            <LoopColumn key={c} cards={col} loop={LOOPS[c]} onPlay={setOpen} />
           ))}
         </div>
       </div>
