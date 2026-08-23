@@ -1,0 +1,871 @@
+<meta charset="utf-8">
+<title>Bite Size Theology — Deployment Guide</title>
+<style>
+  :root{
+    --ink:#12203a; --body:#2c3a51; --muted:#697a93; --faint:#93a1b5;
+    --line:#dfe4ec; --line2:#c9d2df; --paper:#ffffff; --tint:#f4f7fb;
+    --gold:#a87c3d; --gold-bg:#fbf6ec; --gold-line:#e8d9bb;
+    --red:#9c3226; --red-bg:#fcf1ef; --red-line:#eccec8;
+    --blue:#1f5a8f; --blue-bg:#eff5fb; --blue-line:#cfe0ef;
+    --green:#2f6b45; --green-bg:#eff7f1; --green-line:#cbe3d4;
+    --code-bg:#101a2b; --code-ink:#dfe7f2; --code-dim:#7d8ea7; --code-key:#e0b872;
+    --sans:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    --mono:"Cascadia Mono",Consolas,ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{margin:0;background:var(--paper);color:var(--body);font-family:var(--sans);
+       font-size:10.2pt;line-height:1.55;}
+  .page{max-width:180mm;margin:0 auto;padding:0 0 8mm}
+  h1,h2,h3,h4{color:var(--ink);margin:0}
+  p{margin:0 0 8px;}
+  a{color:var(--blue);text-decoration:none}
+  ul,ol{margin:6px 0 10px;padding-left:20px}
+  li{margin:3px 0}
+  strong{color:var(--ink);font-weight:600}
+  code{font-family:var(--mono);font-size:8.9pt;background:var(--tint);
+       border:1px solid var(--line);border-radius:3px;padding:0 4px;color:var(--ink);
+       white-space:nowrap}
+  td code,th code{white-space:normal}
+  pre{background:var(--code-bg);color:var(--code-ink);border-radius:6px;
+      padding:11px 13px;margin:9px 0;font-family:var(--mono);font-size:8.6pt;
+      line-height:1.6;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
+  pre .c{color:var(--code-dim)}
+  pre .k{color:var(--code-key)}
+  pre code{background:none;border:0;padding:0;color:inherit;font-size:inherit;white-space:inherit}
+
+  /* ---------- cover ---------- */
+  .cover{padding:34mm 0 0;break-after:page}
+  .cover .kicker{font-family:var(--mono);font-size:8.5pt;letter-spacing:.22em;
+       text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px}
+  .cover h1{font-size:31pt;line-height:1.04;letter-spacing:-.022em;font-weight:700}
+  .cover .sub{font-size:13pt;color:var(--muted);margin-top:14px;max-width:135mm;line-height:1.45}
+  .rule{height:3px;background:var(--ink);margin:22px 0 20px;width:70mm}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .chip{font-family:var(--mono);font-size:8pt;border:1px solid var(--line2);
+        border-radius:20px;padding:3px 10px;color:var(--muted);background:var(--tint)}
+  .cover .foot{margin-top:34mm;padding-top:12px;border-top:1px solid var(--line);
+        font-size:9pt;color:var(--faint)}
+
+  /* ---------- structure ---------- */
+  section{break-before:page;padding-top:2mm}
+  section.cont{break-before:auto}
+  .sechead{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--ink);
+           padding-bottom:8px;margin-bottom:14px}
+  .sechead .num{font-family:var(--mono);font-size:9pt;font-weight:700;color:var(--gold);
+           letter-spacing:.1em}
+  .sechead h2{font-size:16.5pt;letter-spacing:-.015em;font-weight:700}
+  h3{font-size:11.5pt;margin:16px 0 5px;letter-spacing:-.01em}
+  h4{font-size:9.5pt;margin:12px 0 4px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+  .lede{font-size:11pt;color:var(--muted);margin-bottom:12px;max-width:150mm}
+
+  /* ---------- steps ---------- */
+  .step{border:1px solid var(--line);border-radius:7px;padding:13px 15px;margin:10px 0;
+        break-inside:avoid;background:var(--paper)}
+  .step > .h{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+  .step .n{flex:0 0 auto;width:21px;height:21px;border-radius:5px;background:var(--ink);
+        color:#fff;font-size:8.5pt;font-weight:700;display:flex;align-items:center;
+        justify-content:center;font-family:var(--mono)}
+  .step .t{font-size:11pt;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+  .step .where{margin-left:auto;font-family:var(--mono);font-size:7.6pt;color:var(--faint);
+        text-transform:uppercase;letter-spacing:.09em}
+
+  /* ---------- callouts ---------- */
+  .box{border:1px solid;border-left-width:3px;border-radius:5px;padding:9px 13px;
+       margin:10px 0;font-size:9.6pt;break-inside:avoid}
+  .box .h{font-weight:700;font-size:8.5pt;text-transform:uppercase;letter-spacing:.11em;
+       display:block;margin-bottom:3px}
+  .box p:last-child{margin-bottom:0}
+  .warn{background:var(--gold-bg);border-color:var(--gold-line)} .warn .h{color:var(--gold)}
+  .crit{background:var(--red-bg);border-color:var(--red-line)}   .crit .h{color:var(--red)}
+  .note{background:var(--blue-bg);border-color:var(--blue-line)} .note .h{color:var(--blue)}
+  .good{background:var(--green-bg);border-color:var(--green-line)} .good .h{color:var(--green)}
+
+  /* ---------- tables ---------- */
+  table{width:100%;border-collapse:collapse;margin:9px 0;font-size:9pt;break-inside:auto}
+  thead{display:table-header-group}
+  tr{break-inside:avoid}
+  th{text-align:left;font-size:7.8pt;text-transform:uppercase;letter-spacing:.1em;
+     color:var(--muted);border-bottom:1.5px solid var(--line2);padding:5px 8px 5px 0;font-weight:700}
+  td{padding:6px 8px 6px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  td:first-child,th:first-child{padding-left:0}
+  .req{font-family:var(--mono);font-size:7.6pt;font-weight:700;white-space:nowrap}
+  .req.y{color:var(--red)} .req.n{color:var(--faint)}
+
+  /* ---------- diagram ---------- */
+  .diagram{border:1px solid var(--line);border-radius:7px;padding:15px;margin:12px 0;
+       background:var(--tint);break-inside:avoid}
+  .flow{display:flex;align-items:stretch;gap:7px;font-family:var(--mono);font-size:8pt}
+  .node{flex:1;border:1px solid var(--line2);border-radius:6px;padding:9px 10px;background:#fff}
+  .node .k{font-size:6.8pt;letter-spacing:.11em;text-transform:uppercase;color:var(--faint)}
+  .node .v{font-weight:700;color:var(--ink);margin-top:2px;font-size:8.6pt}
+  .node .s{color:var(--muted);font-size:7.6pt;margin-top:1px}
+  .arrow{align-self:center;color:var(--gold);font-weight:700;font-size:12pt}
+  .dcap{margin-top:11px;padding-top:9px;border-top:1px dashed var(--line2);
+        font-size:8.4pt;color:var(--muted)}
+
+  /* ---------- toc / checklist ---------- */
+  .toc{border:1px solid var(--line);border-radius:7px;padding:6px 15px;margin-top:14px}
+  .toc div{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:9.6pt}
+  .toc div:last-child{border-bottom:0}
+  .toc .n{font-family:var(--mono);color:var(--gold);font-weight:700;flex:0 0 20px}
+  .toc .t{color:var(--ink);font-weight:600}
+  .toc .d{color:var(--muted);margin-left:auto;text-align:right;font-size:9pt}
+  .check{list-style:none;padding-left:0;margin:8px 0}
+  .check li{position:relative;padding-left:22px;margin:5px 0;break-inside:avoid}
+  .check li::before{content:"";position:absolute;left:0;top:3px;width:11px;height:11px;
+       border:1.4px solid var(--gold);border-radius:2.5px}
+  .cols{display:flex;gap:16px}
+  .cols > *{flex:1;min-width:0}
+  .tag{display:inline-block;font-family:var(--mono);font-size:7.4pt;font-weight:700;
+       letter-spacing:.1em;text-transform:uppercase;border-radius:3px;padding:1px 6px;
+       vertical-align:2px;margin-left:7px}
+  .tag.rec{background:var(--green);color:#fff}
+  .tag.alt{background:var(--tint);color:var(--muted);border:1px solid var(--line2)}
+  .endfoot{margin-top:16px;padding-top:10px;border-top:1px solid var(--line);
+       font-size:8.6pt;color:var(--faint)}
+  @page{size:A4;margin:16mm 15mm}
+</style>
+
+<div class="page">
+
+<!-- ══════════════════════════ COVER ══════════════════════════ -->
+<div class="cover">
+  <div class="kicker">Deployment Guide</div>
+  <h1>Bite&nbsp;Size&nbsp;Theology</h1>
+  <div class="rule"></div>
+  <p class="sub">How to put the website and its content management system live on your own
+  hosting — what the system is made of, what you need to have ready, three hosting options,
+  and how to bring the existing content across.</p>
+  <div class="chips" style="margin-top:22px">
+    <span class="chip">Next.js 16.2.10</span>
+    <span class="chip">Strapi 5.50.2</span>
+    <span class="chip">Node.js 20+</span>
+    <span class="chip">PostgreSQL / MySQL / SQLite</span>
+    <span class="chip">PayPal + Stripe</span>
+  </div>
+
+  <div class="toc">
+    <div><span class="n">1</span><span class="t">How the system is built</span><span class="d">Four moving parts</span></div>
+    <div><span class="n">2</span><span class="t">Before you start</span><span class="d">Server, domain, accounts</span></div>
+    <div><span class="n">3</span><span class="t">Your content is not in the code</span><span class="d">Moving the existing data</span></div>
+    <div><span class="n">4</span><span class="t">Option A — One server with Docker</span><span class="d">Recommended</span></div>
+    <div><span class="n">5</span><span class="t">Option B — Shared Node.js hosting</span><span class="d">Hostinger hPanel</span></div>
+    <div><span class="n">6</span><span class="t">Option C — Vercel + separate CMS</span><span class="d">Split hosting</span></div>
+    <div><span class="n">7</span><span class="t">Settings reference</span><span class="d">Every environment variable</span></div>
+    <div><span class="n">8</span><span class="t">First-run setup</span><span class="d">Admin, tokens, webhook</span></div>
+    <div><span class="n">9</span><span class="t">Go-live checklist</span><span class="d">Prove it works</span></div>
+    <div><span class="n">10</span><span class="t">If something breaks</span><span class="d">Known problems and fixes</span></div>
+    <div><span class="n">11</span><span class="t">Updates &amp; backups</span><span class="d">Living with it</span></div>
+  </div>
+
+  <div class="foot">Prepared for the owner of Bite Size Theology · This document describes the
+  codebase as delivered — every command and setting in it was checked against the actual project files.</div>
+</div>
+
+
+<!-- ══════════════════════════ 1 ══════════════════════════ -->
+<section class="cont">
+  <div class="sechead"><span class="num">01</span><h2>How the system is built</h2></div>
+  <p class="lede">This is a custom application, not a WordPress-style site. Deploying it means
+  running <strong>two programs</strong> that talk to each other, plus a database and a folder of
+  uploaded images.</p>
+
+  <div class="diagram">
+    <div class="flow">
+      <div class="node"><div class="k">Visitor</div><div class="v">Browser</div><div class="s">your customers</div></div>
+      <div class="arrow">&rarr;</div>
+      <div class="node"><div class="k">App 1</div><div class="v">Website</div><div class="s">Next.js · port 3000</div></div>
+      <div class="arrow">&rarr;</div>
+      <div class="node"><div class="k">App 2</div><div class="v">CMS / Admin</div><div class="s">Strapi · port 1337</div></div>
+      <div class="arrow">&rarr;</div>
+      <div class="node"><div class="k">Storage</div><div class="v">Database</div><div class="s">+ uploads folder</div></div>
+    </div>
+    <div class="dcap">The visitor only ever touches the website. The website asks the CMS for
+    text, images, products and prices. You only ever touch the CMS.</div>
+  </div>
+
+  <h3>The four parts</h3>
+  <table>
+    <thead><tr><th style="width:26%">Part</th><th style="width:16%">Port</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Website</strong><br><span style="color:var(--muted)">Next.js</span></td><td><code>3000</code></td>
+          <td>The public site your visitors see — home, podcast, shop, checkout, donation and contact forms.</td></tr>
+      <tr><td><strong>CMS / Admin</strong><br><span style="color:var(--muted)">Strapi</span></td><td><code>1337</code></td>
+          <td>Where you log in to edit every piece of text, upload images, manage products and read store orders. Also serves that content to the website over an API.</td></tr>
+      <tr><td><strong>Database</strong></td><td>internal</td>
+          <td>Holds all the content records and store orders. Can be PostgreSQL, MySQL or SQLite — the project supports all three.</td></tr>
+      <tr><td><strong>Uploads folder</strong></td><td>&mdash;</td>
+          <td><code>cms/public/uploads/</code> on disk. <strong>Every image you upload is a real file here</strong>, not a row in the database. It must be backed up and moved separately.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="good"><span class="h">Built to fail safely</span>
+  <p>The website has a complete copy of the original text built into it. If the CMS is switched
+  off, unreachable, or not configured yet, <strong>the site still loads</strong> — it just shows
+  that original text instead of your edits. Likewise, if the payment keys are missing the
+  checkout buttons simply don't appear rather than erroring. You can therefore put the website up
+  first and connect the CMS afterwards.</p></div>
+
+  <h3>Who does what</h3>
+  <table>
+    <thead><tr><th style="width:38%">Task</th><th>Who</th></tr></thead>
+    <tbody>
+      <tr><td>First deployment (this document)</td><td>A developer, once. Budget half a day.</td></tr>
+      <tr><td>Editing text, images, prices, products</td><td>You, in the CMS admin. No developer, no redeploy.</td></tr>
+      <tr><td>Reading and fulfilling store orders</td><td>You, in the CMS admin under <strong>Order</strong>.</td></tr>
+      <tr><td>Changing how a page is laid out or built</td><td>A developer — that is code.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ══════════════════════════ 2 ══════════════════════════ -->
+<section>
+  <div class="sechead"><span class="num">02</span><h2>Before you start</h2></div>
+  <p class="lede">Gather these first. Missing one of them mid-deploy is the most common reason
+  a straightforward job turns into a long afternoon.</p>
+
+  <h3>Hosting</h3>
+  <ul class="check">
+    <li><strong>A server with at least 2 GB of RAM.</strong> This is not optional. Building the
+      CMS admin panel runs out of memory on a 1 GB machine and can lock the server up hard enough
+      to need a reboot. 2 GB is the tested minimum.</li>
+    <li><strong>Command-line (SSH) access</strong> to that server, or a hosting panel that can run
+      Node.js applications.</li>
+    <li><strong>Node.js 20 or newer</strong> if you are not using Docker. The CMS declares support
+      for Node 20 through 26.</li>
+  </ul>
+
+  <h3>Domain</h3>
+  <ul class="check">
+    <li>Your main domain, e.g. <code>bitesizetheology.com</code> — for the website.</li>
+    <li>A subdomain for the CMS, e.g. <code>cms.bitesizetheology.com</code>. Both should point at
+      your server, and both need an HTTPS certificate.</li>
+  </ul>
+
+  <h3>Accounts and keys</h3>
+  <table>
+    <thead><tr><th style="width:24%">Service</th><th style="width:16%">Needed?</th><th>What for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>PayPal</strong><br><span style="color:var(--muted)">developer.paypal.com</span></td>
+          <td><span class="req y">For selling</span></td>
+          <td>A <strong>live</strong> Client ID and Secret. Without them the PayPal button is hidden.</td></tr>
+      <tr><td><strong>Stripe</strong><br><span style="color:var(--muted)">dashboard.stripe.com</span></td>
+          <td><span class="req y">For cards</span></td>
+          <td>A live Secret Key (<code>sk_live_…</code>). Without it the "Pay with card" option is hidden.</td></tr>
+      <tr><td><strong>Resend</strong><br><span style="color:var(--muted)">resend.com</span></td>
+          <td><span class="req y">For forms</span></td>
+          <td>An API key plus a verified sending address, so contact / booking / prayer form submissions reach an inbox. Without it those forms fail to submit.</td></tr>
+      <tr><td><strong>The codebase</strong></td><td><span class="req y">Yes</span></td>
+          <td>The project files, plus a content export archive — see the next section.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note"><span class="h">You can go live without the payment keys</span>
+  <p>The site is designed so that missing keys hide the relevant feature rather than break the
+  page. It is perfectly reasonable to launch the site first and switch the shop on once your
+  PayPal and Stripe accounts are approved.</p></div>
+</section>
+
+
+<!-- ══════════════════════════ 3 ══════════════════════════ -->
+<section>
+  <div class="sechead"><span class="num">03</span><h2>Your content is not in the code</h2></div>
+  <p class="lede">Read this section before you deploy anything. It is the one step that is easy to
+  miss and expensive to discover late.</p>
+
+  <div class="crit"><span class="h">The most important thing in this document</span>
+  <p>The project files contain the <strong>software</strong>. They do not contain your
+  <strong>content</strong>. The database and every uploaded image are deliberately excluded from
+  the code — they are far too large, and they change constantly.</p>
+  <p style="margin-top:6px">If you deploy the code on its own, the CMS will start up with the
+  original placeholder content and none of your images. Nothing is lost — but nothing you edited
+  has arrived either.</p></div>
+
+  <h3>What has to travel separately</h3>
+  <table>
+    <thead><tr><th style="width:42%">Item</th><th style="width:16%">In the code?</th><th>Where it lives</th></tr></thead>
+    <tbody>
+      <tr><td>All page text, products, prices, orders</td><td><span class="req n">No</span></td><td>The database file / server</td></tr>
+      <tr><td>Every uploaded image and file</td><td><span class="req n">No</span></td><td><code>cms/public/uploads/</code></td></tr>
+      <tr><td>Passwords, API keys, secrets</td><td><span class="req n">No</span></td><td>Environment settings — Section 7</td></tr>
+      <tr><td>The website and CMS software</td><td><span class="req y">Yes</span></td><td>The project files</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Moving the content across</h3>
+  <p>The CMS has a built-in export/import tool that packages the database records
+  <em>and</em> the uploaded files into a single archive. Use it — do not try to copy the
+  database file by hand.</p>
+
+  <h4>Step 1 — On the current machine, produce the archive</h4>
+  <div class="warn"><span class="h">Stop the CMS first</span>
+  <p>Shut the CMS down before exporting. Reading and writing that database while it is running
+  can corrupt it.</p></div>
+<pre><code><span class="c"># from the project's cms/ folder, with the CMS stopped</span>
+cd cms
+npm run strapi export -- --no-encrypt --file bst-content
+
+<span class="c"># produces: bst-content.tar.gz  (content records + uploaded files)</span></code></pre>
+  <p>Send that archive to whoever is deploying, alongside the code. Treat it as confidential —
+  it contains your store orders and customer details.</p>
+
+  <h4>Step 2 — On the new server, load it in</h4>
+  <p>Do this <strong>after</strong> the CMS is running for the first time, and
+  <strong>before</strong> anybody starts editing on the new server.</p>
+<pre><code><span class="c"># Docker (Option A):</span>
+docker compose cp bst-content.tar.gz cms:/app/bst-content.tar.gz
+docker compose exec cms npm run strapi import -- --force --file bst-content.tar.gz
+
+<span class="c"># Plain server (Options B and C):</span>
+cd cms
+npm run strapi import -- --force --file /path/to/bst-content.tar.gz</code></pre>
+
+  <div class="crit"><span class="h">Import replaces everything</span>
+  <p><code>--force</code> answers "yes" to the tool's safety prompt. The import
+  <strong>wipes the destination's existing content</strong> and replaces it with the archive. That
+  is exactly what you want on a fresh install, and exactly what you do not want once the site is
+  live and people have been editing. Import once, at the start.</p></div>
+
+  <div class="note"><span class="h">Why the CMS does not overwrite your work</span>
+  <p>On its very first start the CMS fills in the original text so the site is never blank. It
+  checks each item before writing and skips anything that already exists — so restarting the CMS,
+  or importing your content over the top, will never clobber your edits.</p></div>
+</section>
+
+
+<!-- ══════════════════════════ 4 ══════════════════════════ -->
+<section>
+  <div class="sechead"><span class="num">04</span><h2>Option A — One server with Docker<span class="tag rec">Recommended</span></h2></div>
+  <p class="lede">Everything needed for this route is already built into the project. One command
+  starts the database, the CMS and the website together, correctly wired to each other. This is
+  the fastest and the most reliable of the three options.</p>
+
+  <p><strong>Suitable hosts:</strong> any Linux virtual server with 2 GB+ RAM — Hostinger VPS,
+  AWS Lightsail, DigitalOcean, Hetzner, Linode. Roughly $10–15/month.</p>
+
+  <div class="step">
+    <div class="h"><span class="n">1</span><span class="t">Prepare the server</span><span class="where">on the server</span></div>
+    <p>Install Docker, then allow your own user to run it:</p>
+<pre><code>sudo apt-get update &amp;&amp; sudo apt-get install -y docker.io docker-compose-plugin
+sudo usermod -aG docker $USER
+<span class="c"># log out and back in so the group takes effect</span></code></pre>
+    <p style="margin-bottom:0">Some providers offer a "Docker" server image with this already done.</p>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">2</span><span class="t">Copy the project onto the server</span><span class="where">on the server</span></div>
+    <p style="margin-bottom:0">Clone it from your Git repository, or upload the folder over SFTP.
+    Everything from here runs in the project's top-level folder.</p>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">3</span><span class="t">Create the settings file</span><span class="where">on the server</span></div>
+<pre><code>cp .env.docker.example .env</code></pre>
+    <p>Now open <code>.env</code> and fill it in. Generate each secret separately — never reuse one
+    value for two settings, and never use the example placeholders:</p>
+<pre><code>openssl rand -base64 16     <span class="c"># run once per secret</span></code></pre>
+    <p style="margin-bottom:0">Full explanation of every line is in <strong>Section 7</strong>.
+    The two that matter most here:</p>
+    <ul style="margin-bottom:0">
+      <li><code>DATABASE_PASSWORD</code> — a strong password you invent.</li>
+      <li><code>STRAPI_PUBLIC_URL</code> — the address a <em>visitor's browser</em> uses to reach
+        the CMS. Use <code>http://YOUR-SERVER-IP:1337</code> for a first test, or
+        <code>https://cms.yourdomain.com</code> once your domain is set up in step 6.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">4</span><span class="t">Start everything</span><span class="where">on the server</span></div>
+<pre><code>docker compose up -d --build</code></pre>
+    <p>The first run takes several minutes — it is compiling both applications. When it finishes:</p>
+    <ul style="margin-bottom:0">
+      <li>Website &rarr; <code>http://YOUR-SERVER-IP:3000</code></li>
+      <li>Admin &rarr; <code>http://YOUR-SERVER-IP:1337/admin</code></li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">5</span><span class="t">Set up the admin and load your content</span><span class="where">in the browser</span></div>
+    <ol style="margin-bottom:0">
+      <li>Open the admin address and create your administrator account. This is the login you will
+        use from now on.</li>
+      <li>Import your content archive — the commands are in <strong>Section 3</strong>.</li>
+      <li>Create an API token so the website can save store orders — see <strong>Section 8</strong>.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">6</span><span class="t">Put your domain in front, with HTTPS</span><span class="where">on the server</span></div>
+    <p>Running on a bare IP address and plain <code>http://</code> is fine for testing but not for
+    a live shop — card payments and login sessions need HTTPS. Install a reverse proxy
+    (<strong>Caddy</strong> is the least work; it obtains and renews certificates automatically)
+    and route:</p>
+    <ul>
+      <li><code>yourdomain.com</code> &rarr; the website container, port 3000</li>
+      <li><code>cms.yourdomain.com</code> &rarr; the CMS container, port 1337</li>
+    </ul>
+    <p style="margin-bottom:0">Point both DNS records at the server, then remove the public
+    <code>ports:</code> entries from <code>docker-compose.yml</code> so the containers are only
+    reachable through the proxy.</p>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">7</span><span class="t">Rebuild after the domain change</span><span class="where">on the server</span></div>
+    <p>Update <code>STRAPI_PUBLIC_URL</code> in <code>.env</code> to the <code>https://cms…</code>
+    address, then:</p>
+<pre><code>docker compose up -d --build web</code></pre>
+    <p style="margin-bottom:0">This step is not optional — see the warning below.</p>
+  </div>
+
+  <div class="warn"><span class="h">Two settings are frozen into the build</span>
+  <p><code>STRAPI_PUBLIC_URL</code> and <code>NEXT_PUBLIC_PAYPAL_CLIENT_ID</code> are compiled into
+  the website when it is built, not read while it runs. If you change either one you
+  <strong>must</strong> rebuild the website container, or the change will appear to have no
+  effect — typically showing up as broken images or a missing PayPal button.</p></div>
+
+  <h3>Everyday commands</h3>
+  <table>
+    <thead><tr><th style="width:44%">Command</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>docker compose ps</code></td><td>Shows which services are running</td></tr>
+      <tr><td><code>docker compose logs -f cms</code></td><td>Live log for the CMS (or <code>web</code>, <code>db</code>)</td></tr>
+      <tr><td><code>docker compose restart web</code></td><td>Restarts one service</td></tr>
+      <tr><td><code>docker compose down</code></td><td>Stops everything. Your data is kept.</td></tr>
+      <tr><td><code>docker compose down -v</code></td><td><strong style="color:var(--red)">Deletes the database and all uploaded images.</strong> Never run this on a live site.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ══════════════════════════ 5 ══════════════════════════ -->
+<section>
+  <div class="sechead"><span class="num">05</span><h2>Option B — Shared Node.js hosting<span class="tag alt">Hostinger hPanel</span></h2></div>
+  <p class="lede">Running both applications as hPanel "Node.js applications" on a Business or
+  Premium plan, backed by the plan's MySQL database. Cheapest option, and the most fragile.</p>
+
+  <div class="warn"><span class="h">Know the risk before choosing this route</span>
+  <p>The CMS is a memory-hungry program that runs continuously. Shared hosting can run it, but if
+  it is slow or keeps stopping unexpectedly, the fix is to move the CMS to a small virtual server
+  and keep the website where it is. Also confirm your plan genuinely includes SSH access — you
+  cannot complete this route without it.</p></div>
+
+  <div class="crit"><span class="h">This route needs two code changes first</span>
+  <p>Unlike Option A, the project is <strong>not</strong> ready for this out of the box. A
+  developer must make these two changes and commit them before you begin:</p>
+  <p style="margin-top:6px"><strong>1.</strong> Install the MySQL driver — the project ships with
+  PostgreSQL and SQLite drivers only:</p>
+<pre style="margin:6px 0"><code>cd cms &amp;&amp; npm install mysql2</code></pre>
+  <p><strong>2.</strong> Create <code>cms/server.js</code>, the start file the hosting panel
+  looks for:</p>
+<pre style="margin:6px 0"><code>const { createStrapi } = require("@strapi/strapi");
+createStrapi().start();</code></pre></div>
+
+  <div class="step">
+    <div class="h"><span class="n">1</span><span class="t">Create the database and subdomain</span><span class="where">hPanel</span></div>
+    <p style="margin-bottom:0"><strong>Databases &rarr; MySQL Databases</strong> — create a database
+    and a user, and write down the name, username and password. Then <strong>Domains &rarr;
+    Subdomains</strong> — create <code>cms</code>. Finally <strong>Advanced &rarr; SSH
+    Access</strong> — make sure it is switched on.</p>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">2</span><span class="t">Upload and install</span><span class="where">over SSH</span></div>
+    <p>Keep the two applications in separate folders — the hosting panel maps one folder per app.</p>
+<pre><code><span class="c"># get the code onto the server, then:</span>
+cp -r site/cms cms          <span class="c"># the CMS lives in the repo's cms/ subfolder</span>
+cd ~/site &amp;&amp; npm ci --include=dev
+cd ~/cms  &amp;&amp; npm ci</code></pre>
+    <div class="warn" style="margin-bottom:0"><span class="h">Note the flag</span>
+    <p>The website must be installed with <code>--include=dev</code>. Its styling tools are
+    development dependencies, but they are required to <em>build</em> the site. A plain production
+    install fails with "Cannot find module '@tailwindcss/postcss'".</p></div>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">3</span><span class="t">Build both applications</span><span class="where">over SSH</span></div>
+<pre><code>cd ~/cms  &amp;&amp; NODE_ENV=production npm run build
+cd ~/site &amp;&amp; npm run build
+<span class="c"># the website's compiled output needs these two folders beside it:</span>
+cp -r .next/static .next/standalone/.next/static
+cp -r public       .next/standalone/public</code></pre>
+    <div class="warn" style="margin-bottom:0"><span class="h">If the build says "Killed"</span>
+    <p>That is the server running out of memory. Retry with
+    <code>NODE_OPTIONS=--max-old-space-size=1536 npm run build</code>, or build on your own
+    computer using the same Node version and upload the finished folders instead.</p></div>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">4</span><span class="t">Create the two Node.js applications</span><span class="where">hPanel</span></div>
+    <p><strong>Advanced &rarr; Node.js &rarr; Create application</strong>, twice:</p>
+    <table style="margin-bottom:0">
+      <thead><tr><th style="width:30%"></th><th style="width:35%">CMS app</th><th>Website app</th></tr></thead>
+      <tbody>
+        <tr><td>Node version</td><td>20 or 22</td><td>20 or 22 (match what you built with)</td></tr>
+        <tr><td>Application root</td><td><code>cms</code></td><td><code>site/.next/standalone</code></td></tr>
+        <tr><td>Application URL</td><td>the <code>cms.</code> subdomain</td><td>the main domain</td></tr>
+        <tr><td>Startup file</td><td><code>server.js</code></td><td><code>server.js</code></td></tr>
+      </tbody>
+    </table>
+    <p style="margin:8px 0 0">Do not set <code>PORT</code> or <code>HOST</code> yourself — the
+    hosting panel assigns those.</p>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">5</span><span class="t">Enter the settings, deploy CMS first</span><span class="where">hPanel</span></div>
+    <p>Each application has an <strong>Environment variables</strong> panel. Fill them from
+    <strong>Section 7</strong>. For the CMS also set:</p>
+<pre><code>DATABASE_CLIENT=mysql
+DATABASE_HOST=localhost
+DATABASE_PORT=3306
+DATABASE_NAME=<span class="k">your_db_name</span>
+DATABASE_USERNAME=<span class="k">your_db_user</span>
+DATABASE_PASSWORD=<span class="k">your_db_password</span></code></pre>
+    <p style="margin-bottom:0"><strong>Start the CMS before you build the website</strong> — the
+    website freezes the CMS address into its build, so that address has to exist first. Enable free
+    SSL (<strong>hPanel &rarr; SSL</strong>) on both the domain and the <code>cms.</code>
+    subdomain before you finish.</p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════ 6 ══════════════════════════ -->
+<section>
+  <div class="sechead"><span class="num">06</span><h2>Option C — Vercel + a separate CMS host<span class="tag alt">Split</span></h2></div>
+  <p class="lede">The website goes on Vercel, which builds and hosts Next.js sites with no server
+  administration at all. The CMS still needs a real server of its own.</p>
+
+  <div class="cols">
+    <div>
+      <h4>What this is good at</h4>
+      <ul>
+        <li>The website side becomes effortless — push a change, it deploys itself.</li>
+        <li>Fast worldwide, scales automatically, HTTPS handled for you.</li>
+        <li>A generous free tier for the website.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>What it does not solve</h4>
+      <ul>
+        <li>The CMS <em>cannot</em> run on Vercel — it needs continuous running and a writable
+          uploads folder.</li>
+        <li>You still need a small server (or Strapi Cloud) for it.</li>
+        <li>Two providers, two bills, two things to keep an eye on.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>How it goes together</h3>
+  <ol>
+    <li><strong>Deploy the CMS first</strong>, on a small virtual server or Strapi Cloud. In
+      practice this is Option A with only the <code>db</code> and <code>cms</code> services, or
+      Option B's CMS half. Give it its own domain, e.g.
+      <code>cms.yourdomain.com</code>, with HTTPS.</li>
+    <li><strong>Import your content archive</strong> into it — Section 3.</li>
+    <li><strong>Connect the repository to Vercel.</strong> It detects Next.js and needs no build
+      configuration.</li>
+    <li><strong>Add the website settings</strong> in Vercel's project settings — the "Website"
+      table in Section 7. <code>STRAPI_URL</code> and <code>STRAPI_PUBLIC_URL</code> both point at
+      your CMS domain.</li>
+    <li><strong>Point your main domain</strong> at Vercel and deploy.</li>
+  </ol>
+
+  <div class="warn"><span class="h">The CMS must be reachable from the public internet</span>
+  <p>Vercel builds and runs your website in its own data centres, so it can only fetch content
+  from a CMS that is publicly available over HTTPS. A CMS locked to a private network or sitting
+  behind a company firewall will not work in this arrangement.</p></div>
+
+  <div class="note"><span class="h">Remember to redeploy after a settings change</span>
+  <p>As with the other options, <code>STRAPI_PUBLIC_URL</code> and
+  <code>NEXT_PUBLIC_PAYPAL_CLIENT_ID</code> are frozen into the build. After editing either in
+  Vercel, trigger a fresh deployment — changing the value alone does nothing to the running site.</p></div>
+</section>
+
+
+<!-- ══════════════════════════ 7 ══════════════════════════ -->
+<section>
+  <div class="sechead"><span class="num">07</span><h2>Settings reference</h2></div>
+  <p class="lede">Every setting the two applications read. These are environment variables —
+  entered in a <code>.env</code> file, in your hosting panel, or in Vercel's project settings,
+  depending on which option you chose.</p>
+
+  <div class="crit"><span class="h">Never put these in the code repository</span>
+  <p>These values are passwords. They are deliberately excluded from the project files. Generate
+  fresh ones for your live site — never reuse the development placeholders, which are published in
+  the project's example files.</p></div>
+
+  <h3>CMS — required</h3>
+  <p>Without all six secrets the CMS refuses to start. Generate each one <em>separately</em> with
+  <code>openssl rand -base64 16</code>.</p>
+  <table>
+    <thead><tr><th style="width:32%">Setting</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>APP_KEYS</code></td><td>Session signing. A comma-separated list of at least two generated values.</td></tr>
+      <tr><td><code>API_TOKEN_SALT</code></td><td>Protects stored API tokens.</td></tr>
+      <tr><td><code>ADMIN_JWT_SECRET</code></td><td>Signs admin login sessions.</td></tr>
+      <tr><td><code>TRANSFER_TOKEN_SALT</code></td><td>Protects data-transfer tokens.</td></tr>
+      <tr><td><code>JWT_SECRET</code></td><td>Signs API user sessions.</td></tr>
+      <tr><td><code>ENCRYPTION_KEY</code></td><td>Encrypts sensitive stored values.</td></tr>
+      <tr><td><code>DATABASE_CLIENT</code></td><td><code>postgres</code>, <code>mysql</code> or <code>sqlite</code>. Anything else stops the CMS with a clear error.</td></tr>
+      <tr><td><code>DATABASE_HOST</code><br><code>DATABASE_PORT</code><br><code>DATABASE_NAME</code><br><code>DATABASE_USERNAME</code><br><code>DATABASE_PASSWORD</code></td>
+          <td>Your database connection. Not needed for SQLite, which is a single file and is only appropriate for development or a small demo.</td></tr>
+      <tr><td><code>HOST</code> / <code>PORT</code></td><td>Defaults to <code>0.0.0.0</code> and <code>1337</code>. Leave alone unless your host requires otherwise.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Website — core</h3>
+  <table>
+    <thead><tr><th style="width:32%">Setting</th><th style="width:13%">Required</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>STRAPI_URL</code></td><td><span class="req y">Yes</span></td>
+          <td>Where the <em>website's server</em> fetches content from. On one machine this can be an internal address. Leave it blank and the site runs on its built-in original text.</td></tr>
+      <tr><td><code>STRAPI_PUBLIC_URL</code></td><td><span class="req y">Yes*</span></td>
+          <td>Where a <em>visitor's browser</em> loads CMS images from. Must be publicly reachable. Only needed when it differs from <code>STRAPI_URL</code> — which it does in Docker and behind any proxy. <strong>Frozen into the build.</strong></td></tr>
+      <tr><td><code>STRAPI_API_TOKEN</code></td><td><span class="req y">Yes</span></td>
+          <td>Lets the website write to the CMS. <strong>Store orders are not saved without it</strong>, and neither are contact form messages. Created in Section 8.</td></tr>
+      <tr><td><code>REVALIDATE_SECRET</code></td><td><span class="req n">Optional</span></td>
+          <td>A long random password of your choosing that makes CMS edits appear on the site instantly rather than within five minutes. See Section 8.</td></tr>
+      <tr><td><code>STRAPI_REVALIDATE</code></td><td><span class="req n">Optional</span></td>
+          <td>How many seconds the site caches content. Blank uses the sensible five-minute default. <code>0</code> means never cache — useful for a demo, wasteful for a live site. <strong>Affects the build.</strong></td></tr>
+      <tr><td><code>NODE_ENV</code></td><td><span class="req y">Yes</span></td><td>Set to <code>production</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Website — payments</h3>
+  <table>
+    <thead><tr><th style="width:32%">Setting</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>NEXT_PUBLIC_PAYPAL_CLIENT_ID</code></td>
+          <td>Your PayPal Client ID. Public by design — it is what draws the PayPal button. <strong>Frozen into the build:</strong> changing it requires a rebuild.</td></tr>
+      <tr><td><code>PAYPAL_CLIENT_SECRET</code></td><td>Your PayPal secret. Server-side only — never expose it.</td></tr>
+      <tr><td><code>PAYPAL_ENV</code></td><td><code>sandbox</code> for testing, <code>live</code> for real money. Getting this wrong is the classic launch-day mistake.</td></tr>
+      <tr><td><code>STRIPE_SECRET_KEY</code></td><td>Your Stripe secret key. Setting it enables the "Pay with card" option. Nothing else is needed — Stripe hosts the payment page.</td></tr>
+      <tr><td><code>STRIPE_WEBHOOK_SECRET</code></td><td>Optional. Only for confirming payments that complete after the customer closes the tab.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Website — forms and email</h3>
+  <table>
+    <thead><tr><th style="width:32%">Setting</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>RESEND_API_KEY</code></td><td>Your Resend key. <strong>Without it the contact, booking and prayer forms fail to submit.</strong></td></tr>
+      <tr><td><code>RESEND_FROM</code></td><td>The verified sending address, e.g. <code>Bite Size Theology &lt;hello@yourdomain.com&gt;</code>.</td></tr>
+      <tr><td><code>CONTACT_TO</code><br><code>BOOKING_TO</code><br><code>PRAYER_TO</code></td>
+          <td>Fallback recipients for each form. These are only used when the matching field in the CMS is left blank — the admin's <strong>Settings — Form Emails</strong> screen takes priority, so you can change where messages go without touching the server.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note"><span class="h">Build-time versus run-time, in one sentence</span>
+  <p>Most settings are read while the site runs, so changing them just needs a restart — but
+  <code>STRAPI_PUBLIC_URL</code>, <code>NEXT_PUBLIC_PAYPAL_CLIENT_ID</code> and
+  <code>STRAPI_REVALIDATE</code> are baked in when the website is compiled, so changing any of
+  those three requires a full rebuild.</p></div>
+</section>
+
+
+<!-- ══════════════════════════ 8 ══════════════════════════ -->
+<section>
+  <div class="sechead"><span class="num">08</span><h2>First-run setup</h2></div>
+  <p class="lede">Four things to do once, in this order, the first time the system is up.</p>
+
+  <div class="step">
+    <div class="h"><span class="n">1</span><span class="t">Create your administrator account</span></div>
+    <p style="margin-bottom:0">Open <code>https://cms.yourdomain.com/admin</code>. The first visit
+    asks you to create the account — this is the owner login. Use a strong, unique password. Any
+    default credentials mentioned in the project's development notes apply to a developer's laptop
+    only and do not exist on your server.</p>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">2</span><span class="t">Import your content</span></div>
+    <p style="margin-bottom:0">Follow Section 3. Do this before anyone starts editing, because the
+    import replaces whatever is already there.</p>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">3</span><span class="t">Create the API token</span></div>
+    <p>In the admin: <strong>Settings &rarr; API Tokens &rarr; Create new API Token</strong>.
+    Give it <strong>Full access</strong>. Copy the value <em>immediately</em> — it is shown once
+    and never again.</p>
+    <p style="margin-bottom:0">Paste it into the website's <code>STRAPI_API_TOKEN</code> setting
+    and restart the website.</p>
+    <div class="warn" style="margin-bottom:0"><span class="h">Skip this and orders vanish</span>
+    <p>Customers will be charged correctly — the payment happens with PayPal or Stripe — but the
+    order will never be recorded in your admin, so you will not know what to ship.</p></div>
+  </div>
+
+  <div class="step">
+    <div class="h"><span class="n">4</span><span class="t">Make edits appear instantly (optional)</span></div>
+    <p>By default the site refreshes its content every five minutes, so an edit can take that long
+    to show. To make it immediate, in the admin go to <strong>Settings &rarr; Webhooks &rarr;
+    Create new webhook</strong>:</p>
+<pre><code>URL:     https://yourdomain.com/api/revalidate?secret=<span class="k">YOUR_REVALIDATE_SECRET</span>
+Method:  POST
+Events:  Entry — create, update, delete
+         Media — create, update, delete</code></pre>
+    <p style="margin-bottom:0">Use the exact value you set as <code>REVALIDATE_SECRET</code> on the
+    website. A mismatch is silently rejected, so test it by editing a headline and reloading.</p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════ 9 ══════════════════════════ -->
+<section>
+  <div class="sechead"><span class="num">09</span><h2>Go-live checklist</h2></div>
+  <p class="lede">Work through these in order. Every one of them catches a real, common failure —
+  do not skip the payment test.</p>
+
+  <h3>The site itself</h3>
+  <ul class="check">
+    <li>The main domain loads the homepage over <strong>https://</strong> with a valid certificate.</li>
+    <li>The homepage shows <strong>your</strong> content, not the original placeholder text. If it
+      shows placeholders, the website cannot reach the CMS — check <code>STRAPI_URL</code>.</li>
+    <li>The CMS admin loads on its own subdomain, over HTTPS, and you can log in.</li>
+    <li>Edit a headline in the admin, save, reload the site — the change appears.</li>
+    <li>Product and episode images display as real photographs, not grey placeholder blocks. Broken
+      images almost always mean <code>STRAPI_PUBLIC_URL</code> is wrong, or was changed without a
+      rebuild.</li>
+    <li>Browse the site on a phone — check the shop, the menu and the checkout.</li>
+  </ul>
+
+  <h3>The shop — test with real money</h3>
+  <ul class="check">
+    <li><code>PAYPAL_ENV</code> is set to <code>live</code> and the keys are your live keys, not
+      sandbox ones.</li>
+    <li>Add an item to the basket, go to checkout, and <strong>complete a real purchase of a cheap
+      item</strong> through PayPal. Refund it afterwards.</li>
+    <li>Repeat with a card, through Stripe.</li>
+    <li>Both orders appear in the admin under <strong>Order</strong>, with the right items,
+      quantities, totals and delivery address.</li>
+    <li>Confirm the money arrived in your PayPal and Stripe dashboards.</li>
+  </ul>
+
+  <h3>The forms</h3>
+  <ul class="check">
+    <li>Send a test message through the contact form — it arrives in the inbox.</li>
+    <li>Same for the booking form and the prayer request form. They can go to different addresses,
+      configured in the admin under <strong>Settings — Form Emails</strong>.</li>
+    <li>Check the messages are also stored in the admin, so nothing is lost if an email bounces.</li>
+  </ul>
+
+  <h3>Safety</h3>
+  <ul class="check">
+    <li>The admin password is strong and unique.</li>
+    <li>You have taken your first backup — Section 11 — and you know how to restore it.</li>
+    <li>The API token and all secrets are stored somewhere secure, not in the code repository or a
+      chat message.</li>
+  </ul>
+</section>
+
+
+<!-- ══════════════════════════ 10 ══════════════════════════ -->
+<section>
+  <div class="sechead"><span class="num">10</span><h2>If something breaks</h2></div>
+  <p class="lede">Every entry below is a problem that has actually happened on this project, with
+  the fix that resolved it.</p>
+
+  <table>
+    <thead><tr><th style="width:37%">What you see</th><th>What it means and how to fix it</th></tr></thead>
+    <tbody>
+      <tr><td><strong>The build stops with "Killed"</strong>, or the server freezes while building</td>
+          <td>Out of memory. This is the single most common failure. Use a server with 2 GB of RAM, or retry with <code>NODE_OPTIONS=--max-old-space-size=1536</code>, or build on a bigger machine and upload the result.</td></tr>
+      <tr><td><strong>"Cannot find module '@tailwindcss/postcss'"</strong></td>
+          <td>The website was installed without its development dependencies, which it needs in order to build. Reinstall with <code>npm ci --include=dev</code>.</td></tr>
+      <tr><td><strong>The site loads but shows the original placeholder text</strong></td>
+          <td>The website cannot reach the CMS, and is falling back to its built-in copy exactly as designed. Check <code>STRAPI_URL</code>, and check the CMS is actually running. On some cloud servers a machine cannot reach its own public address — that is what <code>STRAPI_PUBLIC_URL</code> exists to solve: point <code>STRAPI_URL</code> at the internal address and <code>STRAPI_PUBLIC_URL</code> at the public one.</td></tr>
+      <tr><td><strong>Images are broken or show grey blocks</strong></td>
+          <td><code>STRAPI_PUBLIC_URL</code> is missing, wrong, or was changed without rebuilding the website. It must be the address a visitor's browser can reach, and it must be <code>https://</code> if the site is — a browser blocks insecure images on a secure page.</td></tr>
+      <tr><td><strong>The CMS will not start: "Missing … secret"</strong></td>
+          <td>One of the six required secrets from Section 7 is not set.</td></tr>
+      <tr><td><strong>Database connection error</strong></td>
+          <td>Check the five <code>DATABASE_*</code> values, and confirm the database user is actually attached to the database with permission to use it.</td></tr>
+      <tr><td><strong>"Unsupported DATABASE_CLIENT"</strong></td>
+          <td>That setting accepts only <code>postgres</code>, <code>mysql</code> or <code>sqlite</code>. If you chose MySQL, remember its driver must be installed — see Option B.</td></tr>
+      <tr><td><strong>Checkout buttons are missing</strong></td>
+          <td>Working as intended: the payment keys are not set. Add them and restart. The PayPal button additionally requires a rebuild, because its Client ID is frozen into the build.</td></tr>
+      <tr><td><strong>A customer paid but no order appears</strong></td>
+          <td><code>STRAPI_API_TOKEN</code> is missing or invalid, so the website could not write the order. The payment itself is safe — find it in your PayPal or Stripe dashboard. Fix the token, restart, and test again.</td></tr>
+      <tr><td><strong>Contact form submissions fail</strong></td>
+          <td><code>RESEND_API_KEY</code> is not set, or <code>RESEND_FROM</code> is not a verified sender on your Resend account.</td></tr>
+      <tr><td><strong>CMS edits take about five minutes to appear</strong></td>
+          <td>Normal caching. Set up the webhook in Section 8 to make it instant.</td></tr>
+      <tr><td><strong>The CMS keeps stopping on its own</strong></td>
+          <td>Memory limits on shared hosting. Move the CMS to a small virtual server and leave the website where it is.</td></tr>
+      <tr><td><strong>An application will not start, or returns 502</strong></td>
+          <td>Wrong start file or folder, or it was never built. Check the application's log first — it will name the problem.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ══════════════════════════ 11 ══════════════════════════ -->
+<section>
+  <div class="sechead"><span class="num">11</span><h2>Updates &amp; backups</h2></div>
+
+  <h3>Changing content</h3>
+  <p>Text, images, products, prices, podcast episodes and page settings are all edited in the CMS
+  admin and appear on the site with no deployment and no developer. That is the whole point of the
+  CMS half of this system.</p>
+
+  <h3>Deploying a code change</h3>
+  <table>
+    <thead><tr><th style="width:24%">Option</th><th>What to run</th></tr></thead>
+    <tbody>
+      <tr><td><strong>A — Docker</strong></td>
+          <td>Pull the new code, then <code>docker compose up -d --build</code>. Your database and uploads are in separate storage and are untouched.</td></tr>
+      <tr><td><strong>B — hPanel</strong></td>
+          <td>Pull the code, <code>npm ci --include=dev</code>, <code>npm run build</code>, re-copy <code>static</code> and <code>public</code> into the standalone folder, then Restart the app in the panel.</td></tr>
+      <tr><td><strong>C — Vercel</strong></td>
+          <td>Push to your main branch. Vercel builds and deploys on its own. The CMS server is updated separately, as in A or B.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Backups</h3>
+  <div class="crit"><span class="h">Two things must be backed up, not one</span>
+  <p>The database holds your text, products and orders. The uploads folder holds your images. A
+  backup of only the database restores a site full of missing pictures.</p></div>
+
+  <p>The CMS's own export command captures both in one archive, which is why it is the recommended
+  method:</p>
+<pre><code><span class="c"># Docker:</span>
+docker compose exec cms npm run strapi export -- --no-encrypt --file backup-2026-01-31
+docker compose cp cms:/app/backup-2026-01-31.tar.gz ./
+
+<span class="c"># Plain server (stop the CMS first if it uses SQLite):</span>
+cd cms &amp;&amp; npm run strapi export -- --no-encrypt --file backup-2026-01-31</code></pre>
+
+  <ul>
+    <li>Run this on a schedule — weekly at minimum, daily once the shop is busy.</li>
+    <li>Keep copies somewhere other than the server itself.</li>
+    <li>Always take one immediately before deploying a code change or a CMS upgrade.</li>
+    <li>An archive without <code>--no-encrypt</code> is password-protected and useless if you lose
+      the password. Either use the flag and store the file securely, or record the password
+      somewhere you will still have it in a year.</li>
+    <li><strong>Test a restore at least once</strong>, on a spare server. An untested backup is a
+      hope, not a backup.</li>
+  </ul>
+
+  <h3>Ongoing costs to expect</h3>
+  <table>
+    <thead><tr><th style="width:34%">Item</th><th>Typical</th></tr></thead>
+    <tbody>
+      <tr><td>Server (Option A or the CMS half of C)</td><td>$10–15/month for 2 GB</td></tr>
+      <tr><td>Shared hosting (Option B)</td><td>Usually already part of your plan</td></tr>
+      <tr><td>Website hosting on Vercel (Option C)</td><td>Free tier is normally sufficient</td></tr>
+      <tr><td>Domain</td><td>$10–20/year</td></tr>
+      <tr><td>HTTPS certificates</td><td>Free (Let's Encrypt)</td></tr>
+      <tr><td>Email sending (Resend)</td><td>Free up to a few thousand messages a month</td></tr>
+      <tr><td>PayPal / Stripe</td><td>No monthly fee — a percentage per sale</td></tr>
+    </tbody>
+  </table>
+
+  <div class="endfoot">
+    Bite Size Theology — deployment guide. Also in the project's <code>docs/</code> folder:
+    <code>DOCKER.md</code> (Docker details), <code>STORE-CLIENT-CHECKLIST.md</code> (accounts and
+    decisions for running the shop). The complete, commented list of every setting lives in
+    <code>.env.example</code> and <code>.env.docker.example</code> in the project files.
+  </div>
+</section>
+
+</div>
