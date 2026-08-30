@@ -64,14 +64,16 @@ jobs:
             -e "ssh $SSH_OPTS" .next/standalone/ "$SSH_TARGET:site/"
           ssh $SSH_OPTS $SSH_TARGET 'mkdir -p ~/site/tmp && touch ~/site/tmp/restart.txt'
 
+      # `|| true`: steps run under `bash -e`, so a curl timeout would abort the retry loop
+      # instead of retrying it. A cold Passenger boot is exactly when that happens.
       - name: Verify
         run: |
-          for i in 1 2 3 4 5; do
+          for i in $(seq 1 6); do
             sleep 5
-            code=$(curl -s -o /dev/null -m 30 -w '%{http_code}' "$SITE_URL/")
+            code=$(curl -s -o /dev/null -m 90 -w '%{http_code}' "$SITE_URL/" || true)
             [ "$code" = 200 ] && exit 0
           done
-          echo "::error::$SITE_URL returned $code"; exit 1
+          echo "::error::$SITE_URL returned '$code'"; exit 1
 
   cms:
     if: inputs.target != 'site'
@@ -106,11 +108,13 @@ jobs:
             npm run build
             mkdir -p tmp && touch tmp/restart.txt'
 
+      # Strapi's first request after a restart cold-boots Passenger AND runs any schema
+      # migration — measured at ~45s. Same `|| true` guard as the site job.
       - name: Verify
         run: |
-          for i in 1 2 3 4 5; do
+          for i in $(seq 1 6); do
             sleep 5
-            code=$(curl -s -o /dev/null -m 30 -w '%{http_code}' "$STRAPI_PUBLIC_URL/admin")
+            code=$(curl -s -o /dev/null -m 120 -w '%{http_code}' "$STRAPI_PUBLIC_URL/admin" || true)
             [ "$code" = 200 ] && exit 0
           done
-          echo "::error::$STRAPI_PUBLIC_URL/admin returned $code"; exit 1
+          echo "::error::$STRAPI_PUBLIC_URL/admin returned '$code'"; exit 1
