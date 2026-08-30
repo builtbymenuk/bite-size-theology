@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getStore } from "@/lib/cms";
 import { paypalConfigured } from "@/lib/paypal";
 import { stripeConfigured } from "@/lib/stripe";
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 
 export default async function CheckoutPage() {
   const store = await getStore();
+  // Shop closed: a cart left in localStorage must not reach payment (see store.comingSoon).
+  if (store.comingSoon) redirect("/store");
   // Rates are fetched server-side (daily-cached) and handed to the client for display math only —
   // every charged amount is re-converted on the server from these same rates.
   const rates = await getRates();

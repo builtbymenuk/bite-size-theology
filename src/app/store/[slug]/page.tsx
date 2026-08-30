@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { getProduct, getProducts } from "@/lib/cms";
+import { getProduct, getProducts, getStore } from "@/lib/cms";
 import { formatUSD } from "@/lib/pricing";
 import { toneFor } from "@/components/store/tone";
 import Footer from "@/components/layout/Footer";
@@ -31,6 +31,9 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // Shop closed: a stale link or a bookmark must not reach a buy button (see store.comingSoon).
+  if ((await getStore()).comingSoon) redirect("/store");
+
   const product = await getProduct(slug);
   if (!product) notFound();
 

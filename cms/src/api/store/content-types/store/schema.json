@@ -46,6 +46,13 @@
     },
     "currency": {
       "type": "string"
+    },
+    "comingSoon": {
+      "type": "boolean",
+      "default": true
+    },
+    "comingSoonMessage": {
+      "type": "text"
     }
   }
 }
