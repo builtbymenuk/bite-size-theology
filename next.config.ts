@@ -44,7 +44,13 @@ const nextConfig: NextConfig = {
   turbopack: { root: path.resolve(process.cwd()) },
   // Enables React's <ViewTransition> so route navigations play the slide-up cover (see template.tsx
   // + the ::view-transition rules in globals.css). Degrades to instant nav where unsupported.
-  experimental: { viewTransition: true },
+  experimental: {
+    viewTransition: true,
+    // ponytail: shared hosting caps process count, and os.cpus() there reports the whole box —
+    // `next build` spawned 29 workers and died with spawn EAGAIN. NEXT_CPUS=2 pins it to the
+    // plan's real core count. Unset elsewhere, so local/CI builds keep full parallelism.
+    ...(process.env.NEXT_CPUS ? { cpus: Number(process.env.NEXT_CPUS) } : {}),
+  },
   images: {
     remotePatterns: [
       // Local Strapi, kept explicit so dev works even when STRAPI_URL is unset.

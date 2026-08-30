@@ -28,15 +28,17 @@ respectively and fill them in. Nothing secret is committed to this repository.
 
 ## Deploying
 
-A complete Docker setup is included — `docker-compose.yml` brings up PostgreSQL, the CMS and
-the website together:
+Production runs on Hostinger shared hosting: **Actions → Deploy to production → Run workflow**
+(pick `site`, `cms`, or `both`). The site is built by the runner and shipped as a standalone
+bundle — `next build` cannot run on that host — while the CMS ships as source and builds there.
+Passenger boots each app from an `.htaccess` in the domain's document root.
 
-```bash
-cp .env.docker.example .env    # then fill it in
-docker compose up -d --build
-```
+Two files live only on the server and are never overwritten by a deploy: `~/site/app.js`
+(the site's runtime env) and `~/cms/cms/.env` (Strapi's). Uploaded media sits in
+`~/cms/cms/public/uploads`.
 
-Both applications can also be run directly with Node 20+ behind any process manager.
+A Docker setup is also included for running the whole stack locally or on a VPS —
+`cp .env.docker.example .env`, then `docker compose up -d --build`.
 
 ## Important
 

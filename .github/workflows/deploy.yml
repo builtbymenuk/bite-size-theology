@@ -1,0 +1,116 @@
+# Production deploy to Hostinger (shared hosting, Passenger-managed Node apps).
+#
+# The site is built HERE and shipped as a standalone bundle — `next build` cannot run on the
+# host: its process cap kills Turbopack's workers (spawn EAGAIN / SIGABRT). Strapi builds fine
+# there, so the CMS ships as source and builds on the server.
+#
+# Secrets: SSH_HOST, SSH_PORT, SSH_USER, SSH_KEY (private half of the deploy key).
+# The site's runtime env lives in ~/site/app.js ON THE SERVER and is never overwritten — that is
+# where STRAPI_URL and REVALIDATE_SECRET are set. Strapi's own env is ~/cms/cms/.env.
+
+name: Deploy to production
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: What to deploy
+        type: choice
+        options: [site, cms, both]
+        default: site
+
+concurrency: production
+
+env:
+  STRAPI_PUBLIC_URL: https://cms.bitesizetheology.com
+  SITE_URL: https://bitesizetheology.com
+
+jobs:
+  site:
+    if: inputs.target != 'cms'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: npm }
+
+      - run: npm ci
+
+      # STRAPI_PUBLIC_URL (inherited from env above) bakes next/image remotePatterns;
+      # STRAPI_REVALIDATE bakes the ISR window — both are build-time only. See src/lib/cms.ts.
+      - name: Build standalone bundle
+        env:
+          STRAPI_REVALIDATE: '300'
+          NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: |
+          npm run build
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+
+      - name: Load deploy key
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          echo "SSH_OPTS=-i $HOME/.ssh/deploy -p ${{ secrets.SSH_PORT }} -o BatchMode=yes" >> $GITHUB_ENV
+          echo "SSH_TARGET=${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" >> $GITHUB_ENV
+
+      - name: Ship and restart
+        run: |
+          ssh $SSH_OPTS $SSH_TARGET 'test -f ~/site/app.js' \
+            || { echo "::error::~/site/app.js is missing on the server — it holds the runtime env"; exit 1; }
+          rsync -az --delete --exclude=app.js --exclude=tmp/ \
+            -e "ssh $SSH_OPTS" .next/standalone/ "$SSH_TARGET:site/"
+          ssh $SSH_OPTS $SSH_TARGET 'mkdir -p ~/site/tmp && touch ~/site/tmp/restart.txt'
+
+      - name: Verify
+        run: |
+          for i in 1 2 3 4 5; do
+            sleep 5
+            code=$(curl -s -o /dev/null -m 30 -w '%{http_code}' "$SITE_URL/")
+            [ "$code" = 200 ] && exit 0
+          done
+          echo "::error::$SITE_URL returned $code"; exit 1
+
+  cms:
+    if: inputs.target != 'site'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load deploy key
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          echo "SSH_OPTS=-i $HOME/.ssh/deploy -p ${{ secrets.SSH_PORT }} -o BatchMode=yes" >> $GITHUB_ENV
+          echo "SSH_TARGET=${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" >> $GITHUB_ENV
+
+      # No --delete: public/uploads and .env exist only on the server.
+      - name: Ship source
+        run: |
+          rsync -az -e "ssh $SSH_OPTS" \
+            --exclude=node_modules --exclude=.env --exclude=.tmp \
+            --exclude=dist --exclude=build --exclude=public/uploads \
+            cms/ "$SSH_TARGET:cms/cms/"
+
+      - name: Install, build, restart
+        run: |
+          ssh $SSH_OPTS $SSH_TARGET 'set -e
+            cd ~/cms/cms
+            export PATH=/opt/alt/alt-nodejs20/root/usr/bin:$PATH
+            export NODE_ENV=production NODE_OPTIONS=--max-old-space-size=2048
+            npm ci --no-audit --no-fund
+            chmod +x node_modules/.bin/*
+            npm run build
+            mkdir -p tmp && touch tmp/restart.txt'
+
+      - name: Verify
+        run: |
+          for i in 1 2 3 4 5; do
+            sleep 5
+            code=$(curl -s -o /dev/null -m 30 -w '%{http_code}' "$STRAPI_PUBLIC_URL/admin")
+            [ "$code" = 200 ] && exit 0
+          done
+          echo "::error::$STRAPI_PUBLIC_URL/admin returned $code"; exit 1
