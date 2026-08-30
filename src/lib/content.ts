@@ -149,6 +149,11 @@ export interface Store {
   founderImage?: string;
   shippingFee: number; // flat rate added to every order; 0 = free
   currency: string;
+  // Merch not ready: the homepage collection strip and the /store catalog show a coming-soon
+  // panel instead of products, and the product/checkout routes redirect back to /store.
+  // Flipped from Strapi (Store — Page), so launching the shop needs no deploy.
+  comingSoon: boolean;
+  comingSoonMessage: string;
 }
 
 export interface PodcastAction {
@@ -983,6 +988,9 @@ export const store: Store = {
   founderCtaUrl: "#catalog",
   shippingFee: 5.99,
   currency: "USD",
+  comingSoon: true,
+  comingSoonMessage:
+    "The shop is being stocked right now. Follow along on the podcast and socials — we'll say the word the moment it opens.",
 };
 
 export const categories: Category[] = [

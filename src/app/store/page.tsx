@@ -12,6 +12,7 @@ import Placeholder from "@/components/ui/Placeholder";
 import ProductRow from "@/components/store/ProductRow";
 import BookHero from "@/components/store/BookHero";
 import Catalog from "@/components/store/Catalog";
+import ComingSoon from "@/components/store/ComingSoon";
 
 export const metadata: Metadata = {
   title: "Shop — Bite Size Theology",
@@ -30,7 +31,7 @@ export default async function StorePage() {
 
   return (
     <div className="min-h-screen bg-cream text-ink">
-      <BookHero />
+      <BookHero teaser={store.comingSoon} />
 
       {/* Proceeds banner */}
       <div className="border-y border-ink/10 bg-gold/90 py-3 text-ink">
@@ -41,10 +42,19 @@ export default async function StorePage() {
         />
       </div>
 
-      <ProductRow heading={store.bestSellersHeading} products={featured} />
-      <ProductRow heading={store.newArrivalsHeading} products={newArrivals} />
+      {store.comingSoon ? (
+        // id/scroll-mt mirror Catalog's, so the founder CTA's #catalog anchor still lands.
+        <section id="catalog" className="mx-auto max-w-7xl scroll-mt-28 px-6 py-24">
+          <ComingSoon message={store.comingSoonMessage} />
+        </section>
+      ) : (
+        <>
+          <ProductRow heading={store.bestSellersHeading} products={featured} />
+          <ProductRow heading={store.newArrivalsHeading} products={newArrivals} />
 
-      <Catalog heading="Shop All" products={products} categories={categories} />
+          <Catalog heading="Shop All" products={products} categories={categories} />
+        </>
+      )}
 
       {/* Founder */}
       <section className="border-t border-ink/10 bg-[#e6ecf4]">

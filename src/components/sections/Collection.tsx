@@ -1,7 +1,8 @@
 import Reveal from "@/components/ui/Reveal";
 import BentoCard from "@/components/ui/BentoCard";
 import ArrowButton from "@/components/ui/ArrowButton";
-import { getCollection } from "@/lib/cms";
+import { getCollection, getStore } from "@/lib/cms";
+import ComingSoon from "@/components/store/ComingSoon";
 import { linkProps } from "@/lib/links";
 import type { Product } from "@/lib/content";
 
@@ -37,8 +38,21 @@ function ProductCard({
 }
 
 export default async function Collection() {
-  const collection = await getCollection();
+  // The store's coming-soon switch also governs this strip, so the shop is never half-open.
+  const [collection, store] = await Promise.all([getCollection(), getStore()]);
   const [tote, vol1, journal] = collection.products;
+
+  const quote = (
+    <Reveal className="flex flex-col justify-center">
+      <p className="font-display text-2xl italic leading-snug md:text-3xl">
+        &ldquo;{collection.quote.text}&rdquo;
+      </p>
+      <p className="mt-6 max-w-md text-sm leading-relaxed text-ink/60">
+        {collection.quote.body}
+      </p>
+      <ArrowButton label={collection.quote.cta} href={collection.quote.ctaUrl} className="mt-8" />
+    </Reveal>
+  );
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-24">
@@ -60,20 +74,19 @@ export default async function Collection() {
       </Reveal>
 
       <div className="mt-12 grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2">
-        <ProductCard product={tote} imageLabel="Tote — Study Guide" />
-        <ProductCard product={vol1} imageLabel="Book — Vol. 1" />
-
-        <Reveal className="flex flex-col justify-center">
-          <p className="font-display text-2xl italic leading-snug md:text-3xl">
-            &ldquo;{collection.quote.text}&rdquo;
-          </p>
-          <p className="mt-6 max-w-md text-sm leading-relaxed text-ink/60">
-            {collection.quote.body}
-          </p>
-          <ArrowButton label={collection.quote.cta} href={collection.quote.ctaUrl} className="mt-8" />
-        </Reveal>
-
-        <ProductCard product={journal} imageLabel="Sermon Journal" />
+        {store.comingSoon ? (
+          <>
+            <ComingSoon message={store.comingSoonMessage} />
+            {quote}
+          </>
+        ) : (
+          <>
+            <ProductCard product={tote} imageLabel="Tote — Study Guide" />
+            <ProductCard product={vol1} imageLabel="Book — Vol. 1" />
+            {quote}
+            <ProductCard product={journal} imageLabel="Sermon Journal" />
+          </>
+        )}
       </div>
     </section>
   );

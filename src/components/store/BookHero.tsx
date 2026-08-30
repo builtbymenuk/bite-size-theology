@@ -30,9 +30,11 @@ function accentHeading(text: string) {
 const LINK =
   "text-[11px] uppercase tracking-[0.22em] text-ink/50 transition-colors hover:text-gold";
 
-export default async function BookHero() {
+// `teaser` is the store's coming-soon switch: it drops the linked product so the editorial half
+// still renders and the commerce half degrades to the same pill an unlinked book already gets.
+export default async function BookHero({ teaser }: { teaser?: boolean }) {
   const book = await getUpcomingBook();
-  const product = book.product;
+  const product = teaser ? undefined : book.product;
   const cover = product?.images[0] || book.image;
 
   return (

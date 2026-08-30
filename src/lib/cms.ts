@@ -631,6 +631,9 @@ export async function getStore(): Promise<Store> {
     founderImage: absolutize(d.founderImage?.url) || fb.store.founderImage,
     shippingFee: d.shippingFee != null ? Number(d.shippingFee) : fb.store.shippingFee,
     currency: d.currency || fb.store.currency,
+    // ?? not ||: an explicit `false` from the CMS is what opens the shop.
+    comingSoon: d.comingSoon ?? fb.store.comingSoon,
+    comingSoonMessage: d.comingSoonMessage || fb.store.comingSoonMessage,
   };
 }
 
