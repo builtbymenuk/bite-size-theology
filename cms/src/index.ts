@@ -5,12 +5,13 @@ import seedData from "./seed-data.json";
 const NAMES = [
   "nav", "hero", "eyebrow", "calling", "all-thing", "upcoming-book", "collection", "podcast",
   "podcast-page", "faq", "footer", "about", "contact", "book-caleb", "prayer", "theme-setting", "donate", "tour",
-  "store",
+  "store", "blog",
 ];
 
-// Publicly-readable collection types need BOTH find + findOne. Products + categories are public;
-// `order` is intentionally absent — orders are written only via a server API token.
-const PUBLIC_COLLECTIONS = ["product", "category"];
+// Publicly-readable collection types need BOTH find + findOne. Products, store categories and
+// the blog are public; `order` is intentionally absent — orders are written only via a server
+// API token, as is every form submission.
+const PUBLIC_COLLECTIONS = ["product", "category", "post", "post-category"];
 
 // Every public-read action to grant on the public role.
 const GRANTS = [
@@ -302,6 +303,31 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     badge: { label: "Card badge (optional)", description: 'e.g. "New Arrival" or "Sale"' },
     featured: { label: "Featured", description: "Show in the Best Sellers row" },
     soldOut: { label: "Sold out", description: "Hides the Add-to-cart button" },
+  },
+  blog: {
+    eyebrow: { label: "Eyebrow", description: 'Small caps line above the title, e.g. "Bite Size Theology / Writing"' },
+    headingLead: { label: "Heading — lead" },
+    headingScript: { label: "Heading — script word (italic gold)" },
+    intro: { label: "Intro paragraph" },
+    allLabel: { label: 'Filter — "All" pill text', description: "The first category pill, which clears the filter" },
+    emptyMessage: { label: "Empty state message", description: "Shown when nothing is published yet" },
+    keepReadingHeading: { label: '"Keep reading" heading', description: "Above the other-posts list at the foot of an article" },
+  },
+  "post-category": {
+    name: { label: "Category name", description: 'e.g. "Grace", "Doubt", "Prayer"' },
+    slug: { label: "URL slug", description: "Auto-fills from the name; used by the blog filter" },
+    order: { label: "Sort order", description: "Lower numbers appear first in the filter pills" },
+  },
+  post: {
+    title: { label: "Title" },
+    slug: { label: "URL slug", description: "Auto-fills from the title; this is the page address" },
+    scripture: { label: "Scripture reference", description: 'Shown in gold above the title, e.g. "Romans 8:1-11". Optional.' },
+    excerpt: { label: "Excerpt", description: "One or two sentences, shown under the title on phones. Optional." },
+    cover: { label: "Cover image", description: "The article's header photo, and the preview that appears when you hover its row in the list" },
+    body: { label: "Article", description: "Write here. Drag images straight in from the Media Library to place them in the text." },
+    category: { label: "Category", description: "Add categories under Blog — Categories first" },
+    author: { label: "Author" },
+    featured: { label: "Featured", description: "Pins this post to the top of the list" },
   },
 };
 

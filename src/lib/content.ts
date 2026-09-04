@@ -379,11 +379,45 @@ export interface Tour {
   regions: Region[];
 }
 
+export interface PostCategory {
+  slug: string;
+  name: string;
+}
+
+export interface Post {
+  slug: string;
+  title: string;
+  /** e.g. "Romans 8:1-11" — shown in gold above the title. Optional. */
+  scripture?: string;
+  excerpt?: string;
+  cover?: string;
+  /** Strapi `blocks` AST. Untyped on purpose: Blocks.tsx narrows node by node. */
+  body: unknown[];
+  category?: PostCategory;
+  author: string;
+  /** ISO date from Strapi's publishedAt; formatted at render time. */
+  date: string;
+  featured: boolean;
+  /** Derived from `body`, not stored — see readMinutes() in cms.ts. */
+  readMinutes: number;
+}
+
+export interface Blog {
+  eyebrow: string;
+  headingLead: string;
+  headingScript: string;
+  intro: string;
+  allLabel: string;
+  emptyMessage: string;
+  keepReadingHeading: string;
+}
+
 export const nav: Nav = {
   logo: "Caleb",
   links: [
     { label: "About", url: "/about" },
     { label: "Sermons/Videos", url: "/podcast" },
+    { label: "Blog", url: "/blog" },
     { label: "Shop", url: "/store" },
     { label: "Book Caleb", url: "/book-caleb" },
     { label: "Contact", url: "/contact" },
@@ -972,6 +1006,20 @@ export const tour: Tour = {
       ],
     },
   ],
+};
+
+// Blog page copy — mirrors cms/src/seed-data.json. There is deliberately no fallback POST list:
+// an empty blog is a legitimate state, and inventing sample articles would leave the client
+// deleting placeholder content the way the seeded sample products did.
+export const blog: Blog = {
+  eyebrow: "Bite Size Theology / Writing",
+  headingLead: "Notes from",
+  headingScript: "the Margin",
+  intro:
+    "Short readings and longer studies — the notes I keep in the margins of my Bible, written out.",
+  allLabel: "All",
+  emptyMessage: "The first piece is still being written. Check back soon.",
+  keepReadingHeading: "Keep Reading",
 };
 
 // Store fallback — mirrors cms/src/seed-data.json so /store renders even with Strapi down.

@@ -9,10 +9,12 @@
 
 import * as fb from "./content";
 import { getYouTubeVideos } from "./youtube";
+import { readMinutes } from "./blog";
 import type {
   SocialPlatform,
   Nav, Hero, Calling, AllThings, UpcomingBook, Collection, Podcast, PodcastPage,
   Faq, Footer, About, Contact, BookCaleb, Prayer, ThemeColors, Donate, Tour, StoreProduct, Store, Category,
+  Blog, Post, PostCategory,
 } from "./content";
 
 const BASE = process.env.STRAPI_URL;
@@ -35,7 +37,7 @@ const REVALIDATE =
 
 // Strapi media URLs are relative on local (/uploads/..); next/image needs absolute.
 // Provider URLs (S3/Cloudinary) already start with http and pass through.
-const absolutize = (u?: string): string | undefined =>
+export const absolutize = (u?: string): string | undefined =>
   u ? (u.startsWith("http") ? u : `${PUBLIC_BASE}${u}`) : undefined;
 
 // Use a mapped CMS array only when it actually has rows, else keep the fallback.
@@ -661,4 +663,73 @@ export async function getCategories(): Promise<Category[]> {
   return rows.length
     ? rows.map((c: any) => ({ slug: c.slug, name: c.name }))
     : fb.categories;
+}
+
+// --- Blog ----------------------------------------------------------------
+// `post` is the ONE content type with draftAndPublish on — a pastor writes over several days.
+// Strapi 5's REST default is status=published, so nothing below asks for drafts and an
+// unfinished article can't leak. `publishedAt` is therefore the real publication date.
+
+function mapPost(p: any): Post {
+  return {
+    slug: p.slug,
+    title: p.title,
+    scripture: p.scripture || undefined,
+    excerpt: p.excerpt || undefined,
+    cover: absolutize(p.cover?.url),
+    body: Array.isArray(p.body) ? p.body : [],
+    category: p.category ? { slug: p.category.slug, name: p.category.name } : undefined,
+    author: p.author || "Caleb Griffith",
+    date: p.publishedAt || p.createdAt || "",
+    featured: !!p.featured,
+    readMinutes: readMinutes(p.body),
+  };
+}
+
+export async function getBlog(): Promise<Blog> {
+  const d = await single("blog", "");
+  if (!d) return fb.blog;
+  return {
+    eyebrow: d.eyebrow || fb.blog.eyebrow,
+    headingLead: d.headingLead || fb.blog.headingLead,
+    headingScript: d.headingScript || fb.blog.headingScript,
+    intro: d.intro || fb.blog.intro,
+    allLabel: d.allLabel || fb.blog.allLabel,
+    emptyMessage: d.emptyMessage || fb.blog.emptyMessage,
+    keepReadingHeading: d.keepReadingHeading || fb.blog.keepReadingHeading,
+  };
+}
+
+// Featured posts pin to the top of the ledger, newest first within each group. Sorted here
+// rather than in the query because Strapi can't order by two fields with opposite intent as
+// cleanly as one comparator, and the list is small.
+//
+// Unlike every other getX() there is NO static fallback list: an empty blog is a legitimate
+// state, and the page renders blog.emptyMessage for it.
+//
+// ponytail: `populate=*` pulls each row's full body, which is also what feeds readMinutes on the
+// index — so it's load-bearing, not waste. Add `fields[]` selection + a stored read time if the
+// blog ever passes ~100 posts (also the point where pagination stops being optional).
+export async function getPosts(): Promise<Post[]> {
+  const rows = await list(
+    "posts",
+    "populate=*&sort=publishedAt:desc&pagination[pageSize]=100",
+  );
+  return rows
+    .map(mapPost)
+    .sort((a, b) => Number(b.featured) - Number(a.featured));
+}
+
+export async function getPost(slug: string): Promise<Post | null> {
+  const row = await one(
+    "posts",
+    `filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*`,
+  );
+  return row ? mapPost(row) : null;
+}
+
+// Drives the ledger's filter pills. Empty → the rail isn't rendered at all.
+export async function getPostCategories(): Promise<PostCategory[]> {
+  const rows = await list("post-categories", "sort=order:asc&pagination[pageSize]=100");
+  return rows.map((c: any) => ({ slug: c.slug, name: c.name }));
 }

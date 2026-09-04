@@ -5,6 +5,7 @@
     "links": [
       { "label": "About", "url": "/about" },
       { "label": "Sermons/Videos", "url": "/podcast" },
+      { "label": "Blog", "url": "/blog" },
       { "label": "Shop", "url": "/store" },
       { "label": "Book Caleb", "url": "/book-caleb" },
       { "label": "Contact", "url": "/contact" }
@@ -418,6 +419,15 @@
     "founderCtaUrl": "#catalog",
     "shippingFee": 5.99,
     "currency": "USD"
+  },
+  "blog": {
+    "eyebrow": "Bite Size Theology / Writing",
+    "headingLead": "Notes from",
+    "headingScript": "the Margin",
+    "intro": "Short readings and longer studies — the notes I keep in the margins of my Bible, written out.",
+    "allLabel": "All",
+    "emptyMessage": "The first piece is still being written. Check back soon.",
+    "keepReadingHeading": "Keep Reading"
   },
   "categories": [
     { "name": "Tees", "slug": "tees", "order": 1 },
