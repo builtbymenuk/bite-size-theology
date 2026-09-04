@@ -1,0 +1,35 @@
+{
+  "kind": "singleType",
+  "collectionName": "blogs",
+  "info": {
+    "singularName": "blog",
+    "pluralName": "blogs",
+    "displayName": "Page — Blog"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "headingLead": {
+      "type": "string"
+    },
+    "headingScript": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "text"
+    },
+    "allLabel": {
+      "type": "string"
+    },
+    "emptyMessage": {
+      "type": "text"
+    },
+    "keepReadingHeading": {
+      "type": "string"
+    }
+  }
+}

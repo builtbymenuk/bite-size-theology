@@ -16,6 +16,7 @@ const BIRD = "url('/bst-bird.png')";
 const HREFS: Record<string, string> = {
   About: "/about",
   "Sermons/Videos": "/podcast",
+  Blog: "/blog",
   Shop: "/store",
   "Book Caleb": "/book-caleb",
   Contact: "/contact",
@@ -27,7 +28,10 @@ export default function Navbar({ nav }: { nav: Nav }) {
   const pathname = usePathname();
 
   // Dark pages (e.g. /tour, no full-height hero) pin the light pill; home flips on scroll.
+  // /blog is the cream index and pins light; /blog/[slug] deliberately does NOT — it opens on a
+  // dark hero image, so it flips on scroll like the homepage.
   const fixedTheme: "light" | undefined =
+    pathname === "/blog" ||
     pathname?.startsWith("/tour") ||
     pathname?.startsWith("/contact") ||
     pathname?.startsWith("/book-caleb") ||

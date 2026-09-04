@@ -8,10 +8,16 @@ const TAGS = [
   "nav", "hero", "eyebrow", "calling", "all-thing", "collection", "podcast",
   "podcast-page", "faq", "footer", "about", "contact", "book-caleb", "prayer", "theme-setting", "donate", "tour",
   "store", "products", "categories",
+  "blog", "posts", "post-categories",
 ];
 
 // Strapi posts the singularName ("product"); cms.ts tags the list fetch by pluralName ("products").
-const ALIAS: Record<string, string> = { product: "products", category: "categories" };
+const ALIAS: Record<string, string> = {
+  product: "products",
+  category: "categories",
+  post: "posts",
+  "post-category": "post-categories",
+};
 
 export async function POST(req: Request) {
   const secret = new URL(req.url).searchParams.get("secret");

@@ -525,6 +525,37 @@ export interface ApiAllThingAllThing extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiBlogBlog extends Struct.SingleTypeSchema {
+  collectionName: 'blogs';
+  info: {
+    displayName: 'Page \u2014 Blog';
+    pluralName: 'blogs';
+    singularName: 'blog';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    allLabel: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    emptyMessage: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String;
+    headingLead: Schema.Attribute.String;
+    headingScript: Schema.Attribute.String;
+    intro: Schema.Attribute.Text;
+    keepReadingHeading: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::blog.blog'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiBookCalebBookCaleb extends Struct.SingleTypeSchema {
   collectionName: 'book_calebs';
   info: {
@@ -1185,6 +1216,77 @@ export interface ApiPodcastPodcast extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiPostCategoryPostCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'post_categories';
+  info: {
+    displayName: 'Blog \u2014 Categories';
+    pluralName: 'post-categories';
+    singularName: 'post-category';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::post-category.post-category'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPostPost extends Struct.CollectionTypeSchema {
+  collectionName: 'posts';
+  info: {
+    displayName: 'Blog \u2014 Posts';
+    pluralName: 'posts';
+    singularName: 'post';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    author: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Caleb Griffith'>;
+    body: Schema.Attribute.Blocks;
+    category: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::post-category.post-category'
+    >;
+    cover: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    excerpt: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 300;
+      }>;
+    featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::post.post'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    scripture: Schema.Attribute.String;
+    slug: Schema.Attribute.UID<'title'>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPrayerRequestPrayerRequest
   extends Struct.CollectionTypeSchema {
   collectionName: 'prayer_requests';
@@ -1308,6 +1410,8 @@ export interface ApiStoreStore extends Struct.SingleTypeSchema {
   };
   attributes: {
     bestSellersHeading: Schema.Attribute.String;
+    comingSoon: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    comingSoonMessage: Schema.Attribute.Text;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1945,6 +2049,7 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::about.about': ApiAboutAbout;
       'api::all-thing.all-thing': ApiAllThingAllThing;
+      'api::blog.blog': ApiBlogBlog;
       'api::book-caleb.book-caleb': ApiBookCalebBookCaleb;
       'api::booking-request.booking-request': ApiBookingRequestBookingRequest;
       'api::calling.calling': ApiCallingCalling;
@@ -1963,6 +2068,8 @@ declare module '@strapi/strapi' {
       'api::order.order': ApiOrderOrder;
       'api::podcast-page.podcast-page': ApiPodcastPagePodcastPage;
       'api::podcast.podcast': ApiPodcastPodcast;
+      'api::post-category.post-category': ApiPostCategoryPostCategory;
+      'api::post.post': ApiPostPost;
       'api::prayer-request.prayer-request': ApiPrayerRequestPrayerRequest;
       'api::prayer.prayer': ApiPrayerPrayer;
       'api::product.product': ApiProductProduct;
