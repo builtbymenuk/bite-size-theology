@@ -810,9 +810,10 @@ export const contact: Contact = {
   },
   connectLabel: "Connect",
   socials: [
-    { name: "Instagram", handle: "@calebgriffith", url: "" },
+    { name: "Instagram", handle: "@pastorcalebgriffith", url: "" },
     { name: "YouTube", handle: "bitesizetheology", url: "" },
     { name: "Twitter", handle: "@bitesizetheo", url: "" },
+    { name: "Facebook", handle: "@pastorcalebgriffith", url: "" },
   ],
   form: {
     heading: "Send a Message",

@@ -229,9 +229,10 @@
       { "value": "Nashville, TN 37203" }
     ],
     "socials": [
-      { "name": "Instagram", "handle": "@calebgriffith", "url": "" },
+      { "name": "Instagram", "handle": "@pastorcalebgriffith", "url": "" },
       { "name": "YouTube", "handle": "bitesizetheology", "url": "" },
-      { "name": "Twitter", "handle": "@bitesizetheo", "url": "" }
+      { "name": "Twitter", "handle": "@bitesizetheo", "url": "" },
+      { "name": "Facebook", "handle": "@pastorcalebgriffith", "url": "" }
     ],
     "formHeading": "Send a Message",
     "formSubheading": "We'll get back to you shortly",
