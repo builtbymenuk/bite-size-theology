@@ -16,6 +16,25 @@ export const metadata: Metadata = {
 
 const label = "text-[11px] uppercase tracking-[0.3em] text-ink/50";
 
+// Every social row should be a link. The CMS `url` wins when an editor sets one (needed for
+// anything non-standard, e.g. a /channel/UC... YouTube URL), but it ships blank, so fall back
+// to the platform's profile URL built from the handle we already display.
+const SOCIAL_BASE: Record<string, string> = {
+  instagram: "https://www.instagram.com/",
+  youtube: "https://www.youtube.com/@",
+  twitter: "https://x.com/",
+  x: "https://x.com/",
+  facebook: "https://www.facebook.com/",
+  tiktok: "https://www.tiktok.com/@",
+};
+
+function socialHref(name: string, handle: string, url?: string) {
+  if (url) return url;
+  const base = SOCIAL_BASE[name.trim().toLowerCase()];
+  const at = handle.trim().replace(/^@+/, "");
+  return base && at ? base + at : undefined;
+}
+
 export default async function ContactPage() {
   const contact = await getContact();
   return (
@@ -106,6 +125,7 @@ export default async function ContactPage() {
               <p className={label}>{contact.connectLabel}</p>
               <ul className="mt-4 space-y-3">
                 {contact.socials.map((s) => {
+                  const href = socialHref(s.name, s.handle, s.url);
                   const row = (
                     <>
                       <span className="text-sm text-ink transition-colors group-hover:text-gold">
@@ -116,9 +136,9 @@ export default async function ContactPage() {
                   );
                   return (
                     <li key={s.name} className="flex items-baseline justify-between gap-4">
-                      {s.url ? (
+                      {href ? (
                         <a
-                          href={s.url}
+                          href={href}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex flex-1 items-baseline justify-between gap-4"
