@@ -750,7 +750,7 @@ export const footer: Footer = {
       links: [
         { label: "Instagram", url: "" },
         { label: "YouTube", url: "" },
-        { label: "Twitter", url: "" },
+        { label: "Facebook", url: "" },
         { label: "Contact", url: "/contact" },
       ],
     },
@@ -812,7 +812,6 @@ export const contact: Contact = {
   socials: [
     { name: "Instagram", handle: "@pastorcalebgriffith", url: "" },
     { name: "YouTube", handle: "bitesizetheology", url: "" },
-    { name: "Twitter", handle: "@bitesizetheo", url: "" },
     { name: "Facebook", handle: "@pastorcalebgriffith", url: "" },
   ],
   form: {
