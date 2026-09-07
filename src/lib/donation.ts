@@ -88,7 +88,7 @@ export async function saveDonation(d: DonationRecord): Promise<boolean> {
         message: d.message || undefined,
         anonymous: !!d.anonymous,
         provider: d.provider,
-        status: "completed",
+        donationStatus: "completed",
         paypalOrderId: d.paypalOrderId,
         paypalCaptureId: d.paypalCaptureId,
         stripeSessionId: d.stripeSessionId,

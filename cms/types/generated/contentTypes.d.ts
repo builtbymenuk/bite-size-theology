@@ -885,6 +885,8 @@ export interface ApiDonationDonation extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     currency: Schema.Attribute.String;
+    donationStatus: Schema.Attribute.Enumeration<['completed', 'refunded']> &
+      Schema.Attribute.DefaultTo<'completed'>;
     email: Schema.Attribute.Email;
     fund: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -900,8 +902,6 @@ export interface ApiDonationDonation extends Struct.CollectionTypeSchema {
     provider: Schema.Attribute.Enumeration<['paypal', 'stripe']>;
     publishedAt: Schema.Attribute.DateTime;
     recurring: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    status: Schema.Attribute.Enumeration<['completed', 'refunded']> &
-      Schema.Attribute.DefaultTo<'completed'>;
     stripePaymentIntentId: Schema.Attribute.String;
     stripeSessionId: Schema.Attribute.String & Schema.Attribute.Unique;
     updatedAt: Schema.Attribute.DateTime;
@@ -1198,6 +1198,9 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
       Schema.Attribute.Private;
     orderNumber: Schema.Attribute.String;
+    orderStatus: Schema.Attribute.Enumeration<
+      ['paid', 'fulfilled', 'refunded', 'cancelled']
+    >;
     payerName: Schema.Attribute.String;
     paypalCaptureId: Schema.Attribute.String;
     paypalOrderId: Schema.Attribute.String & Schema.Attribute.Unique;
@@ -1205,9 +1208,6 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     shipping: Schema.Attribute.Decimal;
     shippingAddress: Schema.Attribute.JSON;
-    status: Schema.Attribute.Enumeration<
-      ['paid', 'fulfilled', 'refunded', 'cancelled']
-    >;
     stripePaymentIntentId: Schema.Attribute.String;
     stripeSessionId: Schema.Attribute.String & Schema.Attribute.Unique;
     subtotal: Schema.Attribute.Decimal;

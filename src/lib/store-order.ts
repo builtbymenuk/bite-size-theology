@@ -179,7 +179,7 @@ export async function saveOrder(
         shipping: o.shipping,
         total: o.total,
         currency: o.currency,
-        status: "paid",
+        orderStatus: "paid",
         provider: o.provider,
         paypalOrderId: o.paypalOrderId,
         paypalCaptureId: o.paypalCaptureId,

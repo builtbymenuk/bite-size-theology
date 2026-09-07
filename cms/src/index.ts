@@ -290,6 +290,7 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     thankYouBody: { label: "Thank-you — Body / verse" },
   },
   donation: {
+    donationStatus: { label: "Status", description: "Set to completed automatically. Change to refunded if you refund it." },
     amount: { label: "Amount" },
     fund: { label: "Fund / designation" },
     anonymous: { label: "Anonymous" },
@@ -324,6 +325,10 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     order: { label: "Sort order", description: "Lower numbers appear first in the filter tabs" },
   },
   order: {
+    orderStatus: {
+      label: "Status",
+      description: "Set to paid automatically on checkout. Change it to fulfilled once the order has shipped.",
+    },
     provider: { label: "Payment provider", description: "paypal or stripe — set automatically" },
     stripeSessionId: { label: "Stripe session id" },
     stripePaymentIntentId: { label: "Stripe payment id" },

@@ -31,7 +31,7 @@
     "currency": {
       "type": "string"
     },
-    "status": {
+    "orderStatus": {
       "type": "enumeration",
       "enum": [
         "paid",
