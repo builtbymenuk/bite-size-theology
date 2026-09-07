@@ -8,7 +8,8 @@ import PageBackground from "@/components/layout/PageBackground";
 import { CartProvider } from "@/lib/cart";
 import CartDrawer from "@/components/store/CartDrawer";
 import CustomCursor from "@/components/layout/CustomCursor";
-import { getNav, getThemeColors } from "@/lib/cms";
+import NewsletterPopup from "@/components/newsletter/NewsletterPopup";
+import { getNav, getNewsletter, getThemeColors } from "@/lib/cms";
 
 // Fraunces roman+italic covers both display serif and the gold script accent — one family, not two.
 const display = Fraunces({
@@ -56,7 +57,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [nav, theme] = await Promise.all([getNav(), getThemeColors()]);
+  const [nav, theme, newsletter] = await Promise.all([getNav(), getThemeColors(), getNewsletter()]);
   // Override the Tailwind @theme tokens at runtime from the CMS. Inline on <html> beats the
   // :root defaults and cascades to every var()-based utility (incl. opacity variants). Legacy
   // token names kept (cream=paper, gold=accent, charcoal=dark section).
@@ -84,6 +85,9 @@ export default async function RootLayout({
             <Navbar nav={nav} />
             {children}
             <CartDrawer />
+            {/* Fixed overlay: has to live here, outside the routed page, or template.tsx's view
+                transition becomes its containing block. Same reason CartDrawer is here. */}
+            <NewsletterPopup copy={newsletter} />
             <CustomCursor />
           </CartProvider>
         </SmoothScroll>

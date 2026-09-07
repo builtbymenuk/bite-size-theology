@@ -1,0 +1,52 @@
+{
+  "kind": "singleType",
+  "collectionName": "newsletters",
+  "info": {
+    "singularName": "newsletter",
+    "pluralName": "newsletters",
+    "displayName": "Shared — Newsletter"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "body": {
+      "type": "text"
+    },
+    "placeholder": {
+      "type": "string"
+    },
+    "buttonLabel": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "successText": {
+      "type": "text"
+    },
+    "alreadySubscribedText": {
+      "type": "text"
+    },
+    "popupHeading": {
+      "type": "string"
+    },
+    "popupBody": {
+      "type": "text"
+    },
+    "popupEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "popupDelaySeconds": {
+      "type": "integer",
+      "default": 7
+    }
+  }
+}

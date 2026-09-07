@@ -1,12 +1,19 @@
-import { getFooter } from "@/lib/cms";
+import { getFooter, getNewsletter } from "@/lib/cms";
 import { linkProps } from "@/lib/links";
+import NewsletterForm from "@/components/newsletter/NewsletterForm";
 
 export default async function Footer() {
-  const footer = await getFooter();
+  const [footer, newsletter] = await Promise.all([getFooter(), getNewsletter()]);
   return (
     <footer className="flex min-h-screen flex-col justify-center bg-charcoal text-cream">
       <div className="mx-auto w-full max-w-7xl px-6 py-20">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+          {/* First cell: the signup leads the row, and its gold label uses the same treatment as
+              the link-column titles beside it so the three read as one system. */}
+          <div className="max-w-sm">
+            <NewsletterForm variant="footer" copy={newsletter} />
+          </div>
+
           <div className="flex gap-16">
             {footer.columns.map((col) => (
               <div key={col.title}>

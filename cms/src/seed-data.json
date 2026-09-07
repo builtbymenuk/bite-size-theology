@@ -429,6 +429,20 @@
     "emptyMessage": "The first piece is still being written. Check back soon.",
     "keepReadingHeading": "Keep Reading"
   },
+  "newsletter": {
+    "eyebrow": "Stay up to date with Caleb",
+    "heading": "Sign up for email updates from Bite Size Theology.",
+    "body": "One short study a week — no noise, no pressure. Just Scripture, unpacked.",
+    "placeholder": "Email address",
+    "buttonLabel": "Subscribe",
+    "note": "One email to confirm, then a study a week. Unsubscribe any time.",
+    "successText": "Almost there — check your inbox and click the link to confirm.",
+    "alreadySubscribedText": "You're already on the list. Glad to have you.",
+    "popupHeading": "Get this in your inbox.",
+    "popupBody": "One short study a week from Caleb. Nothing else, and you can leave any time.",
+    "popupEnabled": true,
+    "popupDelaySeconds": 7
+  },
   "categories": [
     { "name": "Tees", "slug": "tees", "order": 1 },
     { "name": "Hoodies", "slug": "hoodies", "order": 2 },

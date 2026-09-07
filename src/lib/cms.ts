@@ -13,7 +13,7 @@ import { readMinutes } from "./blog";
 import type {
   SocialPlatform,
   Nav, Hero, Calling, AllThings, UpcomingBook, Collection, Podcast, PodcastPage,
-  Faq, Footer, About, Contact, BookCaleb, Prayer, ThemeColors, Donate, Tour, StoreProduct, Store, Category,
+  Faq, Footer, Newsletter, About, Contact, BookCaleb, Prayer, ThemeColors, Donate, Tour, StoreProduct, Store, Category,
   Blog, Post, PostCategory,
 } from "./content";
 
@@ -354,6 +354,30 @@ export async function getFooter(): Promise<Footer> {
     wordmark: d.wordmark || fb.footer.wordmark,
     copyright: d.copyright || fb.footer.copyright,
     legal: arr(d.legal, (l) => ({ label: l.label, url: l.url || "" }), fb.footer.legal),
+  };
+}
+
+export async function getNewsletter(): Promise<Newsletter> {
+  const d = await single("newsletter");
+  if (!d) return fb.newsletter;
+  const n = Number(d.popupDelaySeconds);
+  return {
+    eyebrow: d.eyebrow || fb.newsletter.eyebrow,
+    heading: d.heading || fb.newsletter.heading,
+    body: d.body || fb.newsletter.body,
+    placeholder: d.placeholder || fb.newsletter.placeholder,
+    buttonLabel: d.buttonLabel || fb.newsletter.buttonLabel,
+    note: d.note || fb.newsletter.note,
+    successText: d.successText || fb.newsletter.successText,
+    alreadySubscribedText: d.alreadySubscribedText || fb.newsletter.alreadySubscribedText,
+    // Popup copy falls back to the footer copy, so the client only fills these in to differ.
+    popupHeading: d.popupHeading || d.heading || fb.newsletter.popupHeading,
+    popupBody: d.popupBody || d.body || fb.newsletter.popupBody,
+    // Explicit false wins; anything else (unset on an older row) keeps the default on.
+    popupEnabled: d.popupEnabled !== false,
+    // Clamped: a 0 would fire the popup before the page settles, and a typo'd 9999 would mean
+    // "never" without the client understanding why.
+    popupDelaySeconds: Number.isFinite(n) && n > 0 ? Math.min(Math.max(n, 2), 120) : fb.newsletter.popupDelaySeconds,
   };
 }
 
