@@ -242,6 +242,23 @@ export interface Footer {
   legal: LinkItem[];
 }
 
+// Copy for both newsletter capture points — the footer form and the timed popup. popupEnabled is
+// the client's off switch; popupDelaySeconds is how long after landing it appears.
+export interface Newsletter {
+  eyebrow: string;
+  heading: string;
+  body: string;
+  placeholder: string;
+  buttonLabel: string;
+  note: string;
+  successText: string;
+  alreadySubscribedText: string;
+  popupHeading: string;
+  popupBody: string;
+  popupEnabled: boolean;
+  popupDelaySeconds: number;
+}
+
 export interface AboutImage {
   tone: Tone;
   label: string;
@@ -765,6 +782,21 @@ export const footer: Footer = {
     { label: "Privacy", url: "" },
     { label: "Terms", url: "" },
   ],
+};
+
+export const newsletter: Newsletter = {
+  eyebrow: "Stay up to date with Caleb",
+  heading: "Sign up for email updates from Bite Size Theology.",
+  body: "One short study a week — no noise, no pressure. Just Scripture, unpacked.",
+  placeholder: "Email address",
+  buttonLabel: "Subscribe",
+  note: "One email to confirm, then a study a week. Unsubscribe any time.",
+  successText: "Almost there — check your inbox and click the link to confirm.",
+  alreadySubscribedText: "You're already on the list. Glad to have you.",
+  popupHeading: "Get this in your inbox.",
+  popupBody: "One short study a week from Caleb. Nothing else, and you can leave any time.",
+  popupEnabled: true,
+  popupDelaySeconds: 7,
 };
 
 export const about: About = {

@@ -1066,6 +1066,86 @@ export interface ApiNavNav extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiNewsletterSubscriberNewsletterSubscriber
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'newsletter_subscribers';
+  info: {
+    displayName: 'Newsletter Subscriber';
+    pluralName: 'newsletter-subscribers';
+    singularName: 'newsletter-subscriber';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    confirmedAt: Schema.Attribute.DateTime;
+    confirmToken: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::newsletter-subscriber.newsletter-subscriber'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    source: Schema.Attribute.Enumeration<['popup', 'footer']> &
+      Schema.Attribute.DefaultTo<'footer'>;
+    subscribedAt: Schema.Attribute.DateTime;
+    subscriptionStatus: Schema.Attribute.Enumeration<
+      ['pending', 'active', 'unsubscribed']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiNewsletterNewsletter extends Struct.SingleTypeSchema {
+  collectionName: 'newsletters';
+  info: {
+    displayName: 'Shared \u2014 Newsletter';
+    pluralName: 'newsletters';
+    singularName: 'newsletter';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    alreadySubscribedText: Schema.Attribute.Text;
+    body: Schema.Attribute.Text;
+    buttonLabel: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    eyebrow: Schema.Attribute.String;
+    heading: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::newsletter.newsletter'
+    > &
+      Schema.Attribute.Private;
+    note: Schema.Attribute.String;
+    placeholder: Schema.Attribute.String;
+    popupBody: Schema.Attribute.Text;
+    popupDelaySeconds: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<7>;
+    popupEnabled: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    popupHeading: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    successText: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiNotificationSettingsNotificationSettings
   extends Struct.SingleTypeSchema {
   collectionName: 'notification_settings';
@@ -2064,6 +2144,8 @@ declare module '@strapi/strapi' {
       'api::footer.footer': ApiFooterFooter;
       'api::hero.hero': ApiHeroHero;
       'api::nav.nav': ApiNavNav;
+      'api::newsletter-subscriber.newsletter-subscriber': ApiNewsletterSubscriberNewsletterSubscriber;
+      'api::newsletter.newsletter': ApiNewsletterNewsletter;
       'api::notification-settings.notification-settings': ApiNotificationSettingsNotificationSettings;
       'api::order.order': ApiOrderOrder;
       'api::podcast-page.podcast-page': ApiPodcastPagePodcastPage;

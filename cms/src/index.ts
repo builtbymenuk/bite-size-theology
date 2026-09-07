@@ -5,7 +5,7 @@ import seedData from "./seed-data.json";
 const NAMES = [
   "nav", "hero", "eyebrow", "calling", "all-thing", "upcoming-book", "collection", "podcast",
   "podcast-page", "faq", "footer", "about", "contact", "book-caleb", "prayer", "theme-setting", "donate", "tour",
-  "store", "blog",
+  "store", "blog", "newsletter",
 ];
 
 // Publicly-readable collection types need BOTH find + findOne. Products, store categories and
@@ -232,6 +232,41 @@ const LABELS: Record<string, Record<string, { label?: string; description?: stri
     request: { label: "Prayer request" },
     urgent: { label: "Urgent" },
     handled: { label: "Handled", description: "Tick once the prayer team has followed up" },
+  },
+  "newsletter-subscriber": {
+    email: { label: "Email address" },
+    subscriptionStatus: {
+      label: "Status",
+      description:
+        "Pending = confirmation email sent, not clicked yet. Active = confirmed, safe to mail. Unsubscribed = do not mail.",
+    },
+    confirmToken: {
+      label: "Confirm / unsubscribe key",
+      description: "Generated automatically — it's what the links in their emails carry. Don't edit it.",
+    },
+    subscribedAt: { label: "Signed up" },
+    confirmedAt: { label: "Confirmed", description: "Blank until they click the link in the confirmation email" },
+    source: { label: "Signed up from", description: "Which capture point they used — the footer form or the popup" },
+  },
+  newsletter: {
+    eyebrow: { label: "Small caps label", description: 'Sits above the heading, e.g. "Newsletter"' },
+    heading: { label: "Heading", description: "The bold line under the label in the footer — this is the pitch" },
+    body: { label: "Body copy", description: "Popup only. The footer form leads with the heading above instead." },
+    placeholder: { label: "Input placeholder" },
+    buttonLabel: { label: "Button text" },
+    note: { label: "Small print", description: "The reassurance line under the form" },
+    successText: { label: "After signing up", description: "Shown once the confirmation email has been sent" },
+    alreadySubscribedText: { label: "Already on the list", description: "Shown when the address is already confirmed" },
+    popupHeading: { label: "Popup — Heading", description: "Blank = reuse the heading above" },
+    popupBody: { label: "Popup — Body copy", description: "Blank = reuse the body above" },
+    popupEnabled: {
+      label: "Show the popup",
+      description: "Untick to switch the timed popup off site-wide. The footer form stays either way.",
+    },
+    popupDelaySeconds: {
+      label: "Popup — Delay (seconds)",
+      description: "How long after landing the popup appears. 5–10 works well.",
+    },
   },
   "notification-settings": {
     contactTo: { label: "Contact form → email", description: "Where Contact submissions are sent. Blank = server default." },
