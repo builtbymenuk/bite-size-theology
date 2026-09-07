@@ -39,7 +39,7 @@
         "stripe"
       ]
     },
-    "status": {
+    "donationStatus": {
       "type": "enumeration",
       "enum": [
         "completed",
