@@ -3,6 +3,18 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { withEnv } from "../../../../test/env";
 import { BASE, rawRequest } from "../../../../test/request";
 
+// Spy on the shared constant-time comparison so the tests can prove the route goes through it.
+const secretCalls = vi.hoisted(() => [] as unknown[][]);
+vi.mock("@/lib/secret", async (importOriginal) => {
+  const real = await importOriginal<typeof import("@/lib/secret")>();
+  return {
+    secretMatches: (...args: Parameters<typeof real.secretMatches>) => {
+      secretCalls.push(args);
+      return real.secretMatches(...args);
+    },
+  };
+});
+
 vi.mock("next/cache", () => ({ revalidateTag: vi.fn() }));
 
 const load = (env: Record<string, string> = { REVALIDATE_SECRET: "s3cret" }) =>
@@ -74,5 +86,11 @@ describe("POST /api/revalidate", () => {
     expect(tagged().length).toBeGreaterThan(10);
   });
 
-  test.todo("REVALIDATE_SECRET compared with non-constant-time !== (revalidate/route.ts:24)");
+  test("a same-length near miss is rejected, and the check goes through constant-time secretMatches", async () => {
+    const { POST } = await load();
+    secretCalls.length = 0;
+    const res = await POST(new Request(`${BASE}/api/revalidate?secret=s3creX`, { method: "POST" }));
+    expect(res.status).toBe(401);
+    expect(secretCalls).toEqual([["s3creX", "s3cret"]]);
+  });
 });

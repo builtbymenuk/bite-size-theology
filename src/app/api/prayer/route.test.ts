@@ -1,7 +1,8 @@
 import { describe, expect, test } from "vitest";
 import { CONFIGURED, withEnv } from "../../../../test/env";
-import { type Call, networkError, stubFetch } from "../../../../test/fetch-stub";
+import { networkError, stubFetch } from "../../../../test/fetch-stub";
 import { jsonRequest, rawRequest } from "../../../../test/request";
+import { contact } from "@/lib/content";
 
 const load = (env: Record<string, string> = CONFIGURED) =>
   withEnv(env, () => import("./route"));
@@ -113,20 +114,14 @@ describe("POST /api/prayer", () => {
     });
   });
 
-  test.todo("BUG: prayer with no configured recipient sends to an empty address");
-
-  // Documents CURRENT behaviour (src/app/api/prayer/route.ts:52): unlike contact/book there is no
-  // final fallback address, so with no admin/env recipient the route still calls Resend with
-  // `to: ""`. Resend rejects that, and the visitor gets a 500 for a config problem.
-  test("current behaviour: no recipient anywhere -> Resend called with to:'' -> 500", async () => {
+  // No admin or env recipient anywhere: fall back to the Contact page's address (as the contact
+  // route does) instead of handing Resend an empty "to" and failing the visitor with a 500.
+  test("no recipient configured anywhere → emails the Contact page address, 200", async () => {
     const { POST } = await load({ ...CONFIGURED, CONTACT_TO: "" });
-    const net = services({
-      "api.resend.com/emails": (c: Call) =>
-        (c.body as { to: string }).to ? { json: { id: "x" } } : { status: 422, json: { message: "to required" } },
-    });
+    const net = services({ "strapi.test/api/contact": { json: { data: null } } });
     const res = await POST(jsonRequest("/api/prayer", valid));
-    expect(net.to("api.resend.com/emails")[0].body).toMatchObject({ to: "" });
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(200);
+    expect(net.to("api.resend.com/emails")[0].body).toMatchObject({ to: contact.email.address });
   });
 
   test("Strapi being down doesn't block the email (store is best-effort)", async () => {
@@ -147,8 +142,4 @@ describe("POST /api/prayer", () => {
     expect(res.status).toBe(500);
     expect((await res.json()).ok).toBe(false);
   });
-});
-
-describe("form routes without abuse limits", () => {
-  test.todo("contact/book/prayer have no rate limit (only the newsletter route uses rate-limit.ts)");
 });

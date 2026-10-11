@@ -45,6 +45,11 @@ export async function priceCart(raw: unknown, wanted?: unknown): Promise<PricedC
   if (!cart.length) return { ok: false, status: 400, error: "Your cart is empty." };
 
   const store = await getStore();
+  // The storefront hides products while "coming soon", but the payment routes are public — without
+  // this a stale localStorage cart (or a direct POST) could still be charged.
+  if (store.comingSoon) {
+    return { ok: false, status: 403, error: "The shop isn't open yet." };
+  }
   const lines: PricedLine[] = [];
 
   for (const item of cart) {

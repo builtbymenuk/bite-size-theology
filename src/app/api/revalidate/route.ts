@@ -1,5 +1,6 @@
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
+import { secretMatches } from "@/lib/secret";
 
 // Cache tags == the content-type paths in cms.ts. A Strapi webhook (Settings → Webhooks)
 // POSTs here on content changes so prod updates immediately instead of waiting out the ISR
@@ -21,7 +22,7 @@ const ALIAS: Record<string, string> = {
 
 export async function POST(req: Request) {
   const secret = new URL(req.url).searchParams.get("secret");
-  if (!process.env.REVALIDATE_SECRET || secret !== process.env.REVALIDATE_SECRET) {
+  if (!secretMatches(secret, process.env.REVALIDATE_SECRET)) {
     return NextResponse.json({ ok: false, message: "invalid secret" }, { status: 401 });
   }
 

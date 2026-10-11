@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
+import { allow, clientIp } from "@/lib/rate-limit";
 import { validate, type PrayerPayload } from "@/lib/prayer";
-import { getNotificationSettings } from "@/lib/cms";
+import { getContact, getNotificationSettings } from "@/lib/cms";
 import { sendResend } from "@/lib/mail";
 
 export const runtime = "nodejs";
+
+const HOUR = 60 * 60 * 1000;
+const PER_IP = 5; // submissions per IP per hour
 
 const STRAPI = process.env.STRAPI_URL;
 const TOKEN = process.env.STRAPI_API_TOKEN;
@@ -43,13 +47,24 @@ export async function POST(req: Request) {
   const v = validate(body);
   if (!v.ok) return NextResponse.json({ ok: false, error: v.error }, { status: 400 });
   if (v.spam) return NextResponse.json({ ok: true }, { status: 200 }); // honeypot → silent drop
+  // Per-IP speed bump against flooding the inbox (same limiter as the newsletter). Checked after
+  // the honeypot so bots still get their silent "success".
+  if (!allow(`prayer:ip:${clientIp(req)}`, PER_IP, HOUR)) {
+    return NextResponse.json(
+      { ok: false, error: "Too many requests. Please try again later." },
+      { status: 429 },
+    );
+  }
 
   await store(v.data); // best-effort
   const d = v.data;
   const s = await getNotificationSettings();
-  const to = s.prayerTo || process.env.PRAYER_TO || process.env.CONTACT_TO;
+  // Last resort is the Contact page's address (as the contact route does), never an empty "to" —
+  // that made Resend reject every request when no recipient was configured.
+  const to =
+    s.prayerTo || process.env.PRAYER_TO || process.env.CONTACT_TO || (await getContact()).email.address;
   const emailed = await sendResend({
-    to: to || "",
+    to,
     replyTo: d.email || undefined,
     subject: `${d.urgent ? "[URGENT] " : ""}[Prayer] Request from ${d.name || "Anonymous"}`,
     text: [

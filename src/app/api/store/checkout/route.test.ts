@@ -3,10 +3,15 @@ import { withEnv } from "../../../../../test/env";
 import { networkError, stubFetch } from "../../../../../test/fetch-stub";
 import { paypalRoutes } from "../../../../../test/fixtures/payments";
 import { jsonRequest, rawRequest } from "../../../../../test/request";
+import { openShop, shop } from "../../../../../test/shop";
 
 // No STRAPI_URL → the static catalogue prices the cart (hoodie $45, sticker $7, shipping $5.99).
 const PAYPAL = { PAYPAL_CLIENT_ID: "client-id", PAYPAL_CLIENT_SECRET: "s3cret" };
-const load = (env: Record<string, string> = PAYPAL) => withEnv(env, () => import("./route"));
+const load = (env: Record<string, string> = PAYPAL) =>
+  withEnv(env, async () => {
+    openShop(); // the fallback store is "coming soon"; see test/shop.ts
+    return import("./route");
+  });
 const PATH = "/api/store/checkout";
 const HOODIE = "call-on-jesus-vintage-faded-hoodie";
 const STICKER = "honk-if-you-love-jesus-bumper-sticker";
@@ -37,7 +42,7 @@ describe("POST /api/store/checkout (PayPal create)", () => {
     ["missing size", [{ slug: HOODIE, qty: 1 }], 400],
     ["unknown slug", [{ slug: "ghost", qty: 1 }], 409],
     ["sold out", [{ slug: "the-untitled-book", qty: 1 }], 409],
-  ])("%s → %i from priceCart, PayPal never called", async (_label, items, status) => {
+  ])("%s → %s from priceCart, PayPal never called", async (_label, items, status) => {
     const { POST } = await load();
     const net = stubFetch({});
     const res = await POST(jsonRequest(PATH, { items }));
@@ -90,6 +95,15 @@ describe("POST /api/store/checkout (PayPal create)", () => {
     expect(pu.amount.currency_code).toBe("JPY");
     expect(pu.amount.value).toBe("1974");
     expect(pu.items[0].unit_amount.value).toBe("1064");
+  });
+
+  test("403 while the store is 'coming soon'; PayPal never called", async () => {
+    shop.open = false;
+    const { POST } = await load();
+    const net = stubFetch({});
+    const res = await POST(jsonRequest(PATH, { items: [{ slug: STICKER, qty: 1 }] }));
+    expect(res.status).toBe(403);
+    expect(net.calls).toHaveLength(0);
   });
 
   test("502 when PayPal rejects the order", async () => {

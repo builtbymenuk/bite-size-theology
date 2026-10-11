@@ -49,6 +49,25 @@ export interface DonorMeta {
   anonymous?: boolean;
 }
 
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const text = (v: unknown, max: number) => String(v ?? "").trim().slice(0, max);
+
+// The trust boundary for donor details, shared by both gateways. Never rejects: by the time PayPal
+// capture runs the money has moved, so bad input is cleaned up (trimmed, length-capped, an invalid
+// email dropped) rather than failing the gift. Caps also keep every value under Stripe's 500-char
+// metadata limit.
+export function cleanMeta(raw: unknown): DonorMeta {
+  const m = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+  const email = text(m.email, 254);
+  return {
+    name: text(m.name, 100),
+    email: EMAIL.test(email) ? email : "",
+    fund: text(m.fund, 100),
+    message: text(m.message, 500),
+    anonymous: m.anonymous === true || m.anonymous === "true",
+  };
+}
+
 // Idempotency guard: has a donation for this provider payment already been saved? Needs the token.
 export async function donationExists(
   provider: "paypal" | "stripe",

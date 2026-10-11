@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { secretMatches } from "@/lib/secret";
 import { addContact, audienceConfigured, unsubscribeContact } from "@/lib/newsletter-audience";
 import { configured, listSubscribers } from "@/lib/newsletter-store";
 
@@ -24,7 +25,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function GET(req: Request) {
   const secret = new URL(req.url).searchParams.get("secret");
-  if (!process.env.REVALIDATE_SECRET || secret !== process.env.REVALIDATE_SECRET) {
+  if (!secretMatches(secret, process.env.REVALIDATE_SECRET)) {
     return NextResponse.json({ ok: false, error: "invalid secret" }, { status: 401 });
   }
   if (!configured() || !audienceConfigured()) {

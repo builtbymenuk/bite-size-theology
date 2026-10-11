@@ -57,15 +57,8 @@ Runs on every pull request and on every push to `main`, on Node 20 (the producti
 - **Known bugs:** write them as `test.todo("BUG: …")`, so they show up in every run until fixed.
 - **E2E:** import `test` and `expect` from `e2e/fixtures.ts`. It hides the newsletter popup, fails on console errors, and provides `hydrated()` to wait for React before interacting.
 
-## Known gaps, tracked as `test.todo`
+## Known gaps
 
-Run `npm test` to see the list. Today it includes:
-- the store accepts orders while "coming soon";
-- PayPal store capture doesn't compare the captured total to the cart;
-- PayPal donation details aren't validated;
-- Stripe store orders in zero-decimal currencies (JPY) are saved 100× too small;
-- prayer requests fail when no recipient is configured;
-- contact, booking and prayer forms have no rate limit;
-- the webhook secret is compared non-constant-time.
+Write unfixed bugs as `test.todo("BUG: …")` so they show up in every `npm test` run until fixed. There are none in the website suite right now.
 
-The CMS suite pins one known leak: `?status=draft` on the public posts API returns unpublished posts.
+The CMS blocks anonymous `?status=draft` reads on posts (`cms/src/api/post/routes/post.ts`); `cms/tests/draft-publish.test.js` guards it.
