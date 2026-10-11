@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCart } from "@/lib/cart";
+import { useSessionJson } from "@/lib/session-item";
 
 interface LastOrder {
   orderNumber?: string;
@@ -13,53 +14,40 @@ interface LastOrder {
 }
 
 export default function OrderConfirmed() {
-  const [order, setOrder] = useState<LastOrder | null>(null);
-  const [loaded, setLoaded] = useState(false);
-  const [finalizing, setFinalizing] = useState(false);
+  const [confirmed, setConfirmed] = useState<LastOrder | null>(null);
   const params = useSearchParams();
   const { clear } = useCart();
   const ran = useRef(false); // StrictMode double-invoke guard
 
   const sessionId = params.get("session_id");
   const isStripe = params.get("provider") === "stripe" && !!sessionId;
+  // Returning from Stripe starts in the finalizing state, rather than flipping it inside the effect.
+  const [finalizing, setFinalizing] = useState(isStripe);
+  // PayPal path: the capture step stashed the summary before routing here.
+  const stashed = useSessionJson<LastOrder>("bst-last-order");
+  const order = isStripe ? confirmed : stashed;
 
   useEffect(() => {
-    if (ran.current) return;
+    if (ran.current || !isStripe) return;
     ran.current = true;
 
-    if (isStripe) {
-      // Returned from Stripe's hosted page → finalize the order server-side, then clear the cart.
-      setFinalizing(true);
-      fetch("/api/store/stripe/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId }),
+    // Returned from Stripe's hosted page → finalize the order server-side, then clear the cart.
+    fetch("/api/store/stripe/confirm", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: sessionId }),
+    })
+      .then((r) => r.json())
+      .then((result) => {
+        if (result?.ok) {
+          setConfirmed(result);
+          clear();
+        }
       })
-        .then((r) => r.json())
-        .then((result) => {
-          if (result?.ok) {
-            setOrder(result);
-            clear();
-          }
-        })
-        .catch(() => {
-          /* leave the generic thank-you fallback */
-        })
-        .finally(() => {
-          setFinalizing(false);
-          setLoaded(true);
-        });
-      return;
-    }
-
-    // PayPal path: the capture step stashed the summary before routing here.
-    try {
-      const raw = sessionStorage.getItem("bst-last-order");
-      if (raw) setOrder(JSON.parse(raw));
-    } catch {
-      /* ignore */
-    }
-    setLoaded(true);
+      .catch(() => {
+        /* leave the generic thank-you fallback */
+      })
+      .finally(() => setFinalizing(false));
   }, [isStripe, sessionId, clear]);
 
   return (
@@ -80,7 +68,7 @@ export default function OrderConfirmed() {
       </h1>
       {finalizing ? (
         <p className="mt-4 text-sm text-ink/60">Finalizing your order…</p>
-      ) : loaded && order?.orderNumber ? (
+      ) : order?.orderNumber ? (
         <p className="mt-4 text-sm text-ink/60">
           Your order{" "}
           <span className="font-medium text-ink">{order.orderNumber}</span> is

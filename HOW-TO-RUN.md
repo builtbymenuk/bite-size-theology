@@ -43,6 +43,10 @@ Open **http://localhost:3000**.
 - **Payments are optional to run.** PayPal/Stripe keys in `.env.local` only need to be filled to test checkout — leave them blank otherwise. Store orders only save if `STRAPI_API_TOKEN` is set (create one in Strapi → Settings → API Tokens).
 - **Regenerate the Strapi secrets** in `cms/.env` before going live — the `.env.example` placeholders are not secure.
 
+## Testing
+
+`npm test` runs the unit, API and component tests, `npm run test:e2e` runs the browser tests, and `cd cms && npm test` runs the CMS tests. CI runs all of them on every pull request and before every deploy. See [TESTING.md](TESTING.md).
+
 ## Deploying to production
 
 A Docker setup is included — `cp .env.docker.example .env`, fill it in, then

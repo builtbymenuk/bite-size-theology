@@ -7,10 +7,9 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 
 export interface CartItem {
@@ -42,33 +41,48 @@ interface CartValue {
 
 const Ctx = createContext<CartValue | null>(null);
 
+// localStorage is an external store, so the cart reads it through useSyncExternalStore: the server
+// render and hydration use EMPTY (no mismatch), then React re-renders with the saved cart. Writes go
+// through write(), which persists and notifies — one source of truth instead of a state copy that
+// two effects had to keep in sync.
+const EMPTY: CartItem[] = [];
+let snapshot: CartItem[] | null = null; // cached so getSnapshot returns a stable reference
+const listeners = new Set<() => void>();
+
+function read(): CartItem[] {
+  if (snapshot === null) {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(KEY) ?? "null");
+      snapshot = Array.isArray(parsed) ? parsed : EMPTY;
+    } catch {
+      snapshot = EMPTY; // corrupt or unavailable storage → start empty
+    }
+  }
+  return snapshot;
+}
+
+function write(next: CartItem[]) {
+  snapshot = next;
+  try {
+    localStorage.setItem(KEY, JSON.stringify(next));
+  } catch {
+    /* storage full / disabled — cart still works in-memory */
+  }
+  listeners.forEach((l) => l());
+}
+
+function subscribe(l: () => void) {
+  listeners.add(l);
+  return () => {
+    listeners.delete(l);
+  };
+}
+
+const setItems = (fn: (cur: CartItem[]) => CartItem[]) => write(fn(read()));
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const items = useSyncExternalStore(subscribe, read, () => EMPTY);
   const [isOpen, setOpen] = useState(false);
-  const firstSave = useRef(true);
-
-  // Load once after mount → server render and first client render both start from [] (no mismatch).
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setItems(JSON.parse(raw));
-    } catch {
-      /* ignore corrupt storage */
-    }
-  }, []);
-
-  // Persist on change; skip the initial mount so we never clobber saved data with [].
-  useEffect(() => {
-    if (firstSave.current) {
-      firstSave.current = false;
-      return;
-    }
-    try {
-      localStorage.setItem(KEY, JSON.stringify(items));
-    } catch {
-      /* storage full / disabled — cart still works in-memory */
-    }
-  }, [items]);
 
   // All callbacks use functional setState → no dependency on `items`, so they stay referentially
   // stable. That keeps the context value (and effects that depend on e.g. closeCart, like the
@@ -100,7 +114,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
-  const clear = useCallback(() => setItems([]), []);
+  const clear = useCallback(() => setItems(() => []), []);
   const openCart = useCallback(() => setOpen(true), []);
   const closeCart = useCallback(() => setOpen(false), []);
   const keyOf = useCallback<CartValue["keyOf"]>(

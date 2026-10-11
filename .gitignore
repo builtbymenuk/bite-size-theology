@@ -34,6 +34,7 @@ yarn-error.log*
 .env*
 !.env.example
 !.env.docker.example
+!.env.test.example
 
 # strapi cms (separate app in /cms with its own deps + build output)
 /cms/node_modules
@@ -62,3 +63,8 @@ docs/HOSTINGER-ACCESS.pdf
 
 # playwright mcp artifacts
 /.playwright-mcp
+
+# test artifacts
+/test-results
+/playwright-report
+/blob-report

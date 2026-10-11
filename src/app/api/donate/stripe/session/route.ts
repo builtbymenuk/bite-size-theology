@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Card giving is not configured." }, { status: 503 });
   }
 
-  let body: any;
+  let body: Record<string, unknown> | null;
   try {
     body = await req.json();
   } catch {

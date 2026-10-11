@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useSessionJson } from "@/lib/session-item";
 
 interface LastGift {
   amount?: number;
@@ -16,37 +17,29 @@ export default function DonateThankYou({
   heading: string;
   body: string;
 }) {
-  const [gift, setGift] = useState<LastGift | null>(null);
-  const [finalizing, setFinalizing] = useState(false);
+  const [confirmed, setConfirmed] = useState<LastGift | null>(null);
   const params = useSearchParams();
   const ran = useRef(false);
   const sessionId = params.get("session_id");
+  // Returning from Stripe starts in the finalizing state, rather than flipping it inside the effect.
+  const [finalizing, setFinalizing] = useState(Boolean(sessionId));
+  // PayPal path stashed the result before routing here; Stripe's comes back from the confirm call.
+  const stashed = useSessionJson<LastGift>("bst-last-donation");
+  const gift = sessionId ? confirmed : stashed;
 
   useEffect(() => {
-    if (ran.current) return;
+    if (ran.current || !sessionId) return;
     ran.current = true;
-
-    if (sessionId) {
-      // Returned from Stripe → finalize + record server-side.
-      setFinalizing(true);
-      fetch("/api/donate/stripe/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId }),
-      })
-        .then((r) => r.json())
-        .then((res) => res?.ok && setGift(res))
-        .catch(() => {})
-        .finally(() => setFinalizing(false));
-      return;
-    }
-    // PayPal path stashed the result before routing here.
-    try {
-      const raw = sessionStorage.getItem("bst-last-donation");
-      if (raw) setGift(JSON.parse(raw));
-    } catch {
-      /* ignore */
-    }
+    // Returned from Stripe → finalize + record server-side.
+    fetch("/api/donate/stripe/confirm", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: sessionId }),
+    })
+      .then((r) => r.json())
+      .then((res) => res?.ok && setConfirmed(res))
+      .catch(() => {})
+      .finally(() => setFinalizing(false));
   }, [sessionId]);
 
   const amountLabel =
