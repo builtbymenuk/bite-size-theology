@@ -24,9 +24,10 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function NewsletterPopup({ copy }: { copy: Newsletter }) {
   const pathname = usePathname();
-  // The shop is the one flow we stay out of: CartBar is fixed to the bottom edge there on mobile,
-  // and interrupting a checkout to ask for an email address is the wrong trade anyway.
-  const onStore = pathname?.startsWith("/store") ?? false;
+  // Stay out of the shop (CartBar owns the bottom edge on mobile, and interrupting a checkout for
+  // an email is the wrong trade) and out of every other form: on a phone the sheet would slide up
+  // over the submit or pay button mid-entry.
+  const quietRoute = /^\/(store|donate|contact|book-caleb|prayer)(\/|$)/.test(pathname ?? "");
 
   const [eligible, setEligible] = useState(false); // cleared the storage + server gates
   const [timerDone, setTimerDone] = useState(false);
@@ -35,7 +36,7 @@ export default function NewsletterPopup({ copy }: { copy: Newsletter }) {
   // Derived, not stored. Every input is already state, so an `open` flag would just be a copy that
   // has to be kept in sync from several effects — and syncing it is what makes React warn about
   // cascading renders. Leaving the shop, for instance, brings the card back on its own.
-  const open = eligible && timerDone && !closed && !onStore;
+  const open = eligible && timerDone && !closed && !quietRoute;
 
   const close = useCallback(() => {
     setClosed(true);
@@ -45,7 +46,7 @@ export default function NewsletterPopup({ copy }: { copy: Newsletter }) {
   // Gate 1: is there anything to ask this person? Cheapest checks first, so a subscriber never
   // pays for a round trip and never sees a flash before one resolves.
   useEffect(() => {
-    if (!copy.popupEnabled || onStore) return;
+    if (!copy.popupEnabled || quietRoute) return;
     if (suppressed() || seenThisSession()) return;
 
     let cancelled = false;
@@ -67,7 +68,7 @@ export default function NewsletterPopup({ copy }: { copy: Newsletter }) {
     return () => {
       cancelled = true;
     };
-  }, [copy.popupEnabled, onStore]);
+  }, [copy.popupEnabled, quietRoute]);
 
   // Gate 2: the timer. Set in Strapi ("Popup — Delay"), clamped to 2–120s by getNewsletter().
   useEffect(() => {
@@ -130,7 +131,7 @@ export default function NewsletterPopup({ copy }: { copy: Newsletter }) {
               type="button"
               onClick={close}
               aria-label="Close"
-              className="absolute right-3 top-2.5 z-10 text-2xl leading-none text-cream/40 transition-colors hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream"
+              className="absolute right-1 top-1 z-10 flex h-11 w-11 items-center justify-center text-2xl leading-none text-cream/40 transition-colors hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream"
             >
               ×
             </button>

@@ -51,7 +51,7 @@ export default function AddToCart({ product }: { product: StoreProduct }) {
                   setErr(false);
                 }}
                 aria-pressed={size === s}
-                className={`min-w-11 rounded-full border px-4 py-2 text-xs uppercase tracking-wider transition-colors ${
+                className={`h-11 min-w-11 rounded-full border px-4 text-xs uppercase tracking-wider transition-colors ${
                   size === s
                     ? "border-ink bg-ink text-cream"
                     : "border-ink/20 text-ink hover:border-ink"
@@ -69,7 +69,7 @@ export default function AddToCart({ product }: { product: StoreProduct }) {
           <button
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             aria-label="Decrease quantity"
-            className="px-3.5 py-2 text-ink/60 transition-colors hover:text-ink"
+            className="flex h-11 w-11 items-center justify-center text-ink/60 transition-colors hover:text-ink"
           >
             −
           </button>
@@ -77,7 +77,7 @@ export default function AddToCart({ product }: { product: StoreProduct }) {
           <button
             onClick={() => setQty((q) => q + 1)}
             aria-label="Increase quantity"
-            className="px-3.5 py-2 text-ink/60 transition-colors hover:text-ink"
+            className="flex h-11 w-11 items-center justify-center text-ink/60 transition-colors hover:text-ink"
           >
             +
           </button>

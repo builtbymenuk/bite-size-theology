@@ -5,7 +5,7 @@ import NewsletterForm from "@/components/newsletter/NewsletterForm";
 export default async function Footer() {
   const [footer, newsletter] = await Promise.all([getFooter(), getNewsletter()]);
   return (
-    <footer className="flex min-h-screen flex-col justify-center bg-charcoal text-cream">
+    <footer className="flex flex-col justify-center bg-charcoal md:min-h-screen text-cream">
       <div className="mx-auto w-full max-w-7xl px-6 py-20">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
           {/* First cell: the signup leads the row, and its gold label uses the same treatment as
@@ -14,18 +14,19 @@ export default async function Footer() {
             <NewsletterForm variant="footer" copy={newsletter} />
           </div>
 
-          <div className="flex gap-16">
+          <div className="flex flex-wrap gap-x-16 gap-y-10">
             {footer.columns.map((col) => (
               <div key={col.title}>
                 <p className="text-[11px] uppercase tracking-[0.25em] text-gold">
                   {col.title}
                 </p>
-                <ul className="mt-4 space-y-2">
+                {/* Phones: rows are padded to a ~40px tap target; desktop keeps the tight list. */}
+                <ul className="mt-2 md:mt-4 md:space-y-2">
                   {col.links.map((l) => (
                     <li key={l.label}>
                       <a
                         {...(linkProps(l.url).href ? linkProps(l.url) : { href: "#" })}
-                        className="text-sm text-cream/70 transition-colors hover:text-cream"
+                        className="inline-block py-2.5 text-sm text-cream/70 transition-colors hover:text-cream md:py-0"
                       >
                         {l.label}
                       </a>
@@ -58,12 +59,12 @@ export default async function Footer() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-cream/10 pt-6 text-[11px] uppercase tracking-widest text-cream/50 md:flex-row md:justify-between">
           <span>{footer.copyright}</span>
-          <div className="flex gap-6">
+          <div className="-my-2 flex gap-6 md:my-0">
             {footer.legal.map((l) => (
               <a
                 key={l.label}
                 {...(linkProps(l.url).href ? linkProps(l.url) : { href: "#" })}
-                className="hover:text-cream"
+                className="py-2 hover:text-cream md:py-0"
               >
                 {l.label}
               </a>

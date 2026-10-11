@@ -23,7 +23,7 @@ export default async function BookCalebPage() {
     <div className="min-h-screen bg-cream text-ink">
       <section className="mx-auto max-w-7xl px-6 pt-28 md:pt-32">
         <Reveal>
-          <h1 className="font-display text-6xl leading-[0.95] tracking-tight md:text-7xl lg:text-[5.25rem]">
+          <h1 className="font-display text-[clamp(2.75rem,14vw,3.75rem)] leading-[0.95] tracking-tight md:text-7xl lg:text-[5.25rem]">
             {page.headingLead}{" "}
             <span className="italic text-gold">{page.headingScript}</span>
           </h1>
@@ -59,7 +59,7 @@ export default async function BookCalebPage() {
               <p className={label}>{page.directEmail.label}</p>
               <a
                 href={`mailto:${page.directEmail.address}`}
-                className="mt-4 block text-lg text-ink transition-colors hover:text-gold"
+                className="mt-2 block break-words py-2 text-lg text-ink transition-colors hover:text-gold"
               >
                 {page.directEmail.address}
               </a>

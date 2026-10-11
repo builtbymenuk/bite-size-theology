@@ -42,7 +42,7 @@ export default async function ContactPage() {
     <div className="min-h-screen bg-cream text-ink">
       <section className="mx-auto max-w-7xl px-6 pt-28 md:pt-32">
         <Reveal>
-          <h1 className="font-display text-6xl leading-[0.95] tracking-tight md:text-7xl lg:text-[5.25rem]">
+          <h1 className="font-display text-[clamp(2.75rem,14vw,3.75rem)] leading-[0.95] tracking-tight md:text-7xl lg:text-[5.25rem]">
             {contact.headingLead}{" "}
             <span className="italic text-gold">{contact.headingScript}</span>
           </h1>
@@ -60,7 +60,7 @@ export default async function ContactPage() {
               <p className={label}>{contact.email.label}</p>
               <a
                 href={`mailto:${contact.email.address}`}
-                className="mt-4 block text-lg text-ink transition-colors hover:text-gold"
+                className="mt-2 block break-words py-2 text-lg text-ink transition-colors hover:text-gold"
               >
                 {contact.email.address}
               </a>
@@ -123,7 +123,7 @@ export default async function ContactPage() {
 
             <RevealItem className="border-t border-ink/10 pt-6">
               <p className={label}>{contact.connectLabel}</p>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-2 md:mt-4 md:space-y-3">
                 {contact.socials.map((s) => {
                   const href = socialHref(s.name, s.handle, s.url);
                   const row = (
@@ -131,7 +131,7 @@ export default async function ContactPage() {
                       <span className="text-sm text-ink transition-colors group-hover:text-gold">
                         {s.name}
                       </span>
-                      <span className="text-xs text-ink/40">{s.handle}</span>
+                      <span className="text-xs text-ink/55">{s.handle}</span>
                     </>
                   );
                   return (
@@ -141,7 +141,7 @@ export default async function ContactPage() {
                           href={href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group flex flex-1 items-baseline justify-between gap-4"
+                          className="group flex flex-1 items-baseline justify-between gap-4 py-3 md:py-0"
                         >
                           {row}
                         </a>

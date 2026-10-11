@@ -80,13 +80,13 @@ export default function PostIndex({
   return (
     <>
       {used.length ? (
-        <div className="sticky top-20 z-20 -mx-6 mb-2 flex gap-2 overflow-x-auto bg-cream/85 px-6 py-4 backdrop-blur-md">
+        <div className="sticky top-20 z-20 -mx-6 mb-2 flex gap-2 overflow-x-auto bg-cream/85 px-6 py-4 backdrop-blur-md [scrollbar-width:none]">
           {[{ slug: null, name: blog.allLabel }, ...used].map((c) => (
             <button
               key={c.slug ?? "all"}
               type="button"
               onClick={() => setActive(c.slug)}
-              className={`shrink-0 rounded-full border px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] transition-colors ${
+              className={`shrink-0 rounded-full border px-4 py-3 text-[11px] md:py-1.5 font-medium uppercase tracking-[0.22em] transition-colors ${
                 active === c.slug
                   ? "border-ink bg-ink text-cream"
                   : "border-ink/15 text-ink/60 hover:border-ink/40 hover:text-ink"

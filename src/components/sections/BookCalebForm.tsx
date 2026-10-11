@@ -16,7 +16,7 @@ type Tab = "church" | "corporate";
 // Shared underline field style (design shows borderless inputs with a single bottom rule).
 const field =
   "w-full border-b border-ink/15 bg-transparent py-3 text-sm text-ink placeholder:text-ink/40 focus:border-ink outline-none transition-colors";
-const labelCls = "mb-0.5 block text-[10px] uppercase tracking-[0.18em] text-ink/45";
+const labelCls = "mb-0.5 block text-[11px] uppercase tracking-[0.18em] text-ink/60";
 
 function Field({
   label, name, children, required, className,
@@ -38,7 +38,7 @@ function Field({
 }
 
 function Text({
-  label, name, placeholder, required, type = "text", className,
+  label, name, placeholder, required, type = "text", className, autoComplete,
 }: {
   label: string;
   name: string;
@@ -46,6 +46,7 @@ function Text({
   required?: boolean;
   type?: string;
   className?: string;
+  autoComplete?: string;
 }) {
   return (
     <Field label={label} name={name} required={required} className={className}>
@@ -55,6 +56,7 @@ function Text({
         name={name}
         required={required}
         placeholder={placeholder}
+        autoComplete={autoComplete}
         className={field}
       />
     </Field>
@@ -172,19 +174,23 @@ export default function BookCalebForm({ form }: { form: BookCaleb["form"] }) {
   };
 
   const tabCls = (active: boolean) =>
-    `flex-1 rounded-full px-4 py-2.5 text-[10px] uppercase tracking-[0.18em] transition-colors sm:text-[11px] ${
+    `flex-1 rounded-full px-4 py-3.5 text-[11px] uppercase tracking-[0.18em] transition-colors md:py-2.5 ${
       active ? "bg-ink text-cream" : "text-ink/50 hover:text-ink"
     }`;
 
   return (
-    <div className="rounded-[2rem] bg-white p-8 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)] md:p-12">
+    <div className="rounded-[2rem] bg-white p-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)] sm:p-8 md:p-12">
       <h2 className="font-display text-3xl md:text-4xl">{form.heading}</h2>
       <p className="mt-2 text-[11px] uppercase tracking-[0.25em] text-ink/40">
         {form.subheading}
       </p>
 
       {sent ? (
-        <p className="mt-12 max-w-sm text-sm leading-relaxed text-ink/70">{form.success}</p>
+        // Focused on mount: this form is long, so on a phone the confirmation would otherwise
+        // appear far above wherever the submit button left the viewport.
+        <p ref={(el) => el?.focus()} tabIndex={-1} className="mt-12 max-w-sm text-sm leading-relaxed text-ink/70 outline-none">
+          {form.success}
+        </p>
       ) : (
         <>
           {/* Same pill vocabulary as ListenWatch — one rail, the active half filled. */}
@@ -231,16 +237,17 @@ export default function BookCalebForm({ form }: { form: BookCaleb["form"] }) {
 
             <Legend>Your information</Legend>
             <div className={grid}>
-              <Text label="First name" name="firstName" required placeholder="John" />
-              <Text label="Last name" name="lastName" required placeholder="Smith" />
+              <Text label="First name" name="firstName" autoComplete="given-name" required placeholder="John" />
+              <Text label="Last name" name="lastName" autoComplete="family-name" required placeholder="Smith" />
               <Text
                 label="Email address"
                 name="email"
                 type="email"
+                autoComplete="email"
                 required
                 placeholder={church ? "john@yourchurch.com" : "john@yourcompany.com"}
               />
-              <Text label="Phone number" name="phone" type="tel" required placeholder="(555) 000-0000" />
+              <Text label="Phone number" name="phone" type="tel" autoComplete="tel" required placeholder="(555) 000-0000" />
             </div>
             <Text
               label="Your role / title"
@@ -256,18 +263,18 @@ export default function BookCalebForm({ form }: { form: BookCaleb["form"] }) {
             <Legend>{church ? "Your church / organization" : "Your organization"}</Legend>
             {church ? (
               <div className={grid}>
-                <Text label="Church / ministry name" name="organization" required placeholder="Grace Community Church" />
+                <Text label="Church / ministry name" name="organization" autoComplete="organization" required placeholder="Grace Community Church" />
                 <Text label="City & state" name="location" required placeholder="Atlanta, GA" />
                 <Select label="Average weekend attendance" name="attendance" options={form.attendanceOptions} placeholder="Select range" />
-                <Text label="Website" name="orgWebsite" type="url" placeholder="https://yourchurch.com" />
+                <Text label="Website" name="orgWebsite" type="url" autoComplete="url" placeholder="https://yourchurch.com" />
               </div>
             ) : (
               <div className={grid}>
-                <Text label="Organization name" name="organization" required placeholder="Company or team name" />
+                <Text label="Organization name" name="organization" autoComplete="organization" required placeholder="Company or team name" />
                 <Select label="Industry / type" name="industry" required options={form.industryOptions} placeholder="Select type" />
                 <Text label="City & state" name="location" required placeholder="Dallas, TX" />
                 <Select label="Organization size" name="orgSize" options={form.attendanceOptions} placeholder="Select range" />
-                <Text label="Website" name="orgWebsite" type="url" placeholder="https://yourorganization.com" className="md:col-span-2" />
+                <Text label="Website" name="orgWebsite" type="url" autoComplete="url" placeholder="https://yourorganization.com" className="md:col-span-2" />
               </div>
             )}
 
@@ -357,7 +364,7 @@ export default function BookCalebForm({ form }: { form: BookCaleb["form"] }) {
                   />
                 </svg>
               </button>
-              <p className="mt-3 text-[11px] text-ink/40">{form.note}</p>
+              <p className="mt-3 text-[11px] text-ink/55">{form.note}</p>
             </div>
           </form>
         </>

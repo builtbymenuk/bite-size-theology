@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useLenis } from "lenis/react";
+import { useDialog } from "@/components/ui/useDialog";
 import Reveal, { RevealItem } from "@/components/ui/Reveal";
 import TileReveal from "@/components/ui/TileReveal";
 import ArrowButton from "@/components/ui/ArrowButton";
@@ -61,41 +61,8 @@ function PlayGlyph({ className }: { className?: string }) {
 }
 
 function Lightbox({ card, onClose }: { card: SeriesCardData; onClose: () => void }) {
-  const lenis = useLenis();
   const panelRef = useRef<HTMLDivElement>(null);
-  const restoreRef = useRef<HTMLElement | null>(null);
-
-  // Same contract as CartDrawer: stop the Lenis-driven background scroll, focus into the panel,
-  // trap Tab, Esc closes, focus goes back to the poster that opened it.
-  useEffect(() => {
-    restoreRef.current = document.activeElement as HTMLElement | null;
-    lenis?.stop();
-
-    const focusables = () =>
-      Array.from(
-        panelRef.current?.querySelectorAll<HTMLElement>(
-          'a[href],button:not([disabled]),iframe,input,select,textarea,[tabindex]:not([tabindex="-1"])',
-        ) ?? [],
-      );
-    focusables()[0]?.focus();
-
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { onClose(); return; }
-      if (e.key !== "Tab") return;
-      const f = focusables();
-      if (!f.length) return;
-      const first = f[0];
-      const last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    };
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      lenis?.start();
-      restoreRef.current?.focus?.();
-    };
-  }, [lenis, onClose]);
+  useDialog(true, onClose, panelRef);
 
   return (
     <motion.div
@@ -104,14 +71,16 @@ function Lightbox({ card, onClose }: { card: SeriesCardData; onClose: () => void
       transition={{ duration: 0.3, ease: EASE }}
     >
       <div className="absolute inset-0 bg-ink/70 backdrop-blur-sm" onClick={onClose} aria-hidden />
-      <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8">
+      {/* Phones: edge-to-edge video (every pixel of width counts at 375px); Close stays below it,
+          where the thumb already is. */}
+      <div className="absolute inset-0 flex items-center justify-center sm:p-4 md:p-8">
         <motion.div
           ref={panelRef} role="dialog" aria-modal="true" aria-label={card.title || "Sermon"}
           className="w-full max-w-4xl"
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 16 }}
           transition={{ duration: 0.35, ease: EASE }}
         >
-          <div className="overflow-hidden rounded-2xl bg-ink shadow-2xl">
+          <div className="overflow-hidden bg-ink shadow-2xl sm:rounded-2xl">
             {/* autoplay is legitimate here — it only ever runs because the visitor clicked play. */}
             <iframe
               className="aspect-video w-full"
@@ -122,7 +91,7 @@ function Lightbox({ card, onClose }: { card: SeriesCardData; onClose: () => void
               allowFullScreen
             />
           </div>
-          <div className="mt-4 flex items-baseline justify-between gap-6">
+          <div className="mt-4 flex items-center justify-between gap-4 px-4 sm:gap-6 sm:px-0">
             <p className="font-display text-xl text-cream md:text-2xl">
               {card.title}
               {card.note ? (
@@ -131,7 +100,7 @@ function Lightbox({ card, onClose }: { card: SeriesCardData; onClose: () => void
             </p>
             <button
               type="button" onClick={onClose} aria-label="Close player"
-              className="shrink-0 rounded-full border border-cream/25 px-4 py-2 text-[11px] uppercase tracking-[0.22em] text-cream/80 transition hover:bg-cream/10"
+              className="shrink-0 rounded-full border border-cream/25 px-5 py-3.5 text-[11px] sm:px-4 sm:py-2 uppercase tracking-[0.22em] text-cream/80 transition hover:bg-cream/10"
             >
               Close
             </button>
@@ -240,7 +209,7 @@ function Poster({
         {card.title}
       </h3>
       {card.note ? (
-        <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-ink/45">{card.note}</p>
+        <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-ink/55">{card.note}</p>
       ) : null}
       {card.playlistId ? (
         <a
@@ -248,7 +217,7 @@ function Poster({
           target="_blank"
           rel="noopener noreferrer"
           tabIndex={decorative ? -1 : undefined}
-          className="mt-2 inline-block text-[11px] uppercase tracking-[0.22em] text-ink/50 transition-colors hover:text-gold"
+          className="mt-1 inline-block py-2 text-[11px] uppercase tracking-[0.22em] text-ink/50 transition-colors hover:text-gold"
         >
           Full series →
         </a>

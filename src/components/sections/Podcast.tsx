@@ -129,7 +129,7 @@ function Identity({ podcast }: { podcast: Podcast }) {
           <p className="text-[13px] font-semibold uppercase tracking-wide text-ink">
             {podcast.badge.rank}
           </p>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-ink/45">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-ink/55 md:text-[10px] md:text-ink/45">
             {podcast.badge.category}
           </p>
         </div>
@@ -182,7 +182,7 @@ export default function Podcast({ podcast }: { podcast: Podcast }) {
     <section ref={ref} className="overflow-hidden bg-cream py-16 md:py-24">
       {/* Top section — normal flow, ABOVE the carousel: rule + eyebrow/note, then the quote.
           Full-width with a small gutter (not the centered max-w column). */}
-      <Reveal stagger className="px-8">
+      <Reveal stagger className="px-6 md:px-8">
         <RevealItem className="flex items-start justify-between gap-6 border-t border-ink/10 pt-5">
           <p className="flex items-center gap-2.5 text-[11px] uppercase tracking-[0.25em] text-ink/60">
             <span className="h-1.5 w-1.5 rounded-full bg-ink" />

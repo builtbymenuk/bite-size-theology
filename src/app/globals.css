@@ -24,6 +24,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Touch: no grey flash on tap. Below md every field renders at 16px — anything smaller makes iOS
+   Safari zoom the page on focus. Desktop keeps the designed text-sm. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 /* Lenis (root mode) — keeps native scroll working with fixed/sticky */
 html.lenis,
 html.lenis body {

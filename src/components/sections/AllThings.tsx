@@ -59,25 +59,27 @@ export default async function AllThings() {
         {/* Testimony — 2 wide */}
         <RevealItem className="lg:col-span-2">
           <BentoCard className="h-full min-h-[300px] bg-[#dfe7f1] p-6">
-            <div className="relative flex h-full items-center">
+            {/* Phones: the polaroids sit in flow above the title (still spilling past the top edge)
+                instead of floating over it; from md they go back to the absolute break-out. */}
+            <div className="relative flex h-full flex-col-reverse justify-end md:flex-row md:items-center md:justify-start">
               <div>
                 <h3 className="font-display text-2xl">{c.testimony.title}</h3>
                 {linkProps(l.testimony).href ? (
                   <a
                     {...linkProps(l.testimony)}
-                    className="mt-3 inline-block text-[11px] uppercase tracking-widest text-ink/60 transition-colors hover:text-ink"
+                    className="mt-1 inline-block py-2 text-[11px] uppercase tracking-widest text-ink/60 transition-colors hover:text-ink"
                   >
                     {c.testimony.cta} →
                   </a>
                 ) : (
-                  <button className="mt-3 text-[11px] uppercase tracking-widest text-ink/60">
+                  <button className="mt-1 py-2 text-[11px] uppercase tracking-widest text-ink/60">
                     {c.testimony.cta} →
                   </button>
                 )}
               </div>
               {/* Oversized polaroids spilling past the card's top-right edge for a creative break-out. */}
               <PolaroidStack
-                className="absolute -top-12 right-2 h-64 w-72 shrink-0 md:-right-10 md:-top-16 md:w-80"
+                className="-mt-6 ml-auto h-64 w-72 max-w-full shrink-0 md:absolute md:-right-10 md:-top-16 md:mt-0 md:w-80"
                 photos={[
                   { tone: "warm", label: "Testimony", src: img.testimony, rotate: 6, className: "absolute right-0 top-4 w-40 md:w-48" },
                   { tone: "cool", label: "Vlog", src: img.vlog, rotate: -8, className: "absolute left-0 top-12 w-36 md:w-44" },
@@ -137,14 +139,14 @@ export default async function AllThings() {
 
         {/* Give Now */}
         <RevealItem>
-          <BentoCard className="h-full min-h-[300px] bg-[#dfe7f1] p-5">
+          <BentoCard className="h-full min-h-[180px] bg-[#dfe7f1] p-5 md:min-h-[300px]">
             <div className="flex h-full flex-col justify-between">
               <h3 className="font-display text-2xl">{c.give.title}</h3>
               <div>
                 <p className="text-xs text-ink/60">{c.give.body}</p>
                 <a
                   {...(linkProps(l.give).href ? linkProps(l.give) : { href: "#" })}
-                  className="mt-1 inline-block text-xs font-medium underline"
+                  className="mt-1 inline-block py-2 text-xs font-medium underline md:py-0"
                 >
                   {c.give.cta}
                 </a>
@@ -177,7 +179,7 @@ export default async function AllThings() {
               image={{ tone: "dark", label: "Podcast — Mic", src: img.podcast }}
             >
               <div className="flex h-full flex-col justify-end p-5">
-                <p className="text-[10px] uppercase tracking-widest text-gold">
+                <p className="text-[11px] uppercase tracking-widest text-gold md:text-[10px]">
                   {c.podcast.eyebrow}
                 </p>
                 <h3 className="font-display text-xl text-cream">

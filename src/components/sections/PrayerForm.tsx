@@ -44,14 +44,15 @@ export default function PrayerForm({
   };
 
   return (
-    <div className="rounded-[2rem] bg-white p-8 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)] md:p-12">
+    <div className="rounded-[2rem] bg-white p-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)] sm:p-8 md:p-12">
       <h2 className="font-display text-3xl md:text-4xl">{form.heading}</h2>
-      <p className="mt-2 text-[11px] uppercase tracking-[0.25em] text-ink/40">
+      <p className="mt-2 text-[11px] uppercase tracking-[0.25em] text-ink/55">
         {form.subheading}
       </p>
 
       {sent ? (
-        <div className="mt-12">
+        // Focused on mount so phone users, whose form just collapsed, are brought to the answer.
+        <div ref={(el) => el?.focus()} tabIndex={-1} className="mt-12 outline-none">
           <p className="font-display text-2xl text-gold">{assurance.heading}</p>
           <p className="mt-4 max-w-md whitespace-pre-line text-sm leading-relaxed text-ink/70">
             {assurance.body}
@@ -72,22 +73,23 @@ export default function PrayerForm({
           <textarea
             name="request"
             required
+            aria-label={form.fields.request}
             rows={4}
             placeholder={form.fields.request}
             className={`${field} resize-none`}
           />
 
           <div className="grid gap-8 md:grid-cols-2">
-            <input type="text" name="name" placeholder={form.fields.name} className={field} />
-            <input type="email" name="email" placeholder={form.fields.email} className={field} />
+            <input type="text" name="name" autoComplete="name" enterKeyHint="next" aria-label={form.fields.name} placeholder={form.fields.name} className={field} />
+            <input type="email" name="email" autoComplete="email" enterKeyHint="done" aria-label={form.fields.email} placeholder={form.fields.email} className={field} />
           </div>
 
-          <label className="flex items-center gap-3 text-sm text-ink/70">
-            <input type="checkbox" name="urgent" className="h-4 w-4 accent-gold" />
+          <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-ink/70">
+            <input type="checkbox" name="urgent" className="h-5 w-5 shrink-0 accent-gold" />
             {form.urgentLabel}
           </label>
 
-          <p className="text-xs leading-relaxed text-ink/40">{privacyNote}</p>
+          <p className="text-xs leading-relaxed text-ink/55">{privacyNote}</p>
 
           {error && (
             <p role="alert" className="text-sm text-red-600">
@@ -98,7 +100,7 @@ export default function PrayerForm({
           <button
             type="submit"
             disabled={sending}
-            className="inline-flex items-center gap-3 bg-ink px-8 py-4 text-[11px] font-medium uppercase tracking-[0.22em] text-cream transition-colors hover:bg-charcoal disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-3 bg-ink px-8 py-4 sm:w-auto text-[11px] font-medium uppercase tracking-[0.22em] text-cream transition-colors hover:bg-charcoal disabled:cursor-not-allowed disabled:opacity-60"
           >
             {sending ? "Sending…" : form.submit}
           </button>

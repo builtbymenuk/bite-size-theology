@@ -7,6 +7,9 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
   return (
     <>
       {children}
+      {/* Phones: CartBar is fixed over the bottom edge, so extend the footer (the last thing on every
+          store page) by its height — otherwise it permanently covers the legal row. */}
+      <div aria-hidden className="h-24 bg-charcoal lg:hidden" />
       <CartButton />
       <CartBar />
     </>

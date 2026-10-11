@@ -69,7 +69,7 @@ export default function Placeholder({
         style={{ backgroundImage: "url('/placeholders/photo.svg')" }}
       />
       {label ? (
-        <span className="px-4 text-center text-[10px] font-medium uppercase tracking-[0.25em]">
+        <span className="px-4 text-center text-[11px] font-medium md:text-[10px] uppercase tracking-[0.25em]">
           {label}
         </span>
       ) : null}
