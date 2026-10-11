@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
+import { allow, clientIp } from "@/lib/rate-limit";
 import { getContact, getNotificationSettings } from "@/lib/cms";
 import { validate, type ContactPayload } from "@/lib/contact";
 import { sendResend } from "@/lib/mail";
 
 export const runtime = "nodejs";
+
+const HOUR = 60 * 60 * 1000;
+const PER_IP = 5; // submissions per IP per hour
 
 const STRAPI = process.env.STRAPI_URL;
 const TOKEN = process.env.STRAPI_API_TOKEN;
@@ -35,6 +39,14 @@ export async function POST(req: Request) {
   const v = validate(body);
   if (!v.ok) return NextResponse.json({ ok: false, error: v.error }, { status: 400 });
   if (v.spam) return NextResponse.json({ ok: true }, { status: 200 }); // honeypot → silent drop
+  // Per-IP speed bump against flooding the inbox (same limiter as the newsletter). Checked after
+  // the honeypot so bots still get their silent "success".
+  if (!allow(`contact:ip:${clientIp(req)}`, PER_IP, HOUR)) {
+    return NextResponse.json(
+      { ok: false, error: "Too many requests. Please try again later." },
+      { status: 429 },
+    );
+  }
 
   await store(v.data); // best-effort
   const d = v.data;

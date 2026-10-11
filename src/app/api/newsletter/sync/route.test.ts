@@ -3,6 +3,18 @@ import { CONFIGURED, withEnv } from "../../../../../test/env";
 import { type Call, stubFetch } from "../../../../../test/fetch-stub";
 import { getRequest } from "../../../../../test/request";
 
+// Spy on the shared constant-time comparison so the tests can prove the route goes through it.
+const secretCalls = vi.hoisted(() => [] as unknown[][]);
+vi.mock("@/lib/secret", async (importOriginal) => {
+  const real = await importOriginal<typeof import("@/lib/secret")>();
+  return {
+    secretMatches: (...args: Parameters<typeof real.secretMatches>) => {
+      secretCalls.push(args);
+      return real.secretMatches(...args);
+    },
+  };
+});
+
 const ENV = { ...CONFIGURED, REVALIDATE_SECRET: "s3cret" };
 const load = (env: Record<string, string> = ENV) => withEnv(env, () => import("./route"));
 
@@ -129,5 +141,13 @@ describe("GET /api/newsletter/sync", () => {
 });
 
 describe("secret comparison", () => {
-  test.todo("REVALIDATE_SECRET compared with non-constant-time !== (sync/route.ts:27, revalidate/route.ts:24)");
+  test("a same-length near miss is rejected, and the check goes through constant-time secretMatches", async () => {
+    const { GET } = await load();
+    const net = stubFetch({});
+    secretCalls.length = 0;
+    const res = await GET(getRequest("/api/newsletter/sync?secret=s3creX"));
+    expect(res.status).toBe(401);
+    expect(secretCalls).toEqual([["s3creX", "s3cret"]]);
+    expect(net.calls).toHaveLength(0);
+  });
 });

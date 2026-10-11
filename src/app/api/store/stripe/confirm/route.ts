@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { stripeConfigured, retrieveSession } from "@/lib/stripe";
 import { saveOrder, orderExists } from "@/lib/store-order";
+import { decimalsFor } from "@/lib/currency";
 import type Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -67,6 +68,11 @@ export async function POST(req: Request) {
   });
 }
 
+// Stripe reports amounts in the currency's minor unit: cents for USD, but whole yen for JPY (a
+// zero-decimal currency). Dividing by 100 everywhere recorded ¥7,750 as 77.5.
+const fromMinor = (amount: number | null | undefined, currency: string | null | undefined) =>
+  (amount ?? 0) / 10 ** decimalsFor((currency ?? "usd").toUpperCase());
+
 // Line snapshot from the expanded Checkout line items. Each ad-hoc product carries the slug/size we
 // stamped at session creation; quantity + unit_amount are what Stripe charged.
 function snapshotFromSession(session: Stripe.Checkout.Session) {
@@ -86,7 +92,7 @@ function snapshotFromSession(session: Stripe.Checkout.Session) {
       title: name || li.description || null,
       size: meta?.size || null,
       qty: li.quantity ?? 1,
-      unitPrice: (li.price?.unit_amount ?? 0) / 100,
+      unitPrice: fromMinor(li.price?.unit_amount, li.currency ?? session.currency),
     };
   });
 }
@@ -105,9 +111,9 @@ function summarize(session: Stripe.Checkout.Session) {
     provider: "stripe" as const,
     email: details?.email ?? "",
     payerName: name,
-    subtotal: (session.amount_subtotal ?? 0) / 100,
-    shipping: (session.total_details?.amount_shipping ?? 0) / 100,
-    total: (session.amount_total ?? 0) / 100,
+    subtotal: fromMinor(session.amount_subtotal, session.currency),
+    shipping: fromMinor(session.total_details?.amount_shipping, session.currency),
+    total: fromMinor(session.amount_total, session.currency),
     currency: (session.currency ?? "usd").toUpperCase(),
     stripeSessionId: session.id,
     stripePaymentIntentId: paymentIntentId,

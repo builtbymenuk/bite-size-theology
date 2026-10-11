@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { captureOrder, paypalConfigured, type PayPalCapture } from "@/lib/paypal";
-import { saveDonation, donationExists, type DonorMeta } from "@/lib/donation";
+import { saveDonation, donationExists, cleanMeta, type DonorMeta } from "@/lib/donation";
 
 export const runtime = "nodejs";
 
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     orderID = String(body?.orderID ?? "");
-    meta = (body?.meta ?? {}) as DonorMeta;
+    meta = cleanMeta(body?.meta);
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }

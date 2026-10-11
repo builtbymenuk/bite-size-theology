@@ -1,9 +1,14 @@
 import { describe, expect, test } from "vitest";
 import { CONFIGURED, withEnv } from "../../test/env";
 import { networkError, stubFetch } from "../../test/fetch-stub";
+import { openShop, shop } from "../../test/shop";
 
 // No STRAPI_URL → cms.ts serves the static catalogue in content.ts (shipping 5.99 USD).
-const load = (env: Record<string, string> = {}) => withEnv(env, () => import("./store-order"));
+const load = (env: Record<string, string> = {}) =>
+  withEnv(env, async () => {
+    openShop();
+    return import("./store-order");
+  });
 
 const HOODIE = "call-on-jesus-vintage-faded-hoodie"; // $45, sizes S–2XL
 const STICKER = "honk-if-you-love-jesus-bumper-sticker"; // $7, one size
@@ -140,14 +145,16 @@ describe("priceCart — the server is the only source of prices", () => {
     expect(r.ok && r.lines[0].unitPrice).toBe(6.44); // 7 × 0.92
   });
 
-  test.todo(
-    "BUG: priceCart does not enforce store.comingSoon — checkout works while the store is 'coming soon'",
-  );
-
-  test("documents the coming-soon gap: the fallback store is comingSoon yet a cart still prices", async () => {
+  test("403 while the store is 'coming soon' — a stale cart can't reach payment", async () => {
+    shop.open = false;
     const { priceCart } = await load();
-    const r = await priceCart([{ slug: STICKER, qty: 1 }]);
-    expect(r.ok && r.store.comingSoon).toBe(true);
+    const net = stubFetch({});
+    expect(await priceCart([{ slug: STICKER, qty: 1 }])).toEqual({
+      ok: false,
+      status: 403,
+      error: "The shop isn't open yet.",
+    });
+    expect(net.calls).toHaveLength(0);
   });
 });
 

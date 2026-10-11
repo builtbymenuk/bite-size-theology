@@ -38,10 +38,10 @@ async function accessToken(): Promise<string> {
   return (await res.json()).access_token as string;
 }
 
-async function api(path: string, body?: unknown): Promise<unknown> {
+async function api(path: string, body?: unknown, method: "GET" | "POST" = "POST"): Promise<unknown> {
   const token = await accessToken();
   const res = await fetch(`${BASE}${path}`, {
-    method: "POST",
+    method,
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -118,6 +118,11 @@ export type PayPalCapture = {
     shipping?: { name?: { full_name?: string }; address?: Record<string, string> };
   }>;
 };
+
+// Reads an order WITHOUT capturing it — used to check the approved amount before taking payment.
+export async function getOrder(orderId: string): Promise<PayPalCapture> {
+  return (await api(`/v2/checkout/orders/${encodeURIComponent(orderId)}`, undefined, "GET")) as PayPalCapture;
+}
 
 export async function captureOrder(orderId: string): Promise<PayPalCapture> {
   return (await api(`/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`, {})) as PayPalCapture;

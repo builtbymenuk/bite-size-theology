@@ -124,14 +124,38 @@ describe("POST /api/donate/paypal/capture", () => {
     expect((await POST(jsonRequest(PATH, { orderID: "PAYORDER123" }))).status).toBe(200);
   });
 
-  test("documents the meta gap: an unbounded message is stored as sent", async () => {
+  // The client sends donor details alongside the order id; nothing about them is trusted.
+  test("donor details are cleaned before saving: capped, trimmed, a bad email dropped", async () => {
     const { POST } = await load();
     const net = services(paypalCaptureCompleted());
-    const huge = "x".repeat(10_000);
-    await POST(jsonRequest(PATH, { orderID: "PAYORDER123", meta: { message: huge, email: "not-an-email" } }));
+    const res = await POST(
+      jsonRequest(PATH, {
+        orderID: "PAYORDER123",
+        meta: {
+          name: `  ${"n".repeat(300)}  `,
+          email: "not-an-email",
+          fund: "f".repeat(300),
+          message: "x".repeat(10_000),
+          anonymous: "yes", // only true / "true" count
+        },
+      }),
+    );
+    expect(res.status).toBe(200); // the gift still goes through: the money already moved
     const save = net.calls.find((c) => c.method === "POST" && c.url.endsWith("/api/donations"))!;
-    expect(save.body).toMatchObject({ data: { message: huge, email: "not-an-email" } });
+    const data = (save.body as { data: Record<string, unknown> }).data;
+    expect(data.name).toBe("n".repeat(100));
+    expect(data.fund).toBe("f".repeat(100));
+    expect(data.message).toBe("x".repeat(500));
+    expect(data.anonymous).toBe(false);
+    // An invalid email is dropped, so the payer's PayPal email is used instead.
+    expect(data.email).toBe("payer@example.com");
   });
 
-  test.todo("BUG: PayPal donation meta (name/email/fund/message) is not validated or length-capped");
+  test("a non-object meta is ignored rather than crashing", async () => {
+    const { POST } = await load();
+    services(paypalCaptureCompleted());
+    for (const meta of ["junk", 42, null, ["a"]]) {
+      expect((await POST(jsonRequest(PATH, { orderID: "PAYORDER123", meta }))).status).toBe(200);
+    }
+  });
 });

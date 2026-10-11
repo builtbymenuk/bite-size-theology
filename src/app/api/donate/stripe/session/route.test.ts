@@ -46,7 +46,7 @@ describe("POST /api/donate/stripe/session", () => {
         email: " ada@example.com ",
         fund: "Missions",
         message: "m".repeat(800),
-        anonymous: 1,
+        anonymous: true,
       }),
     );
     expect(res.status).toBe(200);
@@ -65,6 +65,23 @@ describe("POST /api/donate/stripe/session", () => {
         anonymous: "true",
       },
     });
+  });
+
+  test("every metadata value stays within Stripe's 500-char limit; a bad email is dropped", async () => {
+    const { POST } = await load();
+    await POST(
+      jsonRequest(PATH, {
+        amount: 10,
+        name: "n".repeat(2000),
+        email: "nope@",
+        fund: "f".repeat(2000),
+        message: "m".repeat(2000),
+        anonymous: 1, // only true / "true" count
+      }),
+    );
+    const { metadata } = stripe.createDonationSession.mock.calls[0][0];
+    for (const v of Object.values(metadata as Record<string, string>)) expect(v.length).toBeLessThanOrEqual(500);
+    expect(metadata).toMatchObject({ name: "n".repeat(100), email: "", fund: "f".repeat(100), anonymous: "" });
   });
 
   test("blank/absent donor fields become empty strings (Stripe metadata must be strings)", async () => {

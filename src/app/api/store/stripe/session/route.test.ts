@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { withEnv } from "../../../../../../test/env";
 import { networkError, stubFetch } from "../../../../../../test/fetch-stub";
 import { jsonRequest, rawRequest } from "../../../../../../test/request";
+import { openShop, shop } from "../../../../../../test/shop";
 
 const stripe = vi.hoisted(() => ({
   stripeConfigured: vi.fn(),
@@ -10,7 +11,11 @@ const stripe = vi.hoisted(() => ({
 vi.mock("@/lib/stripe", () => stripe);
 
 // No STRAPI_URL → static catalogue.
-const load = () => withEnv({}, () => import("./route"));
+const load = () =>
+  withEnv({}, async () => {
+    openShop(); // the fallback store is "coming soon"; see test/shop.ts
+    return import("./route");
+  });
 const PATH = "/api/store/stripe/session";
 const HOODIE = "call-on-jesus-vintage-faded-hoodie";
 const STICKER = "honk-if-you-love-jesus-bumper-sticker";
@@ -40,7 +45,7 @@ describe("POST /api/store/stripe/session", () => {
     ["invalid size", [{ slug: HOODIE, size: "XXS" }], 400],
     ["unknown slug", [{ slug: "ghost" }], 409],
     ["sold out", [{ slug: "the-untitled-book" }], 409],
-  ])("%s → %i, Stripe never called", async (_l, items, status) => {
+  ])("%s → %s, Stripe never called", async (_l, items, status) => {
     const { POST } = await load();
     stubFetch({});
     expect((await POST(jsonRequest(PATH, { items }))).status).toBe(status);
@@ -83,6 +88,15 @@ describe("POST /api/store/stripe/session", () => {
       shippingCents: 910,
       lines: [expect.objectContaining({ unitPrice: 1064 })],
     });
+  });
+
+  test("403 while the store is 'coming soon'; Stripe never called", async () => {
+    shop.open = false;
+    const { POST } = await load();
+    stubFetch({});
+    const res = await POST(jsonRequest(PATH, { items: [{ slug: STICKER, qty: 1 }] }));
+    expect(res.status).toBe(403);
+    expect(stripe.createCheckoutSession).not.toHaveBeenCalled();
   });
 
   test("502 when Stripe throws", async () => {

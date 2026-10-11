@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { stripeConfigured, createDonationSession } from "@/lib/stripe";
-import { validateAmount, type DonorMeta } from "@/lib/donation";
+import { validateAmount, cleanMeta, type DonorMeta } from "@/lib/donation";
 
 export const runtime = "nodejs";
 
@@ -21,13 +21,7 @@ export async function POST(req: Request) {
   const amount = validateAmount(body?.amount);
   if (!amount.ok) return NextResponse.json({ error: amount.error }, { status: 400 });
 
-  const meta: DonorMeta = {
-    name: String(body?.name ?? "").trim(),
-    email: String(body?.email ?? "").trim(),
-    fund: String(body?.fund ?? "").trim(),
-    message: String(body?.message ?? "").trim().slice(0, 500),
-    anonymous: !!body?.anonymous,
-  };
+  const meta: DonorMeta = cleanMeta(body);
 
   try {
     const origin = new URL(req.url).origin;

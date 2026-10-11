@@ -22,6 +22,9 @@ export default async function TourPage() {
     // Transparent wrapper — the shared PageBackground (dark + blurred on /tour) shows through
     // behind the rows/images, which carry their own surfaces.
     <div className="min-h-screen text-cream">
+      {/* The design opens on an image with no title, but the page still needs one heading for screen
+          readers and search: present for both, invisible on screen. */}
+      <h1 className="sr-only">Tour dates — Caleb Griffith live</h1>
       <section className="mx-auto max-w-7xl px-6 pt-28 md:pt-32">
         <Parallax className="aspect-[16/8] w-full rounded-[2rem] grayscale" amount={12}>
           <Placeholder tone="dark" label={tour.heroImage} src={tour.heroImageSrc} />

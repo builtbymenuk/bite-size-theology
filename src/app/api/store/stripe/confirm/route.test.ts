@@ -148,17 +148,50 @@ describe("POST /api/store/stripe/confirm", () => {
     expect((await res.json()).orderNumber).toBe("BST-12345678");
   });
 
-  test("documents the zero-decimal bug: a ¥7,750 JPY session is reported/saved as 77.5", async () => {
+  // Stripe reports amounts in each currency's minor unit: cents for USD, but whole yen for JPY.
+  test("a JPY (zero-decimal) session is reported and saved in whole yen, not divided by 100", async () => {
     stripe.retrieveSession.mockResolvedValue(
-      stripeSessionPaid({ currency: "jpy", amount_total: 7750, amount_subtotal: 6840 }),
+      stripeSessionPaid({
+        currency: "jpy",
+        amount_subtotal: 6840,
+        amount_total: 7750,
+        total_details: { amount_shipping: 910, amount_discount: 0, amount_tax: 0 },
+        line_items: {
+          object: "list",
+          data: [
+            {
+              quantity: 1,
+              currency: "jpy",
+              description: "Hoodie",
+              price: {
+                unit_amount: 6840,
+                product: { name: "Hoodie", metadata: { slug: "call-on-jesus-vintage-faded-hoodie", size: "M" } },
+              },
+            },
+          ],
+        },
+      }),
     );
     const { POST } = await load();
-    services();
+    const net = services();
     const res = await POST(jsonRequest(PATH, { session_id: "cs_test_123" }));
-    expect(await res.json()).toMatchObject({ total: 77.5, currency: "JPY" });
+    expect(await res.json()).toMatchObject({ total: 7750, currency: "JPY" });
+    expect(saves(net)[0].body).toMatchObject({
+      data: {
+        subtotal: 6840,
+        shipping: 910,
+        total: 7750,
+        currency: "JPY",
+        items: [expect.objectContaining({ unitPrice: 6840 })],
+      },
+    });
   });
 
-  test.todo(
-    "BUG: store/stripe/confirm divides amounts by 100 regardless of currency — JPY (zero-decimal) orders are recorded 100× too small",
-  );
+  test("USD sessions are still divided into dollars", async () => {
+    const { POST } = await load();
+    const net = services();
+    const res = await POST(jsonRequest(PATH, { session_id: "cs_test_123" }));
+    expect(await res.json()).toMatchObject({ total: 80.99, currency: "USD" });
+    expect(saves(net)[0].body).toMatchObject({ data: { subtotal: 75, shipping: 5.99, total: 80.99 } });
+  });
 });
