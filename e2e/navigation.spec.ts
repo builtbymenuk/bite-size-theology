@@ -56,12 +56,9 @@ test.describe("mobile menu", () => {
     await expect(page.locator("html")).not.toHaveClass(/lenis-stopped/);
   });
 
-  test("opened by a tap, Escape still hands focus back to the menu button", async ({ page }, testInfo) => {
-    // BUG (WebKit/Safari only): Safari doesn't focus a <button> when it's clicked or tapped, so
-    // useDialog (src/components/ui/useDialog.ts:24) records <body> as the element to restore and
-    // focus is lost on close. Fix: restore to the trigger explicitly (e.g. pass a trigger ref) rather
-    // than trusting document.activeElement. Remove this marker once fixed.
-    test.fail(testInfo.project.name === "mobile-webkit", "Safari doesn't focus buttons on click");
+  test("opened by a tap, Escape still hands focus back to the menu button", async ({ page }) => {
+    // Safari doesn't focus a <button> on tap, so useDialog falls back to the menu button it's given
+    // (returnFocusTo) instead of restoring to <body>. Regression guard for that fallback.
     await page.goto("/about");
     const button = page.getByRole("button", { name: "Open menu" });
     await hydrated(button);

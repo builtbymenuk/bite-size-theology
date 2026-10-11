@@ -32,7 +32,8 @@ export default function Navbar({ nav }: { nav: Nav }) {
   const open = openOn !== null && openOn === pathname;
   const close = useCallback(() => setOpenOn(null), []);
   const menuRef = useRef<HTMLDivElement>(null);
-  useDialog(open, close, menuRef);
+  const burgerRef = useRef<HTMLButtonElement>(null);
+  useDialog(open, close, menuRef, burgerRef);
 
   // Dark pages (e.g. /tour, no full-height hero) pin the light pill; home flips on scroll.
   // /blog is the cream index and pins light; /blog/[slug] deliberately does NOT — it opens on a
@@ -141,6 +142,7 @@ export default function Navbar({ nav }: { nav: Nav }) {
             {nav.cta}
           </Link>
           <button
+            ref={burgerRef}
             aria-label="Open menu"
             aria-expanded={open}
             aria-controls="mobile-menu"
