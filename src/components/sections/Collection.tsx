@@ -21,7 +21,7 @@ function ProductCard({
         image={{ tone: product.tone, label: imageLabel, src: product.image }}
       >
         {"tag" in product && product.tag ? (
-          <span className="absolute left-4 top-4 rounded-full bg-cream px-3 py-1 text-[10px] uppercase tracking-widest text-ink">
+          <span className="absolute left-4 top-4 rounded-full bg-cream px-3 py-1 text-[11px] uppercase tracking-widest text-ink md:text-[10px]">
             {product.tag}
           </span>
         ) : null}

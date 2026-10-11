@@ -39,9 +39,9 @@ export default function DonateForm({
   const payload = () => ({ amount: amt, ...meta() });
 
   return (
-    <div className="rounded-[2rem] bg-white p-8 shadow-[0_20px_60px_-20px_rgba(14,32,56,0.18)] md:p-10">
+    <div className="rounded-[2rem] bg-white p-6 shadow-[0_20px_60px_-20px_rgba(14,32,56,0.18)] sm:p-8 md:p-10">
       {/* Amount */}
-      <p className="text-[11px] uppercase tracking-[0.25em] text-ink/40">Choose an amount</p>
+      <p className="text-[11px] uppercase tracking-[0.25em] text-ink/55">Choose an amount</p>
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {presets.map((p) => {
           const active = Number(p) === amt;
@@ -64,46 +64,68 @@ export default function DonateForm({
 
       <div className="mt-4 flex items-center gap-2 border-b border-ink/15 py-2">
         <span className="text-lg text-ink/50">$</span>
+        {/* type="text" + inputMode, not type="number": a number field changes value under a
+            scroll or swipe, and the decimal keypad is what phones should show anyway. */}
         <input
-          type="number"
-          min={1}
-          step={1}
+          type="text"
           inputMode="decimal"
+          enterKeyHint="done"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ""))}
+          aria-invalid={!valid}
+          aria-describedby={valid ? undefined : "amount-hint"}
           aria-label="Donation amount (USD)"
           className="w-full bg-transparent text-lg tabular-nums text-ink outline-none"
         />
         <span className="text-xs uppercase tracking-widest text-ink/40">{currency}</span>
       </div>
+      {/* Says why the pay buttons below went inert, instead of just greying them out. */}
+      {!valid && (
+        <p id="amount-hint" className="mt-2 text-xs text-ink/70">
+          Enter an amount of at least $1 to continue.
+        </p>
+      )}
 
       {/* Fund */}
       {fundOptions.length > 0 && (
         <div className="mt-6">
-          <label className="text-[11px] uppercase tracking-[0.25em] text-ink/40">Give toward</label>
-          <select
-            value={fund}
-            onChange={(e) => setFund(e.target.value)}
-            className={`${field} mt-1 appearance-none`}
-          >
-            {fundOptions.map((f) => (
-              <option key={f} value={f}>
-                {f}
-              </option>
-            ))}
-          </select>
+          <label htmlFor="donate-fund" className="text-[11px] uppercase tracking-[0.25em] text-ink/55">
+            Give toward
+          </label>
+          <div className="relative">
+            <select
+              id="donate-fund"
+              value={fund}
+              onChange={(e) => setFund(e.target.value)}
+              className={`${field} mt-1 appearance-none pr-8`}
+            >
+              {fundOptions.map((f) => (
+                <option key={f} value={f}>
+                  {f}
+                </option>
+              ))}
+            </select>
+            {/* chevron — appearance-none removes the native one */}
+            <svg
+              aria-hidden
+              viewBox="0 0 12 12"
+              className="pointer-events-none absolute right-1 top-1/2 h-3 w-3 -translate-y-1/2 text-ink/50"
+            >
+              <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
+          </div>
         </div>
       )}
 
       {/* Donor details (optional) */}
       <div className="mt-6 grid gap-6 sm:grid-cols-2">
-        <input type="text" placeholder="Name (optional)" value={name} onChange={(e) => setName(e.target.value)} className={field} />
-        <input type="email" placeholder="Email for receipt (optional)" value={email} onChange={(e) => setEmail(e.target.value)} className={field} />
+        <input type="text" autoComplete="name" enterKeyHint="next" aria-label="Name (optional)" placeholder="Name (optional)" value={name} onChange={(e) => setName(e.target.value)} className={field} />
+        <input type="email" autoComplete="email" enterKeyHint="next" aria-label="Email for receipt (optional)" placeholder="Email for receipt (optional)" value={email} onChange={(e) => setEmail(e.target.value)} className={field} />
       </div>
-      <input type="text" placeholder="Add a note (optional)" value={message} onChange={(e) => setMessage(e.target.value)} className={`${field} mt-6`} />
+      <input type="text" enterKeyHint="done" aria-label="Add a note (optional)" placeholder="Add a note (optional)" value={message} onChange={(e) => setMessage(e.target.value)} className={`${field} mt-6`} />
 
-      <label className="mt-5 flex items-center gap-3 text-sm text-ink/70">
-        <input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} className="h-4 w-4 accent-gold" />
+      <label className="mt-3 flex min-h-11 cursor-pointer items-center gap-3 text-sm text-ink/70">
+        <input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} className="h-5 w-5 shrink-0 accent-gold" />
         Give anonymously
       </label>
 

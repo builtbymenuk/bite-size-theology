@@ -39,7 +39,7 @@ export default function Catalog({
         </h2>
         {tabs.length > 1 && (
           <div
-            className="-mx-6 flex w-full gap-2 overflow-x-auto px-6 [scrollbar-width:none] md:mx-0 md:w-auto md:flex-wrap md:overflow-visible md:px-0"
+            className="-mx-6 flex w-full gap-2 overflow-x-auto px-6 [mask-image:linear-gradient(to_right,#000_90%,transparent)] [scrollbar-width:none] md:mx-0 md:[mask-image:none] md:w-auto md:flex-wrap md:overflow-visible md:px-0"
             role="tablist"
             aria-label="Filter products by category"
           >
@@ -52,7 +52,7 @@ export default function Catalog({
                   setActive(c.slug);
                   setVisible(PAGE); // reset paging when switching category
                 }}
-                className={`shrink-0 rounded-full border px-4 py-2.5 text-[11px] uppercase tracking-[0.18em] transition-colors ${
+                className={`shrink-0 rounded-full border px-4 py-3.5 text-[11px] md:py-2.5 uppercase tracking-[0.18em] transition-colors ${
                   active === c.slug
                     ? "border-ink bg-ink text-cream"
                     : "border-ink/15 text-ink/60 hover:border-ink/40"

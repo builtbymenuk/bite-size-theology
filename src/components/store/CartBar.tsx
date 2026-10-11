@@ -87,7 +87,7 @@ export default function CartBar() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.85 }}
             transition={{ duration: 0.2 }}
-            className="pointer-events-auto mb-5 ml-auto mr-4 flex h-14 w-14 items-center justify-center rounded-full border border-ink/10 bg-cream/90 text-ink shadow-lg backdrop-blur-md"
+            className="pointer-events-auto mb-[max(1.25rem,env(safe-area-inset-bottom))] ml-auto mr-4 flex h-14 w-14 items-center justify-center rounded-full border border-ink/10 bg-cream/90 text-ink shadow-lg backdrop-blur-md"
           >
             <Bag />
           </motion.button>

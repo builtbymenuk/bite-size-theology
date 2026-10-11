@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter, Cinzel } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -47,6 +47,15 @@ const lockup = localFont({
   variable: "--font-aileron",
   display: "swap",
 });
+
+// viewport-fit=cover is what makes env(safe-area-inset-*) non-zero on iOS — CartBar, CartDrawer,
+// the newsletter sheet and the mobile menu all pad against it. themeColor tints the mobile browser chrome.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#16294c",
+};
 
 export const metadata: Metadata = {
   title: "Bite Size Theology",

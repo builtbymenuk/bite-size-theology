@@ -8,7 +8,7 @@ import type { StoreProduct } from "@/lib/content";
 // Badge pills. Both live in one wrapping flex cluster rather than opposite corners: on a 2-up phone
 // grid a tile is ~150px wide, and "Best Seller" + "Sale" pinned left-4/right-4 collided there.
 const PILL =
-  "rounded-full px-2 py-0.5 text-[9px] uppercase tracking-wider md:px-3 md:py-1 md:text-[10px] md:tracking-widest";
+  "rounded-full px-2 py-0.5 text-[11px] uppercase tracking-wider md:px-3 md:py-1 md:text-[10px] md:tracking-widest";
 
 // Shared (no "use client"): renders in the server ProductRow and inside the client Catalog alike.
 export default function ProductCard({ product }: { product: StoreProduct }) {

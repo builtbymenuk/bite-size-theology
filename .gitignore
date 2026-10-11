@@ -59,3 +59,6 @@ next-env.d.ts
 
 # hosting credentials — never commit
 docs/HOSTINGER-ACCESS.pdf
+
+# playwright mcp artifacts
+/.playwright-mcp

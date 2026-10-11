@@ -1,62 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { useLenis } from "lenis/react";
 import { useCart } from "@/lib/cart";
 import { formatUSD } from "@/lib/pricing";
 import Placeholder from "@/components/ui/Placeholder";
 import { toneFor } from "@/components/store/tone";
+import { useDialog } from "@/components/ui/useDialog";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function CartDrawer() {
   const { items, subtotal, isOpen, closeCart, setQty, remove, keyOf, count } =
     useCart();
-  const lenis = useLenis();
   const panelRef = useRef<HTMLElement>(null);
-  const restoreRef = useRef<HTMLElement | null>(null);
-
-  // While open: stop the (Lenis-driven) background scroll, focus into the panel, trap Tab, Esc closes.
-  useEffect(() => {
-    if (!isOpen) return;
-    restoreRef.current = document.activeElement as HTMLElement | null;
-    lenis?.stop();
-
-    const focusables = () =>
-      Array.from(
-        panelRef.current?.querySelectorAll<HTMLElement>(
-          'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])',
-        ) ?? [],
-      );
-    focusables()[0]?.focus();
-
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closeCart();
-        return;
-      }
-      if (e.key !== "Tab") return;
-      const f = focusables();
-      if (!f.length) return;
-      const first = f[0];
-      const last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      lenis?.start();
-      restoreRef.current?.focus?.();
-    };
-  }, [isOpen, closeCart, lenis]);
+  useDialog(isOpen, closeCart, panelRef);
 
   return (
     <AnimatePresence>
@@ -83,7 +42,7 @@ export default function CartDrawer() {
             transition={{ type: "tween", duration: 0.4, ease: EASE }}
             className="absolute right-0 top-0 flex h-dvh w-full max-w-md flex-col bg-cream text-ink shadow-2xl"
           >
-            <header className="flex items-center justify-between border-b border-ink/10 px-6 py-5">
+            <header className="flex items-center justify-between border-b border-ink/10 px-6 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
               <h2 className="font-display text-lg uppercase tracking-wide">
                 Cart{" "}
                 {count > 0 && <span className="text-ink/40">({count})</span>}
@@ -91,7 +50,7 @@ export default function CartDrawer() {
               <button
                 onClick={closeCart}
                 aria-label="Close cart"
-                className="text-2xl leading-none text-ink/50 transition-colors hover:text-ink"
+                className="-mr-3 flex h-11 w-11 items-center justify-center text-2xl leading-none text-ink/50 transition-colors hover:text-ink"
               >
                 ×
               </button>
@@ -125,7 +84,7 @@ export default function CartDrawer() {
                             <button
                               onClick={() => remove(k)}
                               aria-label={`Remove ${it.title}`}
-                              className="shrink-0 text-ink/40 transition-colors hover:text-ink"
+                              className="-mr-3 -mt-3 flex h-11 w-11 shrink-0 items-center justify-center text-lg text-ink/40 transition-colors hover:text-ink"
                             >
                               ×
                             </button>
@@ -140,17 +99,17 @@ export default function CartDrawer() {
                               <button
                                 onClick={() => setQty(k, it.qty - 1)}
                                 aria-label="Decrease quantity"
-                                className="px-2.5 py-1 text-ink/60 transition-colors hover:text-ink"
+                                className="flex h-11 w-11 items-center justify-center text-ink/60 transition-colors hover:text-ink"
                               >
                                 −
                               </button>
-                              <span className="min-w-6 text-center text-xs tabular-nums">
+                              <span className="min-w-6 text-center text-sm tabular-nums">
                                 {it.qty}
                               </span>
                               <button
                                 onClick={() => setQty(k, it.qty + 1)}
                                 aria-label="Increase quantity"
-                                className="px-2.5 py-1 text-ink/60 transition-colors hover:text-ink"
+                                className="flex h-11 w-11 items-center justify-center text-ink/60 transition-colors hover:text-ink"
                               >
                                 +
                               </button>

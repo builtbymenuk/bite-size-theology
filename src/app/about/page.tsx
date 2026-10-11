@@ -40,7 +40,7 @@ export default async function AboutPage() {
             reveal instead of separating the two blocks. */}
         <div className="-mt-6">
           <MaskReveal>
-            <h1 className="font-display text-7xl leading-[0.9] tracking-tight md:text-8xl">
+            <h1 className="font-display text-[clamp(3rem,17vw,4.5rem)] leading-[0.9] tracking-tight md:text-8xl">
               {about.headingLead}{" "}
               <span className="font-semibold italic">{about.headingName}</span>
             </h1>

@@ -36,14 +36,20 @@ export default function ContactForm({ form }: { form: Contact["form"] }) {
   };
 
   return (
-    <div className="rounded-[2rem] bg-white p-8 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)] md:p-12">
+    <div className="rounded-[2rem] bg-white p-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)] sm:p-8 md:p-12">
       <h2 className="font-display text-3xl md:text-4xl">{form.heading}</h2>
-      <p className="mt-2 text-[11px] uppercase tracking-[0.25em] text-ink/40">
+      <p className="mt-2 text-[11px] uppercase tracking-[0.25em] text-ink/55">
         {form.subheading}
       </p>
 
       {sent ? (
-        <p className="mt-12 max-w-sm text-sm leading-relaxed text-ink/70">
+        // Focused on mount: on a phone the form collapses above the fold, so without this the
+        // confirmation can land off-screen. focus() scrolls it into view and announces it.
+        <p
+          ref={(el) => el?.focus()}
+          tabIndex={-1}
+          className="mt-12 max-w-sm text-sm leading-relaxed text-ink/70 outline-none"
+        >
           {form.success}
         </p>
       ) : (
@@ -62,6 +68,9 @@ export default function ContactForm({ form }: { form: Contact["form"] }) {
               type="text"
               name="name"
               required
+              autoComplete="name"
+              enterKeyHint="next"
+              aria-label={form.fields.name}
               placeholder={form.fields.name}
               className={field}
             />
@@ -69,6 +78,9 @@ export default function ContactForm({ form }: { form: Contact["form"] }) {
               type="email"
               name="email"
               required
+              autoComplete="email"
+              enterKeyHint="next"
+              aria-label={form.fields.email}
               placeholder={form.fields.email}
               className={field}
             />
@@ -77,6 +89,7 @@ export default function ContactForm({ form }: { form: Contact["form"] }) {
           <div className="relative">
             <select
               name="subject"
+              aria-label={form.fields.subject}
               defaultValue=""
               required
               className={`${field} appearance-none pr-8`}
@@ -108,6 +121,7 @@ export default function ContactForm({ form }: { form: Contact["form"] }) {
           <textarea
             name="message"
             required
+            aria-label={form.fields.message}
             rows={4}
             placeholder={form.fields.message}
             className={`${field} resize-none`}
@@ -122,7 +136,7 @@ export default function ContactForm({ form }: { form: Contact["form"] }) {
           <button
             type="submit"
             disabled={sending}
-            className="inline-flex items-center gap-3 bg-ink px-8 py-4 text-[11px] font-medium uppercase tracking-[0.22em] text-cream transition-colors hover:bg-charcoal disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-3 bg-ink px-8 py-4 sm:w-auto text-[11px] font-medium uppercase tracking-[0.22em] text-cream transition-colors hover:bg-charcoal disabled:cursor-not-allowed disabled:opacity-60"
           >
             {sending ? "Sending…" : form.submit}
             {/* paper plane */}

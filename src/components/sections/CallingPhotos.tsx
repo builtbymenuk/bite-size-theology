@@ -85,7 +85,10 @@ export default function CallingPhotos({
   scripture?: string;
 }) {
   return (
-    <div className="relative min-h-[620px]">
+    // Height tracks the photos on phones: the Scripture frame ends at top-32 + 54% width × 5/4, and the
+    // column is the viewport minus the px-6 gutters — so 67.5vw + ~6rem, instead of a fixed 620px that
+    // left a ~270px hole under the photos at 375px.
+    <div className="relative min-h-[calc(67.5vw+6rem)] md:min-h-[620px]">
       {/* Open Bible — tall, dominant, anchored right. Reveals first. */}
       <Framed
         src={bible}
