@@ -38,7 +38,7 @@ async function accessToken(): Promise<string> {
   return (await res.json()).access_token as string;
 }
 
-async function api(path: string, body?: unknown): Promise<any> {
+async function api(path: string, body?: unknown): Promise<unknown> {
   const token = await accessToken();
   const res = await fetch(`${BASE}${path}`, {
     method: "POST",
@@ -101,9 +101,24 @@ export function buildCreateOrderBody(opts: {
 export async function createOrder(
   body: unknown,
 ): Promise<{ id: string; status: string }> {
-  return api("/v2/checkout/orders", body);
+  return (await api("/v2/checkout/orders", body)) as { id: string; status: string };
 }
 
-export async function captureOrder(orderId: string): Promise<any> {
-  return api(`/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`, {});
+type Money = { value?: string; currency_code?: string };
+
+// The slice of PayPal's capture response this app reads. Everything is optional because the
+// callers already read it defensively (`?.` + fallbacks) — PayPal omits fields per flow.
+export type PayPalCapture = {
+  id: string;
+  status?: string;
+  payer?: { email_address?: string; name?: { given_name?: string; surname?: string } };
+  purchase_units?: Array<{
+    amount?: Money & { breakdown?: { item_total?: Money; shipping?: Money } };
+    payments?: { captures?: Array<{ id?: string; amount?: Money }> };
+    shipping?: { name?: { full_name?: string }; address?: Record<string, string> };
+  }>;
+};
+
+export async function captureOrder(orderId: string): Promise<PayPalCapture> {
+  return (await api(`/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`, {})) as PayPalCapture;
 }

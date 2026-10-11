@@ -20,6 +20,10 @@ See **[HOW-TO-RUN.md](HOW-TO-RUN.md)**. Short version: start Strapi first
 The site runs even with the CMS switched off — it falls back to built-in copy — so you
 can start the website on its own and connect the CMS afterwards.
 
+## Testing
+
+`npm test` runs the unit, API and component tests, `npm run test:e2e` runs the browser tests, and `cd cms && npm test` runs the CMS tests. CI runs all of them on every pull request and before every deploy. See [TESTING.md](TESTING.md).
+
 ## Configuration
 
 Environment variables are documented inline in **[`.env.example`](.env.example)** (website)

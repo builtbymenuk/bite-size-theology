@@ -141,7 +141,7 @@ export interface NormalizedOrder {
 export async function orderExists(
   provider: "paypal" | "stripe",
   ref: string,
-): Promise<any | null> {
+): Promise<Partial<Pick<NormalizedOrder, "orderNumber" | "email" | "total" | "currency">> | null> {
   if (!STRAPI || !TOKEN || !ref) return null;
   const field = provider === "stripe" ? "stripeSessionId" : "paypalOrderId";
   try {

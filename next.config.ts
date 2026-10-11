@@ -42,10 +42,9 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["*.trycloudflare.com"],
   // Pin the workspace root — a stray lockfile in the home dir otherwise misleads file tracing.
   turbopack: { root: path.resolve(process.cwd()) },
-  // Enables React's <ViewTransition> so route navigations play the slide-up cover (see template.tsx
-  // + the ::view-transition rules in globals.css). Degrades to instant nav where unsupported.
+  // React's <ViewTransition> (template.tsx + the ::view-transition rules in globals.css) needs no
+  // flag since Next 16.4 — `experimental.viewTransition` was removed from the config schema.
   experimental: {
-    viewTransition: true,
     // ponytail: shared hosting caps process count, and os.cpus() there reports the whole box —
     // `next build` spawned 29 workers and died with spawn EAGAIN. NEXT_CPUS=2 pins it to the
     // plan's real core count. Unset elsewhere, so local/CI builds keep full parallelism.

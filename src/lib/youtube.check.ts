@@ -1,4 +1,4 @@
-// Self-check for the RSS parser. Run: npx tsx src/lib/youtube.test.ts
+// Self-check for the RSS parser. Run: npx tsx src/lib/youtube.check.ts (also runs under `npm test`)
 import assert from "node:assert";
 import {
   parseYouTubeFeed,

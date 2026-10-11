@@ -40,12 +40,19 @@ const REVALIDATE =
 export const absolutize = (u?: string): string | undefined =>
   u ? (u.startsWith("http") ? u : `${PUBLIC_BASE}${u}`) : undefined;
 
+// One untyped Strapi v5 JSON row. Deliberately loose: content types are edited in the admin, so a
+// static shape here would drift; instead every read below is guarded (`|| fb.x`, Number(),
+// Array.isArray) and the fallback content covers anything missing. This is the single place the
+// file opts out of no-explicit-any, instead of scattering it across every mapper.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above
+type CmsRow = Record<string, any>;
+
 // Use a mapped CMS array only when it actually has rows, else keep the fallback.
-function arr<T>(x: unknown, map: (v: any, i: number) => T, fallback: T[]): T[] {
+function arr<T>(x: unknown, map: (v: CmsRow, i: number) => T, fallback: T[]): T[] {
   return Array.isArray(x) && x.length ? x.map(map) : fallback;
 }
 
-async function single(path: string, query = "populate=*"): Promise<any | null> {
+async function single(path: string, query = "populate=*"): Promise<CmsRow | null> {
   if (!BASE) return null; // not configured → static fallback
   try {
     const res = await fetch(`${BASE}/api/${path}?${query}`, {
@@ -63,7 +70,7 @@ async function single(path: string, query = "populate=*"): Promise<any | null> {
 
 // Collection-type sibling of single(): returns the `.data` ARRAY (v5 flattened rows), [] on any
 // failure. `one()` filters that down to the first row (e.g. a product by slug).
-async function list(path: string, query = "populate=*"): Promise<any[]> {
+async function list(path: string, query = "populate=*"): Promise<CmsRow[]> {
   if (!BASE) return [];
   try {
     const res = await fetch(`${BASE}/api/${path}?${query}`, {
@@ -77,7 +84,7 @@ async function list(path: string, query = "populate=*"): Promise<any[]> {
   }
 }
 
-async function one(path: string, query: string): Promise<any | null> {
+async function one(path: string, query: string): Promise<CmsRow | null> {
   return (await list(path, query))[0] ?? null;
 }
 
@@ -344,7 +351,7 @@ export async function getFooter(): Promise<Footer> {
       d.columns,
       (c) => ({
         title: c.title,
-        links: arr(c.links, (l: any) => ({ label: l.label, url: l.url || "" }), []),
+        links: arr(c.links, (l: CmsRow) => ({ label: l.label, url: l.url || "" }), []),
       }),
       fb.footer.columns,
     ),
@@ -600,7 +607,7 @@ export async function getTour(): Promise<Tour> {
         ...(r.code ? { code: r.code } : {}),
         dates: arr(
           r.dates,
-          (dt: any) => ({
+          (dt: CmsRow) => ({
             city: dt.city,
             venue: dt.venue,
             date: dt.date,
@@ -617,9 +624,9 @@ export async function getTour(): Promise<Tour> {
 
 // --- Store ---------------------------------------------------------------
 
-function mapProduct(p: any): StoreProduct {
+function mapProduct(p: CmsRow): StoreProduct {
   const images = Array.isArray(p.images)
-    ? (p.images.map((m: any) => absolutize(m?.url)).filter(Boolean) as string[])
+    ? (p.images.map((m: CmsRow) => absolutize(m?.url)).filter(Boolean) as string[])
     : [];
   return {
     slug: p.slug,
@@ -633,7 +640,7 @@ function mapProduct(p: any): StoreProduct {
       ? images
       : fb.storeProducts.find((s) => s.slug === p.slug)?.images ?? [],
     sizes: Array.isArray(p.sizes)
-      ? p.sizes.map((x: any) => x?.value).filter(Boolean)
+      ? p.sizes.map((x: CmsRow) => x?.value).filter(Boolean)
       : [],
     category: p.category?.slug || undefined, // relation → its slug
     badge: p.badge || undefined,
@@ -685,7 +692,7 @@ export async function getProduct(slug: string): Promise<StoreProduct | null> {
 export async function getCategories(): Promise<Category[]> {
   const rows = await list("categories", "sort=order:asc&pagination[pageSize]=100");
   return rows.length
-    ? rows.map((c: any) => ({ slug: c.slug, name: c.name }))
+    ? rows.map((c: CmsRow) => ({ slug: c.slug, name: c.name }))
     : fb.categories;
 }
 
@@ -694,7 +701,7 @@ export async function getCategories(): Promise<Category[]> {
 // Strapi 5's REST default is status=published, so nothing below asks for drafts and an
 // unfinished article can't leak. `publishedAt` is therefore the real publication date.
 
-function mapPost(p: any): Post {
+function mapPost(p: CmsRow): Post {
   return {
     slug: p.slug,
     title: p.title,
@@ -755,5 +762,5 @@ export async function getPost(slug: string): Promise<Post | null> {
 // Drives the ledger's filter pills. Empty → the rail isn't rendered at all.
 export async function getPostCategories(): Promise<PostCategory[]> {
   const rows = await list("post-categories", "sort=order:asc&pagination[pageSize]=100");
-  return rows.map((c: any) => ({ slug: c.slug, name: c.name }));
+  return rows.map((c: CmsRow) => ({ slug: c.slug, name: c.name }));
 }

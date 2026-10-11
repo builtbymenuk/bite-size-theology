@@ -53,7 +53,7 @@ export interface DonorMeta {
 export async function donationExists(
   provider: "paypal" | "stripe",
   ref: string,
-): Promise<any | null> {
+): Promise<{ documentId?: string } | null> {
   if (!STRAPI || !TOKEN || !ref) return null;
   const field = provider === "stripe" ? "stripeSessionId" : "paypalOrderId";
   try {

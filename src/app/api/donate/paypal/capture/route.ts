@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { captureOrder, paypalConfigured } from "@/lib/paypal";
+import { captureOrder, paypalConfigured, type PayPalCapture } from "@/lib/paypal";
 import { saveDonation, donationExists, type DonorMeta } from "@/lib/donation";
 
 export const runtime = "nodejs";
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   }
   if (!orderID) return NextResponse.json({ error: "Missing order id." }, { status: 400 });
 
-  let capture: any;
+  let capture: PayPalCapture;
   try {
     capture = await captureOrder(orderID);
   } catch (e) {

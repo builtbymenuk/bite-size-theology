@@ -12,7 +12,8 @@
     "start": "strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
-    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+    "upgrade:dry": "npx @strapi/upgrade latest --dry",
+    "test": "jest --runInBand --forceExit"
   },
   "dependencies": {
     "@strapi/plugin-cloud": "5.50.2",
@@ -31,6 +32,8 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "jest": "30.5.2",
+    "supertest": "7.3.1",
     "typescript": "^5"
   },
   "engines": {

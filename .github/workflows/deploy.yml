@@ -26,7 +26,13 @@ env:
   SITE_URL: https://bitesizetheology.com
 
 jobs:
+  # The full CI suite (lint, types, unit/route/component tests, e2e, CMS tests, audit) must pass
+  # before anything ships. A red test blocks the deploy.
+  ci:
+    uses: ./.github/workflows/ci.yml
+
   site:
+    needs: ci
     if: inputs.target != 'cms'
     runs-on: ubuntu-latest
     steps:
@@ -76,6 +82,7 @@ jobs:
           echo "::error::$SITE_URL returned '$code'"; exit 1
 
   cms:
+    needs: ci
     if: inputs.target != 'site'
     runs-on: ubuntu-latest
     steps:

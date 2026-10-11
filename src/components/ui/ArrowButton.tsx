@@ -18,7 +18,7 @@ export default function ArrowButton({
   href?: string;
 }) {
   const link = linkProps(href); // external → new tab; internal → same tab; blank → {} (button)
-  const Comp: any = link.href ? MotionLink : motion.button;
+  const Comp = (link.href ? MotionLink : motion.button) as React.ElementType;
   return (
     <Comp
       {...(link.href ? link : { type: "button" })}

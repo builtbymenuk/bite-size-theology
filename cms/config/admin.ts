@@ -15,6 +15,8 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Admin => 
   secrets: {
     encryptionKey: env('ENCRYPTION_KEY')!,
   },
+  // `strapi develop` restarts on any file change under cms/; the Jest suite is not app code.
+  watchIgnoreFiles: ['**/tests/**', '**/jest.config.js', '**/coverage/**'],
   flags: {
     nps: env.bool('FLAG_NPS', true),
     promoteEE: env.bool('FLAG_PROMOTE_EE', true),

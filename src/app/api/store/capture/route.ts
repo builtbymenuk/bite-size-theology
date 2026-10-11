@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { captureOrder, paypalConfigured } from "@/lib/paypal";
+import { captureOrder, paypalConfigured, type PayPalCapture } from "@/lib/paypal";
 import {
   priceCart,
   snapshotItems,
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing order id." }, { status: 400 });
   }
 
-  let capture: any;
+  let capture: PayPalCapture;
   try {
     capture = await captureOrder(orderID);
   } catch (e) {
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
   });
 }
 
-function summarize(capture: any): NormalizedOrder {
+function summarize(capture: PayPalCapture): NormalizedOrder {
   const pu = capture?.purchase_units?.[0] ?? {};
   const cap = pu?.payments?.captures?.[0] ?? {};
   const payer = capture?.payer ?? {};

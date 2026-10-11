@@ -12,6 +12,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The Strapi app lints/tests in its own CI job; linting it from here also swept its build output.
+    "cms/**",
+    // Test artifacts.
+    "coverage/**",
+    "playwright-report/**",
+    "test-results/**",
+    "blob-report/**",
+    ".playwright-mcp/**",
   ]),
 ]);
 
